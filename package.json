@@ -4,17 +4,24 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "cy:open:dev": "ENV=DEV cypress open",
-    "cy:run:dev": "ENV=DEV cypress run",
-    "cy:open:prod": "ENV=PROD cypress open",
-    "cy:run:prod": "ENV=PROD cypress run"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Thiagocs12/uteis.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Thiagocs12/uteis/issues"
+  },
+  "homepage": "https://github.com/Thiagocs12/uteis#readme",
   "devDependencies": {
-    "cypress": "^15.8.1",
+    "cypress": "^15.9.0"
+  },
+  "dependencies": {
     "dotenv": "^17.2.3",
     "mssql": "^12.2.0"
   }
