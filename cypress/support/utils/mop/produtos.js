@@ -1,0 +1,117 @@
+const {
+  SELECT_ID,
+} = require('../../querySQL')
+
+const ENTIDADES_CONFIG = {
+  SELECT_PRODUTOS: {
+    nomeArquivo: 'vinculo_esteira_prod',
+    campoId: 'idProduto',
+    tabela: 'MC_CAD_PRODUTO', 
+    query: SELECT_ID,
+    salvarComo: 'SELECT_PRODUTOS',
+  },
+  SELECT_PRODUTOS_MANTER_EM_CORBANCA: {
+    nomeArquivo: 'SELECT_PRODUTOS',
+    campoId: 'idProdutoManterCobranca',
+    tabela: 'MC_CAD_PRODUTO', 
+    query: SELECT_ID,
+    salvarComo: 'SELECT_PRODUTOS',
+    overwrite: false,
+  },
+  SELECT_FOCO_NEGOCIO: {
+    nomeArquivo: 'SELECT_PRODUTOS',
+    campoId: 'idFocoNegocio',
+    tabela: 'MC_CAD_FOCO_NEGOCIO', 
+    query: SELECT_ID,
+    salvarComo: 'SELECT_FOCO_NEGOCIO',
+  },
+  SELECT_TIPO_PRODUTO: {
+    nomeArquivo: 'SELECT_PRODUTOS',
+    campoId: 'idTipoProduto',
+    tabela: 'MC_CAD_TIPO_PRODUTO', 
+    query: SELECT_ID,
+    salvarComo: 'SELECT_TIPO_PRODUTO',
+  },
+  SELECT_CLASSIFICACAO_PRODUTO: {
+    nomeArquivo: 'SELECT_PRODUTOS',
+    campoId: 'idClassificacaoProduto',
+    tabela: 'MC_CAD_CLASSIFICACAO_PRODUTO', 
+    query: SELECT_ID,
+    salvarComo: 'SELECT_CLASSIFICACAO_PRODUTO',
+  },
+  SELECT_SUBPRODUTO: {
+    nomeArquivo: 'SELECT_PRODUTOS',
+    campoId: 'idSubProduto',
+    tabela: 'MC_CAD_SUBPRODUTO', 
+    query: SELECT_ID,
+    salvarComo: 'SELECT_SUBPRODUTO',
+  },
+  SELECT_PRODUTO_INDEXADOR: {
+    nomeArquivo: 'SELECT_PRODUTOS',
+    campoId: 'idIndexador',
+    tabela: 'MC_CAD_PRODUTO_INDEXADOR', 
+    query: SELECT_ID,
+    salvarComo: 'SELECT_PRODUTO_INDEXADOR',
+  },
+  SELECT_PRODUTO_TP_RECEBIMENTO: {
+    nomeArquivo: 'SELECT_PRODUTOS',
+    campoId: 'idTipoRecebimento',
+    tabela: 'MC_CAD_PRODUTO_TP_RECEBIMENTO', 
+    query: SELECT_ID,
+    salvarComo: 'SELECT_PRODUTO_TP_RECEBIMENTO',
+  },
+  SELECT_GRUPO_PRODUTO: {
+    nomeArquivo: 'SELECT_PRODUTOS',
+    campoId: 'idGrupoProduto',
+    tabela: 'MC_CAD_GRUPO_PRODUTO', 
+    query: SELECT_ID,
+    salvarComo: 'SELECT_GRUPO_PRODUTO',
+  },
+  SELECT_CAD_PRODUTO_KIT: {
+    nomeArquivo: 'SELECT_PRODUTOS',
+    campoId: 'id',
+    tabela: 'MC_CAD_PRODUTO_KIT', 
+    query: SELECT_ID,
+    campoBusca: 'idProduto',
+    salvarComo: 'SELECT_CAD_PRODUTO_KIT',
+  },
+  SELECT_CAD_PRODUTO_TARIFA: {
+    nomeArquivo: 'SELECT_PRODUTOS',
+    campoId: 'id',
+    tabela: 'MC_CAD_PRODUTO_TARIFA', 
+    query: SELECT_ID,
+    campoBusca: 'idProduto',
+    salvarComo: 'SELECT_CAD_PRODUTO_TARIFA',
+  },
+  SELECT_CAD_PRODUTO_GARANTIA: {
+    nomeArquivo: 'SELECT_PRODUTOS',
+    campoId: 'id',
+    tabela: 'MC_CAD_PRODUTO_GARANTIA', 
+    query: SELECT_ID,
+    campoBusca: 'idProduto',
+    salvarComo: 'SELECT_CAD_PRODUTO_GARANTIA',
+  },
+  SELECT_CAD_GARANTIA_CATEGORIA: {
+    nomeArquivo: 'SELECT_CAD_PRODUTO_GARANTIA',
+    campoId: 'idCategoriaGarantia',
+    tabela: 'MC_CAD_GARANTIA_CATEGORIA', 
+    query: SELECT_ID,
+    salvarComo: 'SELECT_CAD_GARANTIA_CATEGORIA',
+  },
+  SELECT_CAD_TARIFA: {
+    nomeArquivo: 'SELECT_CAD_PRODUTO_TARIFA',
+    campoId: 'idTarifa',
+    tabela: 'MC_CAD_TARIFA', 
+    query: SELECT_ID,
+    salvarComo: 'SELECT_CAD_TARIFA',
+  },
+  SELECT_CAD_KIT_DOCUMENTO: {
+    nomeArquivo: 'SELECT_CAD_PRODUTO_KIT',
+    campoId: 'idKitDocumento',
+    tabela: 'MC_CAD_KIT_DOCUMENTO', 
+    query: SELECT_ID,
+    salvarComo: 'SELECT_CAD_KIT_DOCUMENTO',
+  },
+}
+
+module.exports = ENTIDADES_CONFIG

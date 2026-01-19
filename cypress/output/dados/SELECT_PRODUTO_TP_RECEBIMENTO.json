@@ -1,0 +1,44 @@
+[
+  {
+    "id": 4,
+    "idConsultoriaEspecializada": 1,
+    "descricao": "DEPOSITO EM CONTA",
+    "usuarioUltimaAlteracao": "regiane.felicio",
+    "dataUltimaAlteracao": "2022-02-17T11:50:34.090Z",
+    "dataCadastro": "2022-02-17T11:50:34.090Z",
+    "usuarioCadastro": "regiane.felicio",
+    "indObrigaNN": false,
+    "indEmiteBoleto": false,
+    "indGarantiaSecundaria": false,
+    "indGeraRemessaBancaria": false,
+    "indGeraOperacaoTitulosRejeitados": null
+  },
+  {
+    "id": 22,
+    "idConsultoriaEspecializada": 1,
+    "descricao": "BOLETO ESPECIAL - PRE IMPRESSO",
+    "usuarioUltimaAlteracao": "regiane.felicio",
+    "dataUltimaAlteracao": "2022-10-13T08:32:03.633Z",
+    "dataCadastro": "2022-10-13T08:32:03.633Z",
+    "usuarioCadastro": "regiane.felicio",
+    "indObrigaNN": true,
+    "indEmiteBoleto": false,
+    "indGarantiaSecundaria": false,
+    "indGeraRemessaBancaria": true,
+    "indGeraOperacaoTitulosRejeitados": null
+  },
+  {
+    "id": 24,
+    "idConsultoriaEspecializada": 1,
+    "descricao": "BOLETO PRE IMPRESSO",
+    "usuarioUltimaAlteracao": "regiane.felicio",
+    "dataUltimaAlteracao": "2022-10-13T10:46:31.380Z",
+    "dataCadastro": "2022-10-13T10:46:31.380Z",
+    "usuarioCadastro": "regiane.felicio",
+    "indObrigaNN": true,
+    "indEmiteBoleto": false,
+    "indGarantiaSecundaria": false,
+    "indGeraRemessaBancaria": true,
+    "indGeraOperacaoTitulosRejeitados": true
+  }
+]

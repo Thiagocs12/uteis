@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "idConsultoriaEspecializada": 1,
+    "descricao": "PRODUTO",
+    "ativo": true,
+    "usuarioUltimaAlteracao": "regiane.felicio",
+    "dataUltimaAlteracao": "2022-02-17T11:39:05.563Z",
+    "dataCadastro": "2022-02-17T11:39:05.563Z",
+    "usuarioCadastro": "regiane.felicio"
+  },
+  {
+    "id": 3,
+    "idConsultoriaEspecializada": 1,
+    "descricao": "FINANCEIRA",
+    "ativo": true,
+    "usuarioUltimaAlteracao": "regiane.felicio",
+    "dataUltimaAlteracao": "2022-02-17T11:39:32.340Z",
+    "dataCadastro": "2022-02-17T11:39:32.340Z",
+    "usuarioCadastro": "regiane.felicio"
+  }
+]

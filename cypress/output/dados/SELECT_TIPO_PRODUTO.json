@@ -1,0 +1,53 @@
+[
+  {
+    "id": 2,
+    "idConsultoriaEspecializada": 1,
+    "descricao": "ANTECIPACAO DE DUPLICATA",
+    "ativo": true,
+    "usuarioUltimaAlteracao": "rodrigo.meneses",
+    "dataUltimaAlteracao": "2024-11-25T10:27:37.613Z",
+    "dataCadastro": "2022-02-17T11:28:17.587Z",
+    "usuarioCadastro": "regiane.felicio",
+    "indPermiteTranche": true,
+    "especiePapel": "01",
+    "indConsideraRisco": false,
+    "indRealizaChecagem": true,
+    "indEnviaTermoAssinaturaAutomatico": false,
+    "indCadastraGarantia": false,
+    "indNovoNumeroDocumento": true
+  },
+  {
+    "id": 13,
+    "idConsultoriaEspecializada": 1,
+    "descricao": "NOTA COMERCIAL",
+    "ativo": true,
+    "usuarioUltimaAlteracao": "regiane.felicio",
+    "dataUltimaAlteracao": "2022-06-13T17:02:55.297Z",
+    "dataCadastro": "2022-06-13T17:02:55.297Z",
+    "usuarioCadastro": "regiane.felicio",
+    "indPermiteTranche": false,
+    "especiePapel": "01",
+    "indConsideraRisco": false,
+    "indRealizaChecagem": false,
+    "indEnviaTermoAssinaturaAutomatico": false,
+    "indCadastraGarantia": false,
+    "indNovoNumeroDocumento": false
+  },
+  {
+    "id": 22,
+    "idConsultoriaEspecializada": 1,
+    "descricao": "MULTISOLUCOES TRUSTEE",
+    "ativo": true,
+    "usuarioUltimaAlteracao": "regiane.felicio",
+    "dataUltimaAlteracao": "2022-10-13T11:03:02.160Z",
+    "dataCadastro": "2022-10-13T11:01:58.657Z",
+    "usuarioCadastro": "regiane.felicio",
+    "indPermiteTranche": false,
+    "especiePapel": "01",
+    "indConsideraRisco": true,
+    "indRealizaChecagem": false,
+    "indEnviaTermoAssinaturaAutomatico": true,
+    "indCadastraGarantia": false,
+    "indNovoNumeroDocumento": false
+  }
+]
