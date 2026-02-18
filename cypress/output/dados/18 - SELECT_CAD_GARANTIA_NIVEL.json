@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1,
+    "idConsultoriaEspecializada": 1,
+    "descricao": "NÍVEL 1",
+    "ativo": true,
+    "usuarioUltimaAlteracao": "laura.contart",
+    "dataUltimaAlteracao": "2023-07-31T10:49:17.473Z",
+    "dataCadastro": "2023-07-31T10:49:17.473Z",
+    "usuarioCadastro": "laura.contart",
+    "idHml": null
+  }
+]

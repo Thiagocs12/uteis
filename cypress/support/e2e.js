@@ -1,6 +1,5 @@
 import './commands'
 import './querySQL'
-import './requests'
 import './utils'
 
 Cypress.Commands.add('executarQuerySQL', (env, sql) => {

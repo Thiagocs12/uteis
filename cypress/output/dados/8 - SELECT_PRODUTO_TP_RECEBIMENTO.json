@@ -1,0 +1,17 @@
+[
+  {
+    "id": 4,
+    "idConsultoriaEspecializada": 1,
+    "descricao": "DEPOSITO EM CONTA",
+    "usuarioUltimaAlteracao": "regiane.felicio",
+    "dataUltimaAlteracao": "2022-02-17T11:50:34.090Z",
+    "dataCadastro": "2022-02-17T11:50:34.090Z",
+    "usuarioCadastro": "regiane.felicio",
+    "indObrigaNN": false,
+    "indEmiteBoleto": false,
+    "indGarantiaSecundaria": false,
+    "indGeraRemessaBancaria": false,
+    "indGeraOperacaoTitulosRejeitados": null,
+    "idHml": 4
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "id": 17,
+    "idConsultoriaEspecializada": 1,
+    "descricao": "CCB/NC",
+    "ativo": true,
+    "dataCadastro": "2023-03-09T03:56:17.173Z",
+    "usuarioCadastro": "tiago.roque",
+    "usuarioUltimaAlteracao": "tiago.roque",
+    "dataUltimaAlteracao": "2023-03-09T04:06:25.700Z",
+    "idGrupoProdutoRisco": 2,
+    "idHml": 29
+  }
+]

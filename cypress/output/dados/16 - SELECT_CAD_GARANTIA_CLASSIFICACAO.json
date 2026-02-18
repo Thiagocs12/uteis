@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1,
+    "idConsultoriaEspecializada": 1,
+    "descricao": "BENS MÓVEIS",
+    "ativo": true,
+    "usuarioUltimaAlteracao": "laura.contart",
+    "dataUltimaAlteracao": "2023-07-31T10:40:56.660Z",
+    "dataCadastro": "2023-07-31T10:40:56.660Z",
+    "usuarioCadastro": "laura.contart",
+    "idHml": 26
+  },
+  {
+    "id": 3,
+    "idConsultoriaEspecializada": 1,
+    "descricao": "BENS IMÓVEIS RURAIS",
+    "ativo": true,
+    "usuarioUltimaAlteracao": "laura.contart",
+    "dataUltimaAlteracao": "2023-07-31T10:41:37.173Z",
+    "dataCadastro": "2023-07-31T10:41:37.173Z",
+    "usuarioCadastro": "laura.contart",
+    "idHml": 25
+  },
+  {
+    "id": 4,
+    "idConsultoriaEspecializada": 1,
+    "descricao": "COTAS SOCIAIS",
+    "ativo": true,
+    "usuarioUltimaAlteracao": "laura.contart",
+    "dataUltimaAlteracao": "2023-07-31T13:52:40.877Z",
+    "dataCadastro": "2023-07-31T13:52:40.877Z",
+    "usuarioCadastro": "laura.contart",
+    "idHml": null
+  }
+]

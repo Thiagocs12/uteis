@@ -4,7 +4,7 @@ const SELECT_VINCULO_ESTEIRA = `
     codigoModeloEsteira,
     codigoModeloEsteira2
   from MC_MOP_VINCULO_ESTEIRA
-  WHERE idProduto in (44, 120)
+  where idProduto = 120
   ORDER BY idProduto asc
 `
 
@@ -18,7 +18,11 @@ const SELECT_DESCRICAO = (tabela, descricoes) => `
   from ${tabela}
   where descricao in (${descricoes.map(d => `'${d}'`).join(',')})
 `
-
+const update = (tabela, descricoes) => `
+  select *
+  from ${tabela}
+  where descricao in (${descricoes.map(d => `'${d}'`).join(',')})
+`
 
 module.exports = {
   SELECT_VINCULO_ESTEIRA,

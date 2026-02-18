@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "idConsultoriaEspecializada": 1,
+    "descricao": "IMÓVEL",
+    "ativo": true,
+    "usuarioUltimaAlteracao": "eduardo.ribeiro",
+    "dataUltimaAlteracao": "2023-09-18T16:05:18.533Z",
+    "dataCadastro": "2023-09-18T16:05:18.533Z",
+    "usuarioCadastro": "eduardo.ribeiro",
+    "idHml": 20
+  },
+  {
+    "id": 2,
+    "idConsultoriaEspecializada": 1,
+    "descricao": "REAL",
+    "ativo": true,
+    "usuarioUltimaAlteracao": "eduardo.ribeiro",
+    "dataUltimaAlteracao": "2023-09-18T16:37:33.130Z",
+    "dataCadastro": "2023-09-18T16:37:33.130Z",
+    "usuarioCadastro": "eduardo.ribeiro",
+    "idHml": null
+  }
+]
