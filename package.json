@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/Thiagocs12/uteis#readme",
   "devDependencies": {
-    "cypress": "^15.9.0"
+    "cypress": "^15.10.0"
   },
   "dependencies": {
     "dotenv": "^17.2.3",

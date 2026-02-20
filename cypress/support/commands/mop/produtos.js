@@ -3,7 +3,8 @@ const ENTIDADES_CONFIG = require('../../utils/mop/produtos')
 const {
   SELECT_VINCULO_ESTEIRA,
   SELECT_DESCRICAO,
-  SELECT_ID
+  SELECT_ID,
+  UPDATE
 } = require('../../querySQL')
 
 Cypress.Commands.add('salvarDados', (dados, nomeArquivo, path = 'dados', overwrite = true, campoId = 'id') => {
@@ -81,4 +82,31 @@ Cypress.Commands.add('buscarPorDescricaoNoHML', (nomeArquivo, env = 'hml') => {
     })
   })
 })
+
+Cypress.Commands.add('atualizarComDadosProd', (nomeArquivo) => {
+  const config = ENTIDADES_CONFIG[nomeArquivo]
+  const path = `cypress/output/dados/${config.salvarComo}.json`
+
+  return cy.readFile(path).then(dados => {
+    const registrosComIdHml = dados.filter(d => d.idHml != null)
+    const registrosSemIdHml = dados.filter(d => d.idHml == null)
+
+    if (registrosSemIdHml.length > 0) {
+      console.log(`⚠️ ${registrosSemIdHml.length} registros ignorados (idHml vazio)`)
+    }
+
+    if (!registrosComIdHml.length) {
+      console.log(`❌ Nenhum registro com idHml encontrado em ${nomeArquivo}`)
+      return
+    }
+
+    registrosComIdHml.forEach(registro => {
+      const sql = UPDATE(config.tabela, registro)
+      //cy.executarQuerySQL('hml', sql)
+    })
+
+    console.log(`✅ ${registrosComIdHml.length} registros atualizados`)
+  })
+})
+
 
