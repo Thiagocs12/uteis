@@ -1,64 +1,71 @@
-require('dotenv').config(); // Carrega as variáveis do .env
+// cypress.config.js
 const { defineConfig } = require('cypress');
-const { Pool } = require('mssql'); // Ou o driver do seu banco de dados (ex: mysql2, mssql)
+const sql = require('mssql');
+require('dotenv').config(); // Para carregar as variáveis do .env
 
 module.exports = defineConfig({
   e2e: {
     setupNodeEvents(on, config) {
-      // --- Configuração de Banco de Dados ---
-
-      // Configuração para o ambiente de Homologação
-      const hmlDbConfig = {
+      // Configurações do banco de dados para Homologação
+      const dbConfigHomolog = {
         user: process.env.HOMOLOG_DB_USER,
-        host: process.env.HOMOLOG_DB_HOST,
-        database: process.env.HOMOLOG_DB_NAME,
         password: process.env.HOMOLOG_DB_PASS,
-        port: process.env.HOMOLOG_DB_PORT ? parseInt(process.env.HOMOLOG_DB_PORT) : 5432,
+        server: process.env.HOMOLOG_DB_HOST,
+        database: process.env.HOMOLOG_DB_NAME,
+        options: {
+          encrypt: false, // Use true para Azure SQL Database, ou se o servidor exigir SSL/TLS
+          trustServerCertificate: true // Mude para false em produção, se tiver um certificado válido
+        },
+        port: parseInt(process.env.HOMOLOG_DB_PORT || '1433', 10) // Garante que a porta seja um número
       };
 
-      // Configuração para o ambiente de Produção
-      const prodDbConfig = {
+      // Configurações do banco de dados para Produção
+      const dbConfigProd = {
         user: process.env.PROD_DB_USER,
-        host: process.env.PROD_DB_HOST,
-        database: process.env.PROD_DB_NAME,
         password: process.env.PROD_DB_PASS,
-        port: process.env.PROD_DB_PORT ? parseInt(process.env.PROD_DB_PORT) : 5432,
+        server: process.env.PROD_DB_HOST,
+        database: process.env.PROD_DB_NAME,
+        options: {
+          encrypt: false, // Use true para Azure SQL Database, ou se o servidor exigir SSL/TLS
+          trustServerCertificate: true // Mude para false em produção, se tiver um certificado válido
+        },
+        port: parseInt(process.env.PROD_DB_PORT || '1433', 10) // Garante que a porta seja um número
       };
 
-      // Cria os pools de conexão
-      const hmlDbPool = new Pool(hmlDbConfig);
-      const prodDbPool = new Pool(prodDbConfig);
+      // Função para executar query no banco de dados
+      async function executeQuery(query, env) {
+        let pool;
+        try {
+          const currentDbConfig = env === 'prod' ? dbConfigProd : dbConfigHomolog;
 
+          // Verifica se todas as credenciais necessárias estão presentes
+          if (!currentDbConfig.server || !currentDbConfig.user || !currentDbConfig.password || !currentDbConfig.database) {
+            throw new Error(`Credenciais de banco de dados incompletas para o ambiente ${env}. Verifique seu arquivo .env.`);
+          }
+
+          pool = new sql.ConnectionPool(currentDbConfig);
+          await pool.connect();
+          const result = await pool.request().query(query);
+          return result.recordset;
+        } catch (err) {
+          // console.error(`Erro ao executar query no SQL Server (${env}):`, err); // Removido
+          throw err; // Re-lança o erro para que o Cypress possa capturá-lo
+        } finally {
+          if (pool) {
+            await pool.close();
+          }
+        }
+      }
+
+      // Registra APENAS a tarefa para executar query SQL
       on('task', {
-        async queryDb(args) {
-          const { environment, query, values } = args;
-          let pool;
-
-          if (environment === 'prod') {
-            pool = prodDbPool;
-          } else if (environment === 'hml') {
-            pool = hmlDbPool;
-          } else {
-            throw new Error('Ambiente de banco de dados inválido. Use "prod" ou "hml".');
-          }
-
-          try {
-            const client = await pool.connect();
-            const result = await client.query(query, values);
-            client.release();
-            return result.rows; // Retorna as linhas do resultado
-          } catch (err) {
-            console.error(`Erro ao executar query no DB (${environment}):`, err.message);
-            throw err; // Rejeita a promise para que o Cypress saiba que houve um erro
-          }
+        sqlQuery(args) {
+          const { query, env } = args;
+          return executeQuery(query, env);
         },
       });
 
-      // Retorna o objeto de configuração atualizado
       return config;
     },
-    // Se você não vai usar APIs, pode remover ou deixar o baseUrl como um valor genérico
-    // Se for usar APIs, você precisará de variáveis de ambiente para as URLs das APIs também
-    baseUrl: 'http://localhost:8080', // Exemplo, pode ser ajustado ou removido se não usar APIs
   },
 });
