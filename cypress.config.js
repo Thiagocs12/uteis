@@ -1,6 +1,8 @@
 // cypress.config.js
 const { defineConfig } = require('cypress');
 const sql = require('mssql');
+const fs = require('fs');
+const path = require('path');
 require('dotenv').config(); // Para carregar as variáveis do .env
 
 module.exports = defineConfig({
@@ -13,10 +15,10 @@ module.exports = defineConfig({
         server: process.env.HOMOLOG_DB_HOST,
         database: process.env.HOMOLOG_DB_NAME,
         options: {
-          encrypt: false, // Use true para Azure SQL Database, ou se o servidor exigir SSL/TLS
-          trustServerCertificate: true // Mude para false em produção, se tiver um certificado válido
+          encrypt: false,
+          trustServerCertificate: true
         },
-        port: parseInt(process.env.HOMOLOG_DB_PORT || '1433', 10) // Garante que a porta seja um número
+        port: parseInt(process.env.HOMOLOG_DB_PORT || '1433', 10)
       };
 
       // Configurações do banco de dados para Produção
@@ -26,42 +28,71 @@ module.exports = defineConfig({
         server: process.env.PROD_DB_HOST,
         database: process.env.PROD_DB_NAME,
         options: {
-          encrypt: false, // Use true para Azure SQL Database, ou se o servidor exigir SSL/TLS
-          trustServerCertificate: true // Mude para false em produção, se tiver um certificado válido
+          encrypt: false,
+          trustServerCertificate: true
         },
-        port: parseInt(process.env.PROD_DB_PORT || '1433', 10) // Garante que a porta seja um número
+        port: parseInt(process.env.PROD_DB_PORT || '1433', 10)
       };
 
-      // Função para executar query no banco de dados
-      async function executeQuery(query, env) {
+      async function runSql(query, env) {
         let pool;
         try {
           const currentDbConfig = env === 'prod' ? dbConfigProd : dbConfigHomolog;
 
-          // Verifica se todas as credenciais necessárias estão presentes
-          if (!currentDbConfig.server || !currentDbConfig.user || !currentDbConfig.password || !currentDbConfig.database) {
-            throw new Error(`Credenciais de banco de dados incompletas para o ambiente ${env}. Verifique seu arquivo .env.`);
+          if (
+            !currentDbConfig.server ||
+            !currentDbConfig.user ||
+            !currentDbConfig.password ||
+            !currentDbConfig.database
+          ) {
+            throw new Error(
+              `Credenciais de banco de dados incompletas para o ambiente ${env}. Verifique seu arquivo .env.`
+            );
           }
 
           pool = new sql.ConnectionPool(currentDbConfig);
           await pool.connect();
+
           const result = await pool.request().query(query);
-          return result.recordset;
-        } catch (err) {
-          // console.error(`Erro ao executar query no SQL Server (${env}):`, err); // Removido
-          throw err; // Re-lança o erro para que o Cypress possa capturá-lo
+
+          return {
+            recordset: result.recordset || [],
+            rowsAffected: result.rowsAffected || [],
+          };
         } finally {
-          if (pool) {
-            await pool.close();
-          }
+          if (pool) await pool.close();
         }
       }
 
-      // Registra APENAS a tarefa para executar query SQL
       on('task', {
-        sqlQuery(args) {
+        // Mantém compatibilidade com seu código atual (SELECT)
+        async sqlQuery(args) {
           const { query, env } = args;
-          return executeQuery(query, env);
+          const result = await runSql(query, env);
+          return result.recordset;
+        },
+
+        // ✅ Novo: escrita (INSERT/UPDATE/MERGE). Retorna { recordset, rowsAffected }
+        async sqlExec(args) {
+          const { query, env } = args;
+          return runSql(query, env);
+        },
+
+        // Lê um JSON local: se não existir, retorna null (para você "pular" no spec)
+        readJsonIfExists(args) {
+          const { filePath } = args || {};
+          if (!filePath) return null;
+
+          const fullPath = path.isAbsolute(filePath)
+            ? filePath
+            : path.join(process.cwd(), filePath);
+
+          if (!fs.existsSync(fullPath)) return null;
+
+          const raw = fs.readFileSync(fullPath, 'utf8');
+          if (!raw || !raw.trim()) return [];
+
+          return JSON.parse(raw);
         },
       });
 
