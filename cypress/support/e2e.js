@@ -1,3 +1,6 @@
+import './commands';
+import './querysSql';
+// import '@badeball/cypress-cucumber-preprocessor/lib/tags'; // Opcional: se for usar tags do Cucumber
 
-import './commands'
-import './querysSql'
+// Se você tiver outros arquivos de suporte que usam `require`,
+// precisará convertê-los para `import` também.

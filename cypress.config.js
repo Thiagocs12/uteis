@@ -1,13 +1,18 @@
 // cypress.config.js
-const { defineConfig } = require('cypress');
-const sql = require('mssql');
-const fs = require('fs');
-const path = require('path');
-require('dotenv').config(); // Para carregar as variáveis do .env
+import { defineConfig } from 'cypress';
+import sql from 'mssql';
+import fs from 'fs';
+import path from 'path';
+import dotenv from 'dotenv'; // Usar import para dotenv
+import { addCucumberPreprocessorPlugin } from '@badeball/cypress-cucumber-preprocessor';
+import { preprocessor as esbuildPreprocessor } from '@bahmutov/cypress-esbuild-preprocessor';
 
-module.exports = defineConfig({
+dotenv.config(); // Para carregar as variáveis do .env
+
+export default defineConfig({ // Usar export default
   e2e: {
-    setupNodeEvents(on, config) {
+    specPattern: '**/*.feature', // Adicionado para incluir arquivos .feature
+    async setupNodeEvents(on, config) { // Adicionado async
       // Configurações do banco de dados para Homologação
       const dbConfigHomolog = {
         user: process.env.HOMOLOG_DB_USER,
@@ -95,6 +100,16 @@ module.exports = defineConfig({
           return JSON.parse(raw);
         },
       });
+
+      // --- Configuração do Cucumber Preprocessor ---
+      await addCucumberPreprocessorPlugin(on, config); // Adicionado await
+      on(
+        'file:preprocessor',
+        esbuildPreprocessor({
+          // Opções de esbuild, se necessário
+        })
+      );
+      // --- Fim da Configuração do Cucumber Preprocessor ---
 
       return config;
     },
