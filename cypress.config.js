@@ -3,16 +3,30 @@ import { defineConfig } from 'cypress';
 import sql from 'mssql';
 import fs from 'fs';
 import path from 'path';
-import dotenv from 'dotenv'; // Usar import para dotenv
-import { addCucumberPreprocessorPlugin } from '@badeball/cypress-cucumber-preprocessor';
-import { preprocessor as esbuildPreprocessor } from '@bahmutov/cypress-esbuild-preprocessor';
+import dotenv from 'dotenv';
 
-dotenv.config(); // Para carregar as variáveis do .env
+// Importações para @badeball/cypress-cucumber-preprocessor
+import createBundler from "@bahmutov/cypress-esbuild-preprocessor";
+import { addCucumberPreprocessorPlugin } from "@badeball/cypress-cucumber-preprocessor";
+// Importação CORRETA do createEsbuildPlugin
+import { createEsbuildPlugin } from "@badeball/cypress-cucumber-preprocessor/esbuild";
 
-export default defineConfig({ // Usar export default
+dotenv.config();
+
+export default defineConfig({
   e2e: {
-    specPattern: '**/*.feature', // Adicionado para incluir arquivos .feature
-    async setupNodeEvents(on, config) { // Adicionado async
+    specPattern: "**/*.feature", // Define que os arquivos de feature serão os specs
+    async setupNodeEvents(on, config) {
+      // Configuração do @badeball/cypress-cucumber-preprocessor
+      await addCucumberPreprocessorPlugin(on, config);
+
+      on(
+        "file:preprocessor",
+        createBundler({
+          plugins: [createEsbuildPlugin(config)],
+        })
+      );
+
       // Configurações do banco de dados para Homologação
       const dbConfigHomolog = {
         user: process.env.HOMOLOG_DB_USER,
@@ -50,6 +64,10 @@ export default defineConfig({ // Usar export default
             !currentDbConfig.password ||
             !currentDbConfig.database
           ) {
+            // Mantido console.error pois é uma falha crítica na configuração do ambiente Node.js
+            console.error(
+              `Credenciais de banco de dados incompletas para o ambiente ${env}. Verifique seu arquivo .env.`
+            );
             throw new Error(
               `Credenciais de banco de dados incompletas para o ambiente ${env}. Verifique seu arquivo .env.`
             );
@@ -70,46 +88,67 @@ export default defineConfig({ // Usar export default
       }
 
       on('task', {
-        // Mantém compatibilidade com seu código atual (SELECT)
-        async sqlQuery(args) {
-          const { query, env } = args;
-          const result = await runSql(query, env);
+        async consultarSql(args) {
+          const { query, ambiente } = args;
+          const result = await runSql(query, ambiente);
           return result.recordset;
         },
 
-        // ✅ Novo: escrita (INSERT/UPDATE/MERGE). Retorna { recordset, rowsAffected }
-        async sqlExec(args) {
-          const { query, env } = args;
-          return runSql(query, env);
+        async executarSql(args) {
+          const { query, ambiente } = args;
+          return runSql(query, ambiente);
         },
 
-        // Lê um JSON local: se não existir, retorna null (para você "pular" no spec)
-        readJsonIfExists(args) {
-          const { filePath } = args || {};
-          if (!filePath) return null;
+        lerJsonSeExistir(args) {
+          const { caminhoArquivo } = args || {};
+          if (!caminhoArquivo) return null;
 
-          const fullPath = path.isAbsolute(filePath)
-            ? filePath
-            : path.join(process.cwd(), filePath);
+          const caminhoCompleto = path.isAbsolute(caminhoArquivo)
+            ? caminhoArquivo
+            : path.join(process.cwd(), caminhoArquivo);
 
-          if (!fs.existsSync(fullPath)) return null;
+          if (!fs.existsSync(caminhoCompleto)) return null;
 
-          const raw = fs.readFileSync(fullPath, 'utf8');
-          if (!raw || !raw.trim()) return [];
+          const conteudoBruto = fs.readFileSync(caminhoCompleto, 'utf8');
+          if (!conteudoBruto || !conteudoBruto.trim()) return [];
 
-          return JSON.parse(raw);
+          return JSON.parse(conteudoBruto);
+        },
+
+        escreverJson(args) {
+          const { caminhoArquivo, dados } = args || {};
+          if (!caminhoArquivo) {
+            // Mantido console.error pois é uma falha crítica na operação de arquivo no Node.js
+            console.error('Caminho do arquivo não fornecido para escreverJson.');
+            return false;
+          }
+          const caminhoCompleto = path.isAbsolute(caminhoArquivo)
+            ? caminhoArquivo
+            : path.join(process.cwd(), caminhoArquivo);
+
+          try {
+            const dir = path.dirname(caminhoCompleto);
+            if (!fs.existsSync(dir)) {
+              fs.mkdirSync(dir, { recursive: true });
+            }
+            fs.writeFileSync(caminhoCompleto, JSON.stringify(dados, null, 2), 'utf8');
+            return true;
+          } catch (error) {
+            // Mantido console.error pois é uma falha crítica na operação de arquivo no Node.js
+            console.error(`Erro ao escrever JSON no arquivo ${caminhoCompleto}:`, error);
+            return false;
+          }
+        },
+
+        removerPasta(args) {
+          const { path: dirPath } = args;
+          if (fs.existsSync(dirPath)) {
+            fs.rmSync(dirPath, { recursive: true, force: true });
+            return true;
+          }
+          return false;
         },
       });
-
-      // --- Configuração do Cucumber Preprocessor ---
-      await addCucumberPreprocessorPlugin(on, config); // Adicionado await
-      on(
-        'file:preprocessor',
-        esbuildPreprocessor({
-          // Opções de esbuild, se necessário
-        })
-      );
-      // --- Fim da Configuração do Cucumber Preprocessor ---
 
       return config;
     },
