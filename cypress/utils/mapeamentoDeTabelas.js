@@ -200,6 +200,7 @@ const MAPEAMENTO_TABELAS = {
     nivelDependencia: 3,
     arquivoReferencia: '17 - MC_CAD_TARIFA',
     colunaReferencia: 'idEventoTarifador',
+    composicao: ['descricao'],
     colunasDependencia: [
       { colunaSubstituida: 'idTipoEvento', arquivoBusca: '19 - MC_CAD_TIPO_EVENTO'},
       { colunaSubstituida: 'idSituacao', arquivoBusca: '20 - MC_CAD_SITUACAO'}

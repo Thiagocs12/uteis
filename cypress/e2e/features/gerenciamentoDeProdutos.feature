@@ -7,7 +7,7 @@ Funcionalidade: Gerenciamento de Produtos e suas Dependências
   Para garantir que o ambiente de Homologação tenha dados consistentes para testes
 
   Cenário: Copiar e Sincronizar um Produto e suas Dependências
-    Dado que o ID do produto principal a ser copiado é "383"
+    Dado que o ID do produto principal a ser copiado é "*"
     E que a entidade principal é "MC_CAD_PRODUTO"
     Quando os dados da entidade principal são copiados de Produção
     E as dependências do produto são copiadas de Produção
