@@ -27,6 +27,24 @@ export default defineConfig({
         })
       );
 
+      // --- Configurações de Ambiente ---
+      // Define o ambiente padrão como 'homolog' se não for especificado via Cypress.env.ambiente
+      const ambienteAtual = config.env.ambiente || 'homolog';
+
+      // Configurações de API
+      const apiBaseUrlHomolog = process.env.HML_API_BASE_URL;
+      const apiBaseUrlProd = process.env.PROD_API_BASE_URL;
+
+      // Define o baseUrl do Cypress com base no ambiente atual
+      config.baseUrl = ambienteAtual === 'prod' ? apiBaseUrlProd : apiBaseUrlHomolog; <sources>[1,2,4]</sources>
+
+      // Expõe variáveis de ambiente para acesso via Cypress.env() nos testes
+      config.env.HML_API_USERNAME = process.env.HML_API_USERNAME;
+      config.env.HML_API_PASSWORD = process.env.HML_API_PASSWORD;
+      config.env.PROD_API_USERNAME = process.env.PROD_API_USERNAME;
+      config.env.PROD_API_PASSWORD = process.env.PROD_API_PASSWORD;
+      config.env.ambiente = ambienteAtual; // Garante que o ambiente atual esteja disponível nos testes <sources>[1,6]</sources>
+
       // Configurações do banco de dados para Homologação
       const dbConfigHomolog = {
         user: process.env.HOMOLOG_DB_USER,
