@@ -7,6 +7,8 @@ Funcionalidade: Gerenciamento de esteiras e suas Dependências
   Para garantir que o ambiente de Homologação tenha dados consistentes para testes
 
   Cenário: Copiar e Sincronizar um Produto e suas Dependências
-    Dado que o ID do produto principal a ser copiado é "*"
+    Dado que o ID do produto principal a ser copiado é "5"
     E que a entidade principal é "MC_MOP_VINCULO_ESTEIRA"
     Quando os dados da entidade principal são copiados de Produção
+    E verifico se estou com tokens válidos para as APIs
+    E busco as esteiras vinculadas ao produto principal

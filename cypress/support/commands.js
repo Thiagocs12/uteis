@@ -14,6 +14,7 @@ import {
 } from './json_helpers';
 import { compararObjetosParaUpdate } from './object_helpers';
 import MAPEAMENTO_TABELAS from '../utils/mapeamentoDeTabelas'; // Importa o mapeamento de tabelas
+import mapeamentoDeEntidades from '../utils/mapeamentoDeEsteiras';
 
 // -------------------------------------
 // Comandos de Banco de Dados
@@ -489,6 +490,184 @@ Cypress.Commands.add('processarTabelasPorNivel', (nivel) => {
           });
         }).then(() => {
           return cy.salvarDadosEmJson(nomeArquivo, linhasAtualizadas);
+        });
+      });
+    });
+  });
+});
+
+function obterValorPorCaminho(obj, path) {
+  if (!obj || !path) return undefined;
+  const partes = path.split('.');
+  let valorAtual = obj;
+  for (let i = 0; i < partes.length; i++) {
+    const parte = partes[i];
+    if (Array.isArray(valorAtual)) {
+      const resultadosArray = [];
+      for (const itemArray of valorAtual) {
+        const res = obterValorPorCaminho(itemArray, partes.slice(i).join('.'));
+        if (res !== undefined) {
+          if (Array.isArray(res)) {
+            resultadosArray.push(...res);
+          } else {
+            resultadosArray.push(res);
+          }
+        }
+      }
+      return resultadosArray.flat();
+    } else if (typeof valorAtual === 'object' && valorAtual !== null && parte in valorAtual) {
+      valorAtual = valorAtual[parte];
+    } else {
+      return undefined;
+    }
+  }
+  return valorAtual;
+}
+
+// ... (seus comandos existentes, incluindo validarOuObterToken e lerJsonDeOutput) ...
+
+Cypress.Commands.add('copiarDadosEntidadesMapeadas', (ambienteOrigem = 'prod') => {
+  Cypress.log({
+    name: 'copiarDadosEntidadesMapeadas',
+    message: `Iniciando cópia de dados de todas as entidades mapeadas do ambiente ${ambienteOrigem}.`,
+  });
+
+  // --- CORREÇÃO: Definir apiBaseUrl uma única vez no escopo superior ---
+  let apiBaseUrl = ambienteOrigem === 'prod' ? Cypress.env('PROD_API_BASE_URL') : Cypress.env('HML_API_BASE_URL');
+  if (!apiBaseUrl) {
+    throw new Error(`URL base da API não configurada para o ambiente ${ambienteOrigem}. Verifique suas variáveis de ambiente.`);
+  }
+  if (apiBaseUrl.endsWith('/')) {
+    apiBaseUrl = apiBaseUrl.slice(0, -1);
+  }
+  // --- FIM DA CORREÇÃO ---
+
+  cy.validarOuObterToken(ambienteOrigem).then(() => {
+    const token = Cypress.env('tokenAcesso');
+    if (!token) {
+      throw new Error('Token de acesso não disponível após validação/obtenção. Verifique o comando validarOuObterToken.');
+    }
+
+    cy.wrap(Object.entries(mapeamentoDeEntidades)).each(([nomeEntidade, configEntidade]) => {
+      const { endpointPesquisaPorId, arquivoReferencia, nomeArquivo, colunaReferencia } = configEntidade;
+
+      if (!endpointPesquisaPorId || !arquivoReferencia || !nomeArquivo || !colunaReferencia) {
+        Cypress.log({
+          name: 'copiarDadosEntidadesMapeadas',
+          message: `Configuração incompleta para a entidade '${nomeEntidade}'. Pulando.`,
+          consoleProps: () => ({ configEntidade }),
+        });
+        return;
+      }
+
+      // Removido: apiBaseUrl já está definida no escopo superior
+      // let apiBaseUrl = ambienteOrigem === 'prod' ? Cypress.env('PROD_API_BASE_URL') : Cypress.env('HML_API_BASE_URL');
+      // if (!apiBaseUrl) {
+      //   throw new Error(`URL base da API não configurada para o ambiente ${ambienteOrigem}.`);
+      // }
+      // if (apiBaseUrl.endsWith('/')) {
+      //   apiBaseUrl = apiBaseUrl.slice(0, -1);
+      // }
+
+      const caminhoArquivoReferencia = `${arquivoReferencia}`;
+      const caminhoArquivoSaida = `cypress/output/${nomeArquivo}.json`;
+
+      Cypress.log({
+        name: 'copiarDadosEntidadesMapeadas',
+        message: `Processando entidade: ${nomeEntidade}. Tentando ler IDs de ${caminhoArquivoReferencia}.`,
+      });
+
+      cy.lerJsonDeOutput(caminhoArquivoReferencia).then((dadosReferencia) => {
+        if (dadosReferencia === null || dadosReferencia.length === 0) {
+          Cypress.log({
+            name: 'copiarDadosEntidadesMapeadas',
+            message: `Arquivo de referência '${caminhoArquivoReferencia}' não encontrado, vazio ou inválido para a entidade ${nomeEntidade}. Pulando.`,
+            type: 'warning',
+          });
+          return;
+        }
+
+        const listaDeItens = Array.isArray(dadosReferencia) ? dadosReferencia : [dadosReferencia];
+
+        let idsParaPesquisar = [];
+        listaDeItens.forEach(item => {
+          const valorExtraido = obterValorPorCaminho(item, colunaReferencia);
+          if (valorExtraido !== undefined) {
+            if (Array.isArray(valorExtraido)) {
+              idsParaPesquisar.push(...valorExtraido);
+            } else {
+              idsParaPesquisar.push(valorExtraido);
+            }
+          }
+        });
+        idsParaPesquisar = [...new Set(idsParaPesquisar.filter(Boolean))];
+
+        if (idsParaPesquisar.length === 0) {
+          Cypress.log({
+            name: 'copiarDadosEntidadesMapeadas',
+            message: `Nenhum ID válido encontrado na coluna '${colunaReferencia}' do arquivo ${caminhoArquivoReferencia} para a entidade ${nomeEntidade}. Pulando.`,
+          });
+          return;
+        }
+
+        Cypress.log({
+          name: 'copiarDadosEntidadesMapeadas',
+          message: `Encontrados ${idsParaPesquisar.length} IDs para a entidade ${nomeEntidade}.`,
+          consoleProps: () => ({ idsParaPesquisar }),
+        });
+
+        const headersParaRequisicao = {
+          'Authorization': `Bearer ${token}`,
+          'accept': 'application/json',
+          'User-Agent': 'Cypress/1.0',
+          'Accept-Encoding': 'identity',
+        };
+
+        const todosOsDadosDaEntidade = [];
+
+        cy.wrap(idsParaPesquisar).each((id) => {
+          const urlCompleta = `${apiBaseUrl}${endpointPesquisaPorId}${id}`; // apiBaseUrl está definida
+          Cypress.log({
+            name: 'copiarDadosEntidadesMapeadas',
+            message: `Buscando ${nomeEntidade} ID: ${id} em ${urlCompleta}.`,
+          });
+
+          cy.request({
+            method: 'GET',
+            url: urlCompleta,
+            headers: headersParaRequisicao,
+            failOnStatusCode: false,
+            gzip: false,
+            encoding: 'utf8',
+          }).then((response) => {
+            if (response.status === 200) {
+              todosOsDadosDaEntidade.push(response.body);
+              Cypress.log({
+                name: 'copiarDadosEntidadesMapeadas',
+                message: `Dados de ${nomeEntidade} ID ${id} obtidos com sucesso.`,
+              });
+            } else {
+              Cypress.log({
+                name: 'copiarDadosEntidadesMapeadas',
+                message: `Falha ao obter dados de ${nomeEntidade} ID ${id} (status: ${response.status}). Detalhes: ${JSON.stringify(response.body)}`,
+                consoleProps: () => ({ response }),
+                type: 'error',
+              });
+            }
+          });
+        }).then(() => {
+          if (todosOsDadosDaEntidade.length > 0) {
+            Cypress.log({
+              name: 'copiarDadosEntidadesMapeadas',
+              message: `Salvando ${todosOsDadosDaEntidade.length} registros de ${nomeEntidade} em ${caminhoArquivoSaida}.`,
+            });
+            cy.task('escreverJson', { caminhoArquivo: caminhoArquivoSaida, dados: todosOsDadosDaEntidade });
+          } else {
+            Cypress.log({
+              name: 'copiarDadosEntidadesMapeadas',
+              message: `Nenhum dado obtido para ${nomeEntidade}. Arquivo ${caminhoArquivoSaida} não será criado/atualizado.`,
+            });
+          }
         });
       });
     });

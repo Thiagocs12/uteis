@@ -13,6 +13,19 @@ import { createEsbuildPlugin } from "@badeball/cypress-cucumber-preprocessor/esb
 
 dotenv.config();
 
+// --- INÍCIO DA DEPURAÇÃO DE VARIÁVEIS DE AMBIENTE (REMOVIDAS CREDENCIAIS) ---
+console.log('--- Verificando variáveis de ambiente no cypress.config.js (process.env) ---');
+console.log('HML_API_BASE_URL (process.env):', process.env.HML_API_BASE_URL);
+console.log('PROD_API_BASE_URL (process.env):', process.env.PROD_API_BASE_URL);
+console.log('HML_API_LOGIN_URL (process.env):', process.env.HML_API_LOGIN_URL);
+console.log('PROD_API_LOGIN_URL (process.env):', process.env.PROD_API_LOGIN_URL);
+// Credenciais de API e Banco de Dados foram removidas dos logs por segurança.
+// console.log('HML_API_USERNAME (process.env):', process.env.HML_API_USERNAME); // Removido
+// console.log('HOMOLOG_DB_USER (process.env):', process.env.HOMOLOG_DB_USER); // Removido
+console.log('--- FIM DA VERIFICAÇÃO (process.env) ---');
+// --- FIM DA DEPURAÇÃO DE VARIÁVEIS DE AMBIENTE ---
+
+
 export default defineConfig({
   e2e: {
     specPattern: "**/*.feature", // Define que os arquivos de feature serão os specs
@@ -23,7 +36,13 @@ export default defineConfig({
       on(
         "file:preprocessor",
         createBundler({
-          plugins: [createEsbuildPlugin(config)],
+          plugins: [
+            createEsbuildPlugin(config, {
+              // Adiciona explicitamente o loader para arquivos .js
+              // Isso garante que o esbuild não tente interpretar JSX em arquivos .js
+              loader: { '.js': 'js' },
+            }),
+          ],
         })
       );
 
@@ -36,14 +55,24 @@ export default defineConfig({
       const apiBaseUrlProd = process.env.PROD_API_BASE_URL;
 
       // Define o baseUrl do Cypress com base no ambiente atual
-      config.baseUrl = ambienteAtual === 'prod' ? apiBaseUrlProd : apiBaseUrlHomolog; <sources>[1,2,4]</sources>
+      config.baseUrl = ambienteAtual === 'prod' ? apiBaseUrlProd : apiBaseUrlHomolog;
 
       // Expõe variáveis de ambiente para acesso via Cypress.env() nos testes
       config.env.HML_API_USERNAME = process.env.HML_API_USERNAME;
       config.env.HML_API_PASSWORD = process.env.HML_API_PASSWORD;
       config.env.PROD_API_USERNAME = process.env.PROD_API_USERNAME;
       config.env.PROD_API_PASSWORD = process.env.PROD_API_PASSWORD;
-      config.env.ambiente = ambienteAtual; // Garante que o ambiente atual esteja disponível nos testes <sources>[1,6]</sources>
+      config.env.ambiente = ambienteAtual; // Garante que o ambiente atual esteja disponível nos testes
+
+      // NOVAS VARIÁVEIS DE AMBIENTE PARA LOGIN UI
+      config.env.HML_API_LOGIN_URL = process.env.HML_API_LOGIN_URL;
+      config.env.PROD_API_LOGIN_URL = process.env.PROD_API_LOGIN_URL;
+
+      // --- ADIÇÃO CRÍTICA: EXPOR AS BASE_URLS PARA Cypress.env() ---
+      config.env.HML_API_BASE_URL = process.env.HML_API_BASE_URL;
+      config.env.PROD_API_BASE_URL = process.env.PROD_API_BASE_URL;
+      // --- FIM DA ADIÇÃO CRÍTICA ---
+
 
       // Configurações do banco de dados para Homologação
       const dbConfigHomolog = {
@@ -136,7 +165,6 @@ export default defineConfig({
         escreverJson(args) {
           const { caminhoArquivo, dados } = args || {};
           if (!caminhoArquivo) {
-            // Mantido console.error pois é uma falha crítica na operação de arquivo no Node.js
             console.error('Caminho do arquivo não fornecido para escreverJson.');
             return false;
           }
@@ -145,6 +173,11 @@ export default defineConfig({
             : path.join(process.cwd(), caminhoArquivo);
 
           try {
+            // --- NOVO LOG DE DEPURAÇÃO ---
+            console.log(`[Task escreverJson] Tentando escrever no arquivo: ${caminhoCompleto}`);
+            console.log(`[Task escreverJson] Dados a serem escritos:`, JSON.stringify(dados, null, 2));
+            // --- FIM DO LOG DE DEPURAÇÃO ---
+
             const dir = path.dirname(caminhoCompleto);
             if (!fs.existsSync(dir)) {
               fs.mkdirSync(dir, { recursive: true });
@@ -152,7 +185,6 @@ export default defineConfig({
             fs.writeFileSync(caminhoCompleto, JSON.stringify(dados, null, 2), 'utf8');
             return true;
           } catch (error) {
-            // Mantido console.error pois é uma falha crítica na operação de arquivo no Node.js
             console.error(`Erro ao escrever JSON no arquivo ${caminhoCompleto}:`, error);
             return false;
           }

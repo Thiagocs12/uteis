@@ -1,25 +1,24 @@
 // cypress/utils/mapeamentoEsteiras.js
 
-const mapeamentoDeEntidades = {
+const mapeamentoDeEsteiras = {
   Esteira: {
-    endpointProdPesquisaPorId: '/mc-multiflow-ms/api/v1/modeloesteira/pesquisarporid/',
-    endpointHmlCriacao: '/mc-multiflow-ms/api/v1/modeloesteira',
-    endpointHmlAtualizacao: '/mc-multiflow-ms/api/v1/modeloesteira',
-    endpointHmlPesquisaPorNome: '/mc-multiflow-ms/api/v1/modeloesteira/pesquisar',
-    nomeArquivo: 'Esteiras/1 - Esteira',
-    colunasComposicao: ['nome'],
+    endpointPesquisaPorId: '/mc-multiflow-ms/api/v1/modeloesteira/pesquisarporid/',
+    endpointCriacaoAtulizacao: '/mc-multiflow-ms/api/v1/modeloesteira',
+    endpointPesquisaPorNome: '/mc-multiflow-ms/api/v1/modeloesteira/pesquisar',
+    arquivoReferencia: 'Esteiras/1 - MC_MOP_VINCULO_ESTEIRA',
+    nomeArquivo: 'Esteiras/2 - Esteira',
+    colunaReferencia: 'codigoModeloEsteira',
     nivelDependencia: 4,
   },
   Etapa: {
-    endpointProdPesquisaPorId: '/mc-multiflow-ms/api/v1/modeloetapa/pesquisarporid/',
-    endpointHmlCriacao: '/mc-multiflow-ms/api/v1/modeloetapa',
-    endpointHmlAtualizacao: '/mc-multiflow-ms/api/v1/modeloetapa',
-    endpointHmlPesquisaPorNome: '/mc-multiflow-ms/api/v1/modeloetapa/pesquisar',
-    nomeArquivo: 'Esteiras/2 - Etapa',
-    arquivoReferencia: 'Esteiras/1 - Esteira',
-    colunasComposicao: ['nome'],
+    endpointPesquisaPorId: '/mc-multiflow-ms/api/v1/modeloetapa/pesquisarporid/',
+    endpointCriacaoAtulizacao: '/mc-multiflow-ms/api/v1/modeloetapa',
+    endpointPesquisaPorNome: '/mc-multiflow-ms/api/v1/modeloetapa/pesquisar',
+    nomeArquivo: 'Esteiras/3 - Etapa',
+    arquivoReferencia: 'Esteiras/2 - Esteira',
+    colunaReferencia: 'modeloEtapas.modeloEtapa.id',
     nivelDependencia: 3,
   },
 };
 
-export default mapeamentoDeEntidades;
+export default mapeamentoDeEsteiras;
