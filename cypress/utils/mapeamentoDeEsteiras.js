@@ -19,6 +19,24 @@ const mapeamentoDeEsteiras = {
     colunaReferencia: 'modeloEtapas.modeloEtapa.id',
     nivelDependencia: 3,
   },
+  SubEtapa: {
+    endpointPesquisaPorId: '/mc-multiflow-ms/api/v1/modelosubetapa/pesquisarporid/',
+    endpointCriacaoAtulizacao: '/mc-multiflow-ms/api/v1/modelosubetapa',
+    endpointPesquisaPorNome: '/mc-multiflow-ms/api/v1/modelosubetapa/pesquisar',
+    nomeArquivo: 'Esteiras/4 - SubEtapa',
+    arquivoReferencia: 'Esteiras/3 - Etapa',
+    colunaReferencia: 'modeloSubEtapaModel.modeloSubEtapa.id',
+    nivelDependencia: 2,
+  },
+  Acao: {
+    endpointPesquisaPorId: '/mc-multiflow-ms/api/v1/modeloacao/pesquisarporid/',
+    endpointCriacaoAtulizacao: '/mc-multiflow-ms/api/v1/modeloacao',
+    endpointPesquisaPorNome: '/mc-multiflow-ms/api/v1/modeloacao/pesquisar',
+    nomeArquivo: 'Esteiras/5 - Acao',
+    arquivoReferencia: 'Esteiras/4 - SubEtapa',
+    colunaReferencia: 'modeloAcao.id',
+    nivelDependencia: 1,
+  },
 };
 
 export default mapeamentoDeEsteiras;

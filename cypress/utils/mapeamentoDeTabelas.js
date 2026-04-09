@@ -11,7 +11,7 @@
     colunaCondicao: 'idDocumento',
     composicao: ['idDocumento', 'descricao'],
     colunasDependencia: [
-      { colunaSubstituida: 'idDocumento', arquivoBusca: '24 - MC_CAD_DOCUMENTO'},
+      { colunaSubstituida: 'idDocumento', arquivoBusca: 'Produtos/24 - MC_CAD_DOCUMENTO'},
     ]
   },
  */
@@ -22,13 +22,13 @@ const MAPEAMENTO_TABELAS = {
     nomeArquivo: 'Produtos/1 - MC_CAD_PRODUTO',
     nivelDependencia: 3,
     colunasDependencia: [
-        { colunaSubstituida: 'idGrupoProduto', arquivoBusca: '4 - MC_CAD_GRUPO_PRODUTO'},
-        { colunaSubstituida: 'idClassificacaoProduto', arquivoBusca: '6 - MC_CAD_CLASSIFICACAO_PRODUTO'},
-        { colunaSubstituida: 'idTipoProduto', arquivoBusca: '32 - MC_CAD_TIPO_PRODUTO'},
-        { colunaSubstituida: 'idSubProduto', arquivoBusca: '7 - MC_CAD_SUBPRODUTO'},
-        { colunaSubstituida: 'idIndexador', arquivoBusca: '8 - MC_CAD_PRODUTO_INDEXADOR'},
-        { colunaSubstituida: 'idTipoRecebimento', arquivoBusca: '9 - MC_CAD_PRODUTO_TP_RECEBIMENTO'},
-        { colunaSubstituida: 'idFocoNegocio', arquivoBusca: '2 - MC_CAD_FOCO_NEGOCIO'}
+        { colunaSubstituida: 'idGrupoProduto', arquivoBusca: 'Produtos/4 - MC_CAD_GRUPO_PRODUTO'},
+        { colunaSubstituida: 'idClassificacaoProduto', arquivoBusca: 'Produtos/6 - MC_CAD_CLASSIFICACAO_PRODUTO'},
+        { colunaSubstituida: 'idTipoProduto', arquivoBusca: 'Produtos/32 - MC_CAD_TIPO_PRODUTO'},
+        { colunaSubstituida: 'idSubProduto', arquivoBusca: 'Produtos/7 - MC_CAD_SUBPRODUTO'},
+        { colunaSubstituida: 'idIndexador', arquivoBusca: 'Produtos/8 - MC_CAD_PRODUTO_INDEXADOR'},
+        { colunaSubstituida: 'idTipoRecebimento', arquivoBusca: 'Produtos/9 - MC_CAD_PRODUTO_TP_RECEBIMENTO'},
+        { colunaSubstituida: 'idFocoNegocio', arquivoBusca: 'Produtos/2 - MC_CAD_FOCO_NEGOCIO'}
     ]
   },
   MC_CAD_FOCO_NEGOCIO: {
@@ -39,9 +39,9 @@ const MAPEAMENTO_TABELAS = {
     colunaReferencia: 'idFocoNegocio',
     // colunasDependencia (array):
     // - colunaSubstituida: coluna no JSON atual que será substituída
-    // - arquivoBusca: arquivo onde vamos buscar (padrão: match id -> idHml)
+    // - arquivoBusca: aProdutos/rquivo onde vamos buscar (padrão: match id -> idHml)
     colunasDependencia: [
-      { colunaSubstituida: 'idSegmentoTarifador', arquivoBusca: '3 - MC_CAD_SEGMENTO_TARIFADOR' },
+      { colunaSubstituida: 'idSegmentoTarifador', arquivoBusca: 'Produtos/3 - MC_CAD_SEGMENTO_TARIFADOR' },
     ],
   },
   MC_CAD_SEGMENTO_TARIFADOR: {
@@ -58,7 +58,7 @@ const MAPEAMENTO_TABELAS = {
     arquivoReferencia: 'Produtos/1 - MC_CAD_PRODUTO',
     colunaReferencia: 'idGrupoProduto',
     colunasDependencia: [
-      { colunaSubstituida: 'idGrupoProdutoRisco', arquivoBusca: '5 - MC_CAD_GRUPO_PRODUTO_RISCO' },
+      { colunaSubstituida: 'idGrupoProdutoRisco', arquivoBusca: 'Produtos/5 - MC_CAD_GRUPO_PRODUTO_RISCO' },
     ],
   },
   MC_CAD_GRUPO_PRODUTO_RISCO: {
@@ -111,8 +111,8 @@ const MAPEAMENTO_TABELAS = {
     colunaReferencia: 'id',
     colunaCondicao: 'idProduto',
     colunasDependencia: [
-      {colunaSubstituida: 'idProduto', arquivoBusca: '1 - MC_CAD_PRODUTO'},
-      {colunaSubstituida: 'idKitDocumento', arquivoBusca: '22 - MC_CAD_KIT_DOCUMENTO'},
+      {colunaSubstituida: 'idProduto', arquivoBusca: 'Produtos/1 - MC_CAD_PRODUTO'},
+      {colunaSubstituida: 'idKitDocumento', arquivoBusca: 'Produtos/22 - MC_CAD_KIT_DOCUMENTO'},
     ],
     composicao: ['idProduto', 'idKitDocumento'],
   },
@@ -124,8 +124,8 @@ const MAPEAMENTO_TABELAS = {
     colunaReferencia: 'id',
     colunaCondicao: 'idProduto',
     colunasDependencia: [
-      {colunaSubstituida: 'idProduto', arquivoBusca: '1 - MC_CAD_PRODUTO'},
-      {colunaSubstituida: 'idGarantiaCategoria', arquivoBusca: '13 - MC_CAD_GARANTIA_CATEGORIA'},
+      {colunaSubstituida: 'idProduto', arquivoBusca: 'Produtos/1 - MC_CAD_PRODUTO'},
+      {colunaSubstituida: 'idGarantiaCategoria', arquivoBusca: 'Produtos/13 - MC_CAD_GARANTIA_CATEGORIA'},
     ],
     composicao: ['idProduto', 'idGarantiaCategoria'],
   },
@@ -137,8 +137,8 @@ const MAPEAMENTO_TABELAS = {
     colunaReferencia: 'id',
     colunaCondicao: 'idProduto',
     colunasDependencia: [
-      {colunaSubstituida: 'idProduto', arquivoBusca: '1 - MC_CAD_PRODUTO'},
-      {colunaSubstituida: 'idTarifa', arquivoBusca: '17 - MC_CAD_TARIFA'},
+      {colunaSubstituida: 'idProduto', arquivoBusca: 'Produtos/1 - MC_CAD_PRODUTO'},
+      {colunaSubstituida: 'idTarifa', arquivoBusca: 'Produtos/17 - MC_CAD_TARIFA'},
     ],
     composicao: ['idProduto', 'idTarifa'],
   },
@@ -149,10 +149,10 @@ const MAPEAMENTO_TABELAS = {
     arquivoReferencia: 'Produtos/11 - MC_CAD_PRODUTO_GARANTIA',
     colunaReferencia: 'idGarantiaCategoria',
     colunasDependencia: [
-      { colunaSubstituida: 'idGarantiaNivel', arquivoBusca: '16 - MC_CAD_GARANTIA_NIVEL' },
-      { colunaSubstituida: 'idGarantiaClassificacao', arquivoBusca: '15 - MC_CAD_GARANTIA_CLASSIFICACAO' },
-      { colunaSubstituida: 'idTipoGarantia', arquivoBusca: '14 - MC_CAD_TIPO_GARANTIA' },
-      { colunaSubstituida: 'idGrupoGarantia', arquivoBusca: '33 - MC_CAD_GRUPO_GARANTIA' },
+      { colunaSubstituida: 'idGarantiaNivel', arquivoBusca: 'Produtos/16 - MC_CAD_GARANTIA_NIVEL' },
+      { colunaSubstituida: 'idGarantiaClassificacao', arquivoBusca: 'Produtos/15 - MC_CAD_GARANTIA_CLASSIFICACAO' },
+      { colunaSubstituida: 'idTipoGarantia', arquivoBusca: 'Produtos/14 - MC_CAD_TIPO_GARANTIA' },
+      { colunaSubstituida: 'idGrupoGarantia', arquivoBusca: 'Produtos/33 - MC_CAD_GRUPO_GARANTIA' },
     ],
   },
   MC_CAD_TIPO_GARANTIA: {
@@ -191,7 +191,7 @@ const MAPEAMENTO_TABELAS = {
     colunaReferencia: 'idTarifa',
     composicao: ['codigoSubcategoria', 'nomeTarifa'],
     colunasDependencia: [
-      { colunaSubstituida: 'idEventoTarifador', arquivoBusca: '18 - MC_CAD_EVENTO'},
+      { colunaSubstituida: 'idEventoTarifador', arquivoBusca: 'Produtos/18 - MC_CAD_EVENTO'},
     ]
   },
   MC_CAD_EVENTO: {
@@ -202,8 +202,8 @@ const MAPEAMENTO_TABELAS = {
     colunaReferencia: 'idEventoTarifador',
     composicao: ['descricao'],
     colunasDependencia: [
-      { colunaSubstituida: 'idTipoEvento', arquivoBusca: '19 - MC_CAD_TIPO_EVENTO'},
-      { colunaSubstituida: 'idSituacao', arquivoBusca: '20 - MC_CAD_SITUACAO'}
+      { colunaSubstituida: 'idTipoEvento', arquivoBusca: 'Produtos/19 - MC_CAD_TIPO_EVENTO'},
+      { colunaSubstituida: 'idSituacao', arquivoBusca: 'Produtos/20 - MC_CAD_SITUACAO'}
     ]
   },
   MC_CAD_TIPO_EVENTO: {
@@ -227,7 +227,7 @@ const MAPEAMENTO_TABELAS = {
     nivelDependencia: 1,
     arquivoReferencia: 'Produtos/20 - MC_CAD_SITUACAO',
     colunaReferencia: 'idTipoSituacao',
-    colunasDependencia: [{ colunaSubstituida: 'idTipoSituacao', arquivoBusca: '21 - MC_CAD_TIPO_SITUACAO' }],
+    colunasDependencia: [{ colunaSubstituida: 'idTipoSituacao', arquivoBusca: 'Produtos/21 - MC_CAD_TIPO_SITUACAO' }],
   },
   MC_CAD_KIT_DOCUMENTO: {
     nomeTabela: 'MC_CAD_KIT_DOCUMENTO',
@@ -244,8 +244,8 @@ const MAPEAMENTO_TABELAS = {
     colunaReferencia: 'id',
     colunaCondicao: 'idKitDocumento',
     colunasDependencia: [
-      {colunaSubstituida: 'idDocumento', arquivoBusca: '24 - MC_CAD_DOCUMENTO'},
-      {colunaSubstituida: 'idKitDocumento', arquivoBusca: '22 - MC_CAD_KIT_DOCUMENTO'},
+      {colunaSubstituida: 'idDocumento', arquivoBusca: 'Produtos/24 - MC_CAD_DOCUMENTO'},
+      {colunaSubstituida: 'idKitDocumento', arquivoBusca: 'Produtos/22 - MC_CAD_KIT_DOCUMENTO'},
     ],
     composicao: ['idDocumento', 'idKitDocumento'],
   },
@@ -264,7 +264,7 @@ const MAPEAMENTO_TABELAS = {
     colunaReferencia: 'id',
     colunaCondicao: 'idDocumento',
     composicao: ['idDocumento', 'descricao'],
-    colunasDependencia: [{ colunaSubstituida: 'idDocumento', arquivoBusca: '24 - MC_CAD_DOCUMENTO' }],
+    colunasDependencia: [{ colunaSubstituida: 'idDocumento', arquivoBusca: 'Produtos/24 - MC_CAD_DOCUMENTO' }],
   },
   MC_CAD_DOCUMENTO_SECAO: {
     nomeTabela: 'MC_CAD_DOCUMENTO_SECAO',
@@ -275,7 +275,7 @@ const MAPEAMENTO_TABELAS = {
     colunaCondicao: 'idDocumento',
     composicao: ['idDocumento', 'descricao'],
     colunasDependencia: [
-      { colunaSubstituida: 'idDocumento', arquivoBusca: '24 - MC_CAD_DOCUMENTO' }
+      { colunaSubstituida: 'idDocumento', arquivoBusca: 'Produtos/24 - MC_CAD_DOCUMENTO' }
     ],
   },
   MC_CAD_DOCUMENTO_CARTAO_ASSINATURA: {
@@ -286,8 +286,8 @@ const MAPEAMENTO_TABELAS = {
     colunaReferencia: 'id',
     colunaCondicao: 'idDocumento',
     colunasDependencia: [
-      {colunaSubstituida: 'idDocumento', arquivoBusca: '24 - MC_CAD_DOCUMENTO'},
-      {colunaSubstituida: 'idCartaoAssinatura', arquivoBusca: '28 - MC_CAD_CARTAO_ASSINATURA'},
+      {colunaSubstituida: 'idDocumento', arquivoBusca: 'Produtos/24 - MC_CAD_DOCUMENTO'},
+      {colunaSubstituida: 'idCartaoAssinatura', arquivoBusca: 'Produtos/28 - MC_CAD_CARTAO_ASSINATURA'},
     ],
     composicao: ['idDocumento', 'idCartaoAssinatura'],
   },
@@ -299,7 +299,7 @@ const MAPEAMENTO_TABELAS = {
     colunaReferencia: 'idCartaoAssinatura',
     composicao: ['nome', 'cpf'],
     colunasDependencia: [
-      { colunaSubstituida: 'idTituloAssinatura', arquivoBusca: '29 - MC_CAD_TITULO_ASSINATURA' }
+      { colunaSubstituida: 'idTituloAssinatura', arquivoBusca: 'Produtos/29 - MC_CAD_TITULO_ASSINATURA' }
     ],
   },
   MC_CAD_TITULO_ASSINATURA: {
@@ -317,8 +317,8 @@ const MAPEAMENTO_TABELAS = {
     colunaReferencia: 'id',
     colunaCondicao: 'idDocumento',
     colunasDependencia: [
-      {colunaSubstituida: 'idDocumento', arquivoBusca: '24 - MC_CAD_DOCUMENTO'},
-      {colunaSubstituida: 'idEntidade', arquivoBusca: '31 - MC_CAD_ENTIDADE'},
+      {colunaSubstituida: 'idDocumento', arquivoBusca: 'Produtos/24 - MC_CAD_DOCUMENTO'},
+      {colunaSubstituida: 'idEntidade', arquivoBusca: 'Produtos/31 - MC_CAD_ENTIDADE'},
     ],
     composicao: ['idDocumento', 'idEntidade'],
   },

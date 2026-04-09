@@ -2,6 +2,7 @@
 import { Given, When, Then } from '@badeball/cypress-cucumber-preprocessor';
 
 When('verifico se estou com tokens válidos para as APIs', () => {
+  cy.validarOuObterToken('keycloak');
   cy.validarOuObterToken('homolog');
   cy.validarOuObterToken('prod');
 });

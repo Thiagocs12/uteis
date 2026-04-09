@@ -3,28 +3,15 @@ import { defineConfig } from 'cypress';
 import sql from 'mssql';
 import fs from 'fs';
 import path from 'path';
-import dotenv from 'dotenv';
+import dotenv from 'dotenv'; // Importação do dotenv
+
+// Chame dotenv.config() para carregar as variáveis do .env
+dotenv.config();
 
 // Importações para @badeball/cypress-cucumber-preprocessor
 import createBundler from "@bahmutov/cypress-esbuild-preprocessor";
 import { addCucumberPreprocessorPlugin } from "@badeball/cypress-cucumber-preprocessor";
-// Importação CORRETA do createEsbuildPlugin
 import { createEsbuildPlugin } from "@badeball/cypress-cucumber-preprocessor/esbuild";
-
-dotenv.config();
-
-// --- INÍCIO DA DEPURAÇÃO DE VARIÁVEIS DE AMBIENTE (REMOVIDAS CREDENCIAIS) ---
-console.log('--- Verificando variáveis de ambiente no cypress.config.js (process.env) ---');
-console.log('HML_API_BASE_URL (process.env):', process.env.HML_API_BASE_URL);
-console.log('PROD_API_BASE_URL (process.env):', process.env.PROD_API_BASE_URL);
-console.log('HML_API_LOGIN_URL (process.env):', process.env.HML_API_LOGIN_URL);
-console.log('PROD_API_LOGIN_URL (process.env):', process.env.PROD_API_LOGIN_URL);
-// Credenciais de API e Banco de Dados foram removidas dos logs por segurança.
-// console.log('HML_API_USERNAME (process.env):', process.env.HML_API_USERNAME); // Removido
-// console.log('HOMOLOG_DB_USER (process.env):', process.env.HOMOLOG_DB_USER); // Removido
-console.log('--- FIM DA VERIFICAÇÃO (process.env) ---');
-// --- FIM DA DEPURAÇÃO DE VARIÁVEIS DE AMBIENTE ---
-
 
 export default defineConfig({
   e2e: {
@@ -38,8 +25,6 @@ export default defineConfig({
         createBundler({
           plugins: [
             createEsbuildPlugin(config, {
-              // Adiciona explicitamente o loader para arquivos .js
-              // Isso garante que o esbuild não tente interpretar JSX em arquivos .js
               loader: { '.js': 'js' },
             }),
           ],
@@ -47,34 +32,37 @@ export default defineConfig({
       );
 
       // --- Configurações de Ambiente ---
-      // Define o ambiente padrão como 'homolog' se não for especificado via Cypress.env.ambiente
       const ambienteAtual = config.env.ambiente || 'homolog';
 
-      // Configurações de API
-      const apiBaseUrlHomolog = process.env.HML_API_BASE_URL;
-      const apiBaseUrlProd = process.env.PROD_API_BASE_URL;
-
-      // Define o baseUrl do Cypress com base no ambiente atual
-      config.baseUrl = ambienteAtual === 'prod' ? apiBaseUrlProd : apiBaseUrlHomolog;
-
       // Expõe variáveis de ambiente para acesso via Cypress.env() nos testes
+      // Garante que todas as variáveis necessárias estejam disponíveis
       config.env.HML_API_USERNAME = process.env.HML_API_USERNAME;
       config.env.HML_API_PASSWORD = process.env.HML_API_PASSWORD;
       config.env.PROD_API_USERNAME = process.env.PROD_API_USERNAME;
       config.env.PROD_API_PASSWORD = process.env.PROD_API_PASSWORD;
-      config.env.ambiente = ambienteAtual; // Garante que o ambiente atual esteja disponível nos testes
+      config.env.ambiente = ambienteAtual;
 
-      // NOVAS VARIÁVEIS DE AMBIENTE PARA LOGIN UI
       config.env.HML_API_LOGIN_URL = process.env.HML_API_LOGIN_URL;
       config.env.PROD_API_LOGIN_URL = process.env.PROD_API_LOGIN_URL;
 
-      // --- ADIÇÃO CRÍTICA: EXPOR AS BASE_URLS PARA Cypress.env() ---
       config.env.HML_API_BASE_URL = process.env.HML_API_BASE_URL;
       config.env.PROD_API_BASE_URL = process.env.PROD_API_BASE_URL;
+
+      // --- ADIÇÃO CRÍTICA: EXPOR AS VARIÁVEIS DO KEYCLOAK ---
+      config.env.HML_KEYCLOAK_URL = process.env.HML_KEYCLOAK_URL;
+      config.env.HML_KEYCLOAK_USERNAME = process.env.HML_KEYCLOAK_USERNAME;
+      config.env.HML_KEYCLOAK_PASSWORD = process.env.HML_KEYCLOAK_PASSWORD;
+      config.env.HML_KEYCLOAK_BASE_URL = process.env.HML_KEYCLOAK_BASE_URL; // Nova variável
       // --- FIM DA ADIÇÃO CRÍTICA ---
 
+      // Define o baseUrl do Cypress com base no ambiente atual
+      // Isso é para cy.visit() e cy.request() sem URL completa
+      const apiBaseUrlHomolog = process.env.HML_API_BASE_URL;
+      const apiBaseUrlProd = process.env.PROD_API_BASE_URL;
+      config.baseUrl = ambienteAtual === 'prod' ? apiBaseUrlProd : apiBaseUrlHomolog;
 
-      // Configurações do banco de dados para Homologação
+
+      // Configurações do banco de dados (mantidas como estão)
       const dbConfigHomolog = {
         user: process.env.HOMOLOG_DB_USER,
         password: process.env.HOMOLOG_DB_PASS,
@@ -87,7 +75,6 @@ export default defineConfig({
         port: parseInt(process.env.HOMOLOG_DB_PORT || '1433', 10)
       };
 
-      // Configurações do banco de dados para Produção
       const dbConfigProd = {
         user: process.env.PROD_DB_USER,
         password: process.env.PROD_DB_PASS,
@@ -111,7 +98,6 @@ export default defineConfig({
             !currentDbConfig.password ||
             !currentDbConfig.database
           ) {
-            // Mantido console.error pois é uma falha crítica na configuração do ambiente Node.js
             console.error(
               `Credenciais de banco de dados incompletas para o ambiente ${env}. Verifique seu arquivo .env.`
             );
@@ -173,10 +159,8 @@ export default defineConfig({
             : path.join(process.cwd(), caminhoArquivo);
 
           try {
-            // --- NOVO LOG DE DEPURAÇÃO ---
             console.log(`[Task escreverJson] Tentando escrever no arquivo: ${caminhoCompleto}`);
             console.log(`[Task escreverJson] Dados a serem escritos:`, JSON.stringify(dados, null, 2));
-            // --- FIM DO LOG DE DEPURAÇÃO ---
 
             const dir = path.dirname(caminhoCompleto);
             if (!fs.existsSync(dir)) {
@@ -202,5 +186,7 @@ export default defineConfig({
 
       return config;
     },
+  pageLoadTimeout: 10000,  
+  defaultCommandTimeout: 10000,  
   },
 });
