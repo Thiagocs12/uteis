@@ -7,9 +7,6 @@
  * @returns {string} O literal SQL.
  */
 export function paraLiteralSql(valor) {
-  // Removendo logs de depuração para focar em construirQueryUpdate
-  // console.log(`[DEBUG][paraLiteralSql] Valor:`, valor, `| Tipo:`, typeof valor);
-
   if (valor === null || valor === undefined) {
     return 'NULL';
   }
@@ -22,9 +19,6 @@ export function paraLiteralSql(valor) {
   if (typeof valor === 'boolean') {
     return valor ? '1' : '0';
   }
-  // Se chegar aqui, é um tipo não tratado que não é null/undefined, string, number ou boolean.
-  // Isso pode ser um objeto, array, etc. Por padrão, retornamos NULL para evitar erros SQL.
-  // console.warn(`[DEBUG][paraLiteralSql] Tipo não tratado, retornando NULL:`, valor); // Removendo para focar
   return 'NULL';
 }
 
@@ -69,7 +63,6 @@ export function construirQueryInsert(nomeTabela, dados) {
 
   for (const chave in dados) {
     if (dados.hasOwnProperty(chave)) {
-      // Ignora colunas de controle que são auto-geradas ou específicas de HML
       if (['id', 'idHml'].includes(chave)) {
         continue;
       }
@@ -82,7 +75,6 @@ export function construirQueryInsert(nomeTabela, dados) {
     return null;
   }
 
-  // Adiciona OUTPUT INSERTED.ID para retornar o ID do novo registro
   return `INSERT INTO [${nomeTabela}] (${colunas.join(', ')}) OUTPUT INSERTED.ID VALUES (${valores.join(', ')})`;
 }
 
@@ -96,9 +88,6 @@ export function construirQueryInsert(nomeTabela, dados) {
 export function construirQueryUpdate(nomeTabela, dados, idRegistro) {
   const colunasParaAtualizar = [];
 
-  // Removendo logs de depuração de alto nível para focar no loop
-  // console.log(`[DEBUG][construirQueryUpdate] Dados recebidos para ${nomeTabela} (ID: ${idRegistro}):`, dados);
-
   for (const chave in dados) {
     if (dados.hasOwnProperty(chave)) {
       if (['id', 'idHml', 'dataCadastro', 'usuarioCadastro'].includes(chave)) {
@@ -106,9 +95,6 @@ export function construirQueryUpdate(nomeTabela, dados, idRegistro) {
       }
 
       const valor = dados[chave];
-      // NOVO LOG: Inspecionar cada chave e valor antes de chamar paraLiteralSql
-      console.log(`[DEBUG][construirQueryUpdate][${nomeTabela}] Chave: ${chave} | Valor:`, valor, `| Tipo:`, typeof valor);
-
       colunasParaAtualizar.push(`[${chave}] = ${paraLiteralSql(valor)}`);
     }
   }
@@ -118,8 +104,6 @@ export function construirQueryUpdate(nomeTabela, dados, idRegistro) {
   }
 
   const query = `UPDATE [${nomeTabela}] SET ${colunasParaAtualizar.join(', ')} WHERE [id] = ${paraLiteralSql(idRegistro)}`;
-  // Removendo logs de depuração de alto nível
-  // console.log(`[DEBUG][construirQueryUpdate] Query UPDATE gerada para ${nomeTabela}:`, query);
   return query;
 }
 

@@ -1,8 +1,5 @@
-import './commands'
-import './db_helpers'
-import './json_helpers'
-import './object_helpers'
-import './utils'
+// cypress/support/e2e.js
+import './commands' // Agora, apenas importa o commands.js que orquestra tudo
 
 Cypress.on('uncaught:exception', (err) => {
 
