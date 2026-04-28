@@ -1,12 +1,12 @@
 const MAPEAMENTOS_APIS = {
-  /*PRODUTO: {
+  PRODUTO: {
     url: 'mc-cadastro-ms/api/v1/produto/search/0?',
     urlBusca: 'mc-cadastro-ms/api/v1/produto/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/produto/',
     urlListAll: 'mc-cadastro-ms/api/v1/produto/listAll',
     nomeArquivo: '1 - Produtos.json',
     nivelDependencia: 3
-  },*/
+  },
   CLASSIFICACAO_PRODUTO: {
     url: 'mc-cadastro-ms/api/v1/classificacaoProduto/search/0?',
     urlBusca: 'mc-cadastro-ms/api/v1/classificacaoProduto/search/0?descricao=',
@@ -17,7 +17,7 @@ const MAPEAMENTOS_APIS = {
     campoBusca: 'classificacaoProduto',
     //content: 'teste'
   },
-  /*GRUPO_PRODUTO: {
+  GRUPO_PRODUTO: {
     url: 'mc-cadastro-ms/api/v1/grupoProduto/search/0?',
     urlBusca: 'mc-cadastro-ms/api/v1/grupoProduto/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/grupoProduto/',
@@ -121,7 +121,7 @@ const MAPEAMENTOS_APIS = {
     nomeArquivoReferencia: '1 - Produtos.json',
     campoBusca: 'id',
     content: 'falseId'
-  },*/
+  },
   GARANTIA_CATEGORIA: {
     urlBuscaId: 'mc-cadastro-ms/api/v1/garantiaCategoria/findAllGarantiaCategoriaByProduto/',
     urlBusca: 'mc-cadastro-ms/api/v1/garantiaCategoria/search/0?descricao=',

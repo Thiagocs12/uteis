@@ -4,23 +4,23 @@ import APIS from '../../utils/mapeamentoApis';
 Given('que possuo acesso aos ambientes necessarios', () => {
   cy.verificarTokens('prod')
   cy.verificarTokens('hml')
-  //cy.verificarTokens('keycloak')
+  cy.verificarTokens('keycloak')
 });
 
 Given('uma consulta aos produtos de produção é realizada para obter os dados atuais', () => {
-  //cy.executarRequest('prod', `${APIS.PRODUTO.urlListAll}`).then((resposta) => {
-  //  cy.writeFile(`cypress/output/${APIS.PRODUTO.nomeArquivo}`, resposta.body);
-  //});
+  cy.executarRequest('prod', `${APIS.PRODUTO.urlListAll}`).then((resposta) => {
+    cy.writeFile(`cypress/output/${APIS.PRODUTO.nomeArquivo}`, resposta.body);
+  });
 });
 
 Given('a pesquisa retornou dados de produtos para serem copiados de produção para homologação', () => {
-  //return cy.lerJsonDeOutput(APIS.PRODUTO.nomeArquivo).then((dadosDoArquivo) => {
-  //  expect(dadosDoArquivo[0]['id']).to.be.a('number');
-  //});
+  return cy.lerJsonDeOutput(APIS.PRODUTO.nomeArquivo).then((dadosDoArquivo) => {
+    expect(dadosDoArquivo[0]['id']).to.be.a('number');
+  });
 });
 
 When('pesquiso as dependências desses produtos', () => {
-  //cy.pesquisarDependenciasLigacao()
+  cy.pesquisarDependenciasLigacao()
 });
 
 When('pesquiso quais dependências desses produtos já existem em homologação', () => {
