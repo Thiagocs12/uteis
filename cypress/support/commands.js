@@ -114,7 +114,7 @@ Cypress.Commands.add('lerColunaDeArquivo', (nomeArquivo, nomeColuna, content = t
         }
       }
     } else if (content === 'teste') {
-      console.log('ESSE', conteudoArquivo[0][nomeColuna]);
+      console.log('ESSES', conteudoArquivo[0][nomeColuna]);
       cy.pause()
     } else {
       for (let i = 0; i < conteudoArquivo.length; i++) {
@@ -166,50 +166,85 @@ Cypress.Commands.add('pesquisarDependenciasLigacao', () => {
 });
 
 Cypress.Commands.add('pesquisarEntidadesEmHml', () => {
+  const resolverCampo = (obj, caminho) =>
+    caminho.split('.').reduce((acc, chave) => acc?.[chave], obj);
+
   for (const chaveEntidade in MAPEAMENTOS_APIS) {
-    if (Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade)) {
-      const entidade = MAPEAMENTOS_APIS[chaveEntidade];
-      const nomeArquivo = entidade.nomeArquivo;
-      const campoDescricao = entidade.campoDescricao || 'descricao';
-      const contentBusca = entidade.contentBusca || 'falseId';
+    if (!Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade)) continue;
 
-      if (chaveEntidade === 'GRUPOS_KEYCLOAK' || entidade.nivelDependencia >= 5) {
-        continue;
-      }
+    const entidade       = MAPEAMENTOS_APIS[chaveEntidade];
+    const nomeArquivo    = entidade.nomeArquivo;
+    const campoDescricao = entidade.campoDescricao || 'descricao';
+    const contentBusca   = entidade.contentBusca || 'falseId';
 
-      cy.lerColunaDeArquivo(nomeArquivo, campoDescricao, contentBusca).then((dadosDoArquivo) => {
-        for (const dado of dadosDoArquivo) {
-          const dadoEncoded = encodeURIComponent(dado)
+    if (chaveEntidade === 'GRUPOS_KEYCLOAK' || entidade.nivelDependencia >= 5) continue;
+
+    const isBuscaComposta = Array.isArray(contentBusca);
+
+    if (isBuscaComposta) {
+      const [colunaBusca, colunaVerificacao] = contentBusca;
+      const filePath = `cypress/output/${nomeArquivo}`;
+
+      cy.readFile(filePath, { log: false }).then((conteudo) => {
+        for (const item of conteudo) {
+          const valorBusca       = resolverCampo(item, colunaBusca);
+          const valorVerificacao = resolverCampo(item, colunaVerificacao);
+
+          if (!valorBusca) continue;
+
+          const dadoEncoded = encodeURIComponent(valorBusca);
+
           cy.executarRequest('hml', `${entidade.urlBusca}${dadoEncoded}`).then((resposta) => {
-            const primeiroItem = resposta.body?.content?.[0];
-            const id = primeiroItem?.id ?? null;
-            //console.log(resposta.body['content'][0]['id']);
-            //cy.pause();
-            if (id != null) {
-              cy.log(`[LOG] - Registro ${dado} não encontrado no ambiente setando null`)
+            const primeiroItem        = resposta.body?.content?.[0];
+            const valorVerificacaoApi = resolverCampo(primeiroItem, colunaVerificacao) ?? null;
+            const verificacaoBate     = valorVerificacaoApi === valorVerificacao;
+
+            const id = verificacaoBate ? (primeiroItem?.id ?? null) : null;
+
+            if (!verificacaoBate) {
+              cy.log(`[LOG] - Verificação falhou para "${valorBusca}": esperado "${valorVerificacao}", recebido "${valorVerificacaoApi}". Setando idHml = null`);
             }
-            cy.setIdHmlPorDescricao(id, dado, nomeArquivo)
+
+            cy.setIdHmlPorDescricao(id, resolverCampo(item, campoDescricao), nomeArquivo, campoDescricao);
           });
         }
-      }); 
-    } //cy.pause()
+      });
+
+    } else {
+      cy.lerColunaDeArquivo(nomeArquivo, campoDescricao, contentBusca).then((dadosDoArquivo) => {
+        for (const dado of dadosDoArquivo) {
+          const dadoEncoded = encodeURIComponent(dado);
+
+          cy.executarRequest('hml', `${entidade.urlBusca}${dadoEncoded}`).then((resposta) => {
+            const primeiroItem = resposta.body?.content?.[0];
+            const id           = primeiroItem?.id ?? null;
+
+            if (id === null) {
+              cy.log(`[LOG] - Registro "${dado}" não encontrado no ambiente, setando null`);
+            }
+
+            cy.setIdHmlPorDescricao(id, dado, nomeArquivo, campoDescricao);
+          });
+        }
+      });
+    }
   }
 });
 
-Cypress.Commands.add('setIdHmlPorDescricao', (id, descricao, nomeArquivo) => {
+Cypress.Commands.add('setIdHmlPorDescricao', (id, descricao, nomeArquivo, campoDescricao) => {
   const filePath = `cypress/output/${nomeArquivo}`;
 
   cy.readFile(filePath, { log: false }).then((conteudo) => {
-    const item = conteudo.find((entry) => entry.descricao === descricao);
+    const item = conteudo.find((entry) => entry[campoDescricao] === descricao);
 
     if (!item) {
       throw new Error(
-        `[setIdHmlPorDescricao] Nenhum item encontrado com a descrição "${descricao}" em "${nomeArquivo}".`
+        `[setIdHmlPorDescricao] Nenhum item encontrado onde "${campoDescricao}" é "${descricao}" em "${nomeArquivo}".`
       );
     }
 
     item.idHml = id;
-    cy.log(`[LOG] Setando o idHml: ${id} para o item ${descricao}`)
+    cy.log(`[LOG] Setando idHml: ${id} para "${campoDescricao}: ${descricao}"`);
     cy.writeFile(filePath, conteudo, { log: false });
   });
 });
