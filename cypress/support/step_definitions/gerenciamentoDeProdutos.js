@@ -19,14 +19,11 @@ Given('a pesquisa retornou dados de produtos para serem copiados de produção p
 });
 
 When('pesquiso as dependências desses produtos', () => {
-  cy.pesquisarDependenciasLigacao()
+  //cy.pesquisarDependenciasLigacao()
 });
 
-When('pesquiso quais dependências desses produtos já existem em homologação', () => {
-  cy.pesquisarEntidadesEmHml();
-});
-
-When('crio ou atualizo as dependências do nivel {int}', (nivel) => {
+When('processo as dependências do nivel {int}', (nivel) => {
+  cy.processarEntidadesPorNivel(nivel);
 });
 
 Then('os dados dos produtos e suas dependências estão copiados de produção para homologação', () => {

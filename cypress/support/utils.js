@@ -4,13 +4,13 @@ const GRUPOS_KEYCLOAK = MAPEAMENTOS_APIS.GRUPOS_KEYCLOAK;
 
 Cypress.Commands.add('verificarTokens', (ambiente) => {
   if (ambiente !== 'keycloak') {
-    return cy.executarRequest(ambiente, `${CLASSIFICACAO_PRODUTO.urlBusca}PRODUTO`).then((response) => {
+    return cy.executarRequest(ambiente, `${CLASSIFICACAO_PRODUTO.urlBusca}PRODUTO`, '', 'GET', false).then((response) => {
       if (response.status === 200) return;
       cy.loginUi(ambiente);
     });
   }
   else if (ambiente === 'keycloak') {
-    return cy.executarRequest(ambiente, `${GRUPOS_KEYCLOAK.urlBusca}APC`).then((response) => {
+    return cy.executarRequest(ambiente, `${GRUPOS_KEYCLOAK.urlBusca}APC`, '', 'GET', false).then((response) => {
       if (response.status === 200) return;
       cy.loginUi(ambiente);
     });

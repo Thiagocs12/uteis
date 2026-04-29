@@ -1,24 +1,23 @@
 const MAPEAMENTOS_APIS = {
   PRODUTO: {
-    url: 'mc-cadastro-ms/api/v1/produto/search/0?',
+    url: 'mc-cadastro-ms/api/v1/produto',
     urlBusca: 'mc-cadastro-ms/api/v1/produto/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/produto/',
     urlListAll: 'mc-cadastro-ms/api/v1/produto/listAll',
     nomeArquivo: '1 - Produtos.json',
     nivelDependencia: 3
   },
-  CLASSIFICACAO_PRODUTO: {
-    url: 'mc-cadastro-ms/api/v1/classificacaoProduto/search/0?',
-    urlBusca: 'mc-cadastro-ms/api/v1/classificacaoProduto/search/0?descricao=',
-    urlBuscaId: 'mc-cadastro-ms/api/v1/classificacaoProduto/',
-    nomeArquivo: '2 - Classificacoes.json',
-    nivelDependencia: 1,
-    nomeArquivoReferencia: '1 - Produtos.json',
-    campoBusca: 'classificacaoProduto',
-    //content: 'teste'
-  },
+  //CLASSIFICACAO_PRODUTO: {
+  //  url: 'mc-cadastro-ms/api/v1/classificacaoProduto',
+  //  urlBusca: 'mc-cadastro-ms/api/v1/classificacaoProduto/search/0?descricao=',
+  //  urlBuscaId: 'mc-cadastro-ms/api/v1/classificacaoProduto/',
+  //  nomeArquivo: '2 - Classificacoes.json',
+  //  nivelDependencia: 1,
+  //  nomeArquivoReferencia: '1 - Produtos.json',
+  //  campoBusca: 'classificacaoProduto',
+  //},
   GRUPO_PRODUTO: {
-    url: 'mc-cadastro-ms/api/v1/grupoProduto/search/0?',
+    url: 'mc-cadastro-ms/api/v1/grupoProduto',
     urlBusca: 'mc-cadastro-ms/api/v1/grupoProduto/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/grupoProduto/',
     nomeArquivo: '3 - GrupoProdutos.json',
@@ -27,7 +26,7 @@ const MAPEAMENTOS_APIS = {
     campoBusca: 'grupoProduto',
   },
   SUB_PRODUTO: {
-    url: 'mc-cadastro-ms/api/v1/subProduto/search/0?',
+    url: 'mc-cadastro-ms/api/v1/subProduto',
     urlBusca: 'mc-cadastro-ms/api/v1/subProduto/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/subProduto/',
     nomeArquivo: '33 - SubProdutos.json',
@@ -36,7 +35,7 @@ const MAPEAMENTOS_APIS = {
     campoBusca: 'subProduto',
   },
   FOCO_NEGOCIO: {
-    url: 'mc-cadastro-ms/api/v1/focoNegocio/search/0?',
+    url: 'mc-cadastro-ms/api/v1/focoNegocio',
     urlBusca: 'mc-cadastro-ms/api/v1/focoNegocio/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/focoNegocio/',
     nomeArquivo: '4 - FocosNegocio.json',
@@ -44,35 +43,35 @@ const MAPEAMENTOS_APIS = {
     nomeArquivoReferencia: '1 - Produtos.json',
     campoBusca: 'focoNegocio',
   },
-  TIPO_PRODUTO: {
-    url: 'mc-cadastro-ms/api/v1/tipoProduto/search/0?',
-    urlBusca: 'mc-cadastro-ms/api/v1/tipoProduto/search/0?descricao=',
-    urlBuscaId: 'mc-cadastro-ms/api/v1/tipoProduto/',
-    nomeArquivo: '5 - TiposProduto.json',
-    nivelDependencia: 1,
-    nomeArquivoReferencia: '1 - Produtos.json',
-    campoBusca: 'tipoProduto',
-  },
-  PRODUTO_INDEXADOR: {
-    url: 'mc-cadastro-ms/api/v1/produtoIndexador/search/0?',
-    urlBusca: 'mc-cadastro-ms/api/v1/produtoIndexador/search/0?descricao=',
-    urlBuscaId: 'mc-cadastro-ms/api/v1/produtoIndexador/',
-    nomeArquivo: '6 - ProdutosIndexadores.json',
-    nivelDependencia: 1,
-    nomeArquivoReferencia: '1 - Produtos.json',
-    campoBusca: 'produtoIndexador',
-  },
-  TIPO_RECEBIMENTO: {
-    url: 'mc-cadastro-ms/api/v1/produtoTPRecebimento/search/0?',
-    urlBusca: 'mc-cadastro-ms/api/v1/produtoTPRecebimento/search/0?descricao=',
-    urlBuscaId: 'mc-cadastro-ms/api/v1/produtoTPRecebimento/',
-    nomeArquivo: '7 - TiposRecebimento.json',
-    nivelDependencia: 1,
-    nomeArquivoReferencia: '1 - Produtos.json',
-    campoBusca: 'produtoTPRecebimento',
-  },
+  //TIPO_PRODUTO: {
+  //  url: 'mc-cadastro-ms/api/v1/tipoProduto',
+  //  urlBusca: 'mc-cadastro-ms/api/v1/tipoProduto/search/0?descricao=',
+  //  urlBuscaId: 'mc-cadastro-ms/api/v1/tipoProduto/',
+  //  nomeArquivo: '5 - TiposProduto.json',
+  //  nivelDependencia: 1,
+  //  nomeArquivoReferencia: '1 - Produtos.json',
+  //  campoBusca: 'tipoProduto',
+  //},
+  //PRODUTO_INDEXADOR: {
+  //  url: 'mc-cadastro-ms/api/v1/produtoIndexador',
+  //  urlBusca: 'mc-cadastro-ms/api/v1/produtoIndexador/search/0?descricao=',
+  //  urlBuscaId: 'mc-cadastro-ms/api/v1/produtoIndexador/',
+  //  nomeArquivo: '6 - ProdutosIndexadores.json',
+  //  nivelDependencia: 1,
+  //  nomeArquivoReferencia: '1 - Produtos.json',
+  //  campoBusca: 'produtoIndexador',
+  //},
+  //TIPO_RECEBIMENTO: {
+  //  url: 'mc-cadastro-ms/api/v1/produtoTPRecebimento',
+  //  urlBusca: 'mc-cadastro-ms/api/v1/produtoTPRecebimento/search/0?descricao=',
+  //  urlBuscaId: 'mc-cadastro-ms/api/v1/produtoTPRecebimento/',
+  //  nomeArquivo: '7 - TiposRecebimento.json',
+  //  nivelDependencia: 1,
+  //  nomeArquivoReferencia: '1 - Produtos.json',
+  //  campoBusca: 'produtoTPRecebimento',
+  //},
   SEGMENTO_TARIFADOR: {
-    url: 'mc-cadastro-ms/api/v1/segmentoTarifador/search/0?',
+    url: 'mc-cadastro-ms/api/v1/segmentoTarifador',
     urlBusca: 'mc-cadastro-ms/api/v1/segmentoTarifador/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/segmentoTarifador/',
     nomeArquivo: '8 - SegmentosTarifadores.json',
@@ -81,7 +80,7 @@ const MAPEAMENTOS_APIS = {
     campoBusca: 'segmentoTarifador',
   },
   GRUPO_PRODUTO_RISCO: {
-    url: 'mc-cadastro-ms/api/v1/grupoProdutoRisco/search/0?',
+    url: 'mc-cadastro-ms/api/v1/grupoProdutoRisco',
     urlBusca: 'mc-cadastro-ms/api/v1/grupoProdutoRisco/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/grupoProdutoRisco/',
     nomeArquivo: '9 - GruposProdutoRisco.json',
@@ -123,7 +122,7 @@ const MAPEAMENTOS_APIS = {
     content: 'lista'
   },
   TIPO_GARANTIA: {
-    url: 'mc-cadastro-ms/api/v1/garantiaTipo/search/0?',
+    url: 'mc-cadastro-ms/api/v1/garantiaTipo',
     urlBusca: 'mc-cadastro-ms/api/v1/garantiaTipo/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/garantiaTipo/',
     nomeArquivo: '14 - TiposGarantia.json',
@@ -132,7 +131,7 @@ const MAPEAMENTOS_APIS = {
     campoBusca: 'tipoGarantia',
   },
   NIVEL_GARANTIA: {
-    url: 'mc-cadastro-ms/api/v1/garantiaNivel/search/0?',
+    url: 'mc-cadastro-ms/api/v1/garantiaNivel',
     urlBusca: 'mc-cadastro-ms/api/v1/garantiaNivel/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/garantiaNivel/',
     nomeArquivo: '15 - NiveisGarantia.json',
@@ -141,7 +140,7 @@ const MAPEAMENTOS_APIS = {
     campoBusca: 'garantiaNivel',
   },
   CLASSIFICACAO_GARANTIA: {
-    url: 'mc-cadastro-ms/api/v1/garantiaClassificacao/search/0?',
+    url: 'mc-cadastro-ms/api/v1/garantiaClassificacao',
     urlBusca: 'mc-cadastro-ms/api/v1/garantiaClassificacao/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/garantiaClassificacao/',
     nomeArquivo: '16 - ClassificacoesGarantia.json',
@@ -151,7 +150,7 @@ const MAPEAMENTOS_APIS = {
     content: 'falseId'
   },
   GRUPO_GARANTIA :{
-    url: 'mc-cadastro-ms/api/v1/grupoGarantia/search/0?',
+    url: 'mc-cadastro-ms/api/v1/grupoGarantia',
     urlBusca: 'mc-cadastro-ms/api/v1/grupoGarantia/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/grupoGarantia/',
     nomeArquivo: '17 - GruposGarantia.json',
@@ -160,7 +159,7 @@ const MAPEAMENTOS_APIS = {
     campoBusca: 'grupoGarantia',
   },
   TARIFA :{
-    url: 'mc-cadastro-ms/api/v1/tarifa/search/0?',
+    url: 'mc-cadastro-ms/api/v1/tarifa',
     urlBusca: 'mc-cadastro-ms/api/v1/tarifa/search/0?nomeTarifa=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/tarifa/',
     nomeArquivo: '18 - Tarifas.json',
@@ -172,7 +171,7 @@ const MAPEAMENTOS_APIS = {
     contentBusca: ['nomeTarifa', 'codigoSubCategoria']
   },
   EVENTO :{
-    url: 'mc-cadastro-ms/api/v1/evento/search/0?',
+    url: 'mc-cadastro-ms/api/v1/evento',
     urlBusca: 'mc-cadastro-ms/api/v1/evento/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/evento/',
     nomeArquivo: '19 - Eventos.json',
@@ -181,7 +180,7 @@ const MAPEAMENTOS_APIS = {
     campoBusca: 'entidadeTarifador',
   },
   TIPO_EVENTO :{
-    url: 'mc-cadastro-ms/api/v1/tipoEvento/search/0?',
+    url: 'mc-cadastro-ms/api/v1/tipoEvento',
     urlBusca: 'mc-cadastro-ms/api/v1/tipoEvento/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/tipoEvento/',
     nomeArquivo: '20 - TiposEvento.json',
@@ -190,7 +189,7 @@ const MAPEAMENTOS_APIS = {
     campoBusca: 'tipoEvento',
   },
   SITUACAO :{
-    url: 'mc-cadastro-ms/api/v1/situacao/search/0?',
+    url: 'mc-cadastro-ms/api/v1/situacao',
     urlBusca: 'mc-cadastro-ms/api/v1/situacao/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/situacao/',
     nomeArquivo: '21 - Situacoes.json',
@@ -200,7 +199,7 @@ const MAPEAMENTOS_APIS = {
     contentBusca: ['descricao', 'tipoSituacao.descricao']
   },
   TIPO_SITUACAO: {
-    url: 'mc-cadastro-ms/api/v1/tipoSituacao/search/0?',
+    url: 'mc-cadastro-ms/api/v1/tipoSituacao',
     urlBusca: 'mc-cadastro-ms/api/v1/tipoSituacao/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/tipoSituacao/',
     nomeArquivo: '22 - TipoSituacao.json',
@@ -209,7 +208,7 @@ const MAPEAMENTOS_APIS = {
     campoBusca: 'tipoSituacao',
   },
   KIT_DOCUMENTO :{
-    url: 'mc-cadastro-ms/api/v1/kitDocumentos/search/0?',
+    url: 'mc-cadastro-ms/api/v1/kitDocumentos',
     urlBusca: 'mc-cadastro-ms/api/v1/kitDocumentos/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/kitDocumentos/',
     nomeArquivo: '23 - KitsDocumentos.json',
@@ -227,7 +226,7 @@ const MAPEAMENTOS_APIS = {
     content: 'falseId'
   },
   DOCUMENTO :{
-    url: 'mc-cadastro-ms/api/v1/documento/search/0?',
+    url: 'mc-cadastro-ms/api/v1/documento',
     urlBusca: 'mc-cadastro-ms/api/v1/documento/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/documento/',
     nomeArquivo: '25 - Documentos.json',
@@ -269,7 +268,7 @@ const MAPEAMENTOS_APIS = {
     content: 'falseId'
   },
   CARTAO_ASSINATURA :{
-    url: 'mc-cadastro-ms/api/v1/cartaoAssinatura/search/0?',
+    url: 'mc-cadastro-ms/api/v1/cartaoAssinatura',
     urlBusca: 'mc-cadastro-ms/api/v1/cartaoAssinatura/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/cartaoAssinatura/',
     nomeArquivo: '30 - CartaoAssinatura.json',
@@ -279,7 +278,7 @@ const MAPEAMENTOS_APIS = {
     content: 'listaId'
   },
   TITULO_ASSINATURA :{
-    url: 'mc-cadastro-ms/api/v1/tituloAssinatura/search/0?',
+    url: 'mc-cadastro-ms/api/v1/tituloAssinatura',
     urlBusca: 'mc-cadastro-ms/api/v1/tituloAssinatura/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/tituloAssinatura/',
     nomeArquivo: '31 - TituloAssinatura.json',
