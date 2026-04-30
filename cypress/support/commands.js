@@ -113,9 +113,6 @@ Cypress.Commands.add('lerColunaDeArquivo', (nomeArquivo, nomeColuna, content = t
           }
         }
       }
-    } else if (content === 'teste') {
-      console.log('ESSES', conteudoArquivo[0][nomeColuna]);
-      cy.pause()
     } else {
       for (let i = 0; i < conteudoArquivo.length; i++) {
         const item = conteudoArquivo[i];
@@ -167,67 +164,82 @@ Cypress.Commands.add('pesquisarDependenciasLigacao', () => {
 
 Cypress.Commands.add('processarEntidadesPorNivel', (nivel) => {
   cy.pesquisarItensPorNivel(nivel)
-  //cy.atualizarItensExistentesPorNivel(nivel)
-  //cy.criarItensInexistentesPorNivel(nivel)
+  cy.atualizarItensExistentesPorNivel(nivel)
+  cy.criarItensInexistentesPorNivel(nivel)
 });
 
 Cypress.Commands.add('criarItensInexistentesPorNivel', (nivel) => {
   for (const chaveEntidade in MAPEAMENTOS_APIS) {
+    if (!Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade)) continue;
+
     const entidade = MAPEAMENTOS_APIS[chaveEntidade];
 
-    if (!Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade)) continue;
     if (chaveEntidade === 'GRUPOS_KEYCLOAK' || entidade.nivelDependencia !== nivel) continue;
 
-    cy.log(chaveEntidade)
-    const method = entidade.method || 'POST'
+    const method         = entidade.method        || 'POST';
+    const caminhoArquivo = `cypress/output/${entidade.nomeArquivo}`;
+    const campoDescricao = entidade.campoDescricao || 'descricao';
+    const chavesIgnoradas = [
+      'idHml',
+      'id',
+      'dataCadastro',
+      'dataUltimaAlteracao',
+      'usuarioCadastro',
+      'usuarioUltimaAlteracao',
+      ...(entidade.chavesIgnoradas || [])
+    ];
 
-
-    cy.readFile(`cypress/output/${entidade.nomeArquivo}`).then((item) => {
-      const itensValidos = item.filter(item => item.idHml === null);
+    cy.readFile(caminhoArquivo).then((itens) => {
+      const itensValidos = itens.filter((item) => item.idHml === null);
 
       itensValidos.forEach((item) => {
-        const { idHml, id, modeloContrato, ...camposDoItem } = item;
+        const body = Object.fromEntries(
+          Object.entries(item).filter(([chave]) => !chavesIgnoradas.includes(chave))
+        );
 
-        const body = {
-          ...camposDoItem,
-        }
-
-        console.log(body)
-        cy.pause();
         cy.executarRequest('hml', entidade.url, body, method).then((resultado) => {
-          console.log(resultado)
-          cy.pause()
-        })
-      })
-    })
+          cy.setIdHmlPorDescricao(resultado.body['id'], item[campoDescricao], entidade.nomeArquivo, campoDescricao);
+        });
+      });
+    });
   }
 });
 
 Cypress.Commands.add('atualizarItensExistentesPorNivel', (nivel) => {
   for (const chaveEntidade in MAPEAMENTOS_APIS) {
+    if (!Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade)) continue;
+
     const entidade = MAPEAMENTOS_APIS[chaveEntidade];
 
-    if (!Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade)) continue;
     if (chaveEntidade === 'GRUPOS_KEYCLOAK' || entidade.nivelDependencia !== nivel) continue;
 
-    cy.log(chaveEntidade)
-    const method = entidade.method || 'POST'
+    const method          = entidade.method          || 'POST';
+    const chavesIgnoradas = [
+      'idHml',
+      'id',
+      'dataCadastro',
+      'dataUltimaAlteracao',
+      'usuarioCadastro',
+      'usuarioUltimaAlteracao',
+      ...(entidade.chavesIgnoradas || [])
+    ];
 
-
-    cy.readFile(`cypress/output/${entidade.nomeArquivo}`).then((item) => {
-      const itensValidos = item.filter(item => item.idHml !== null);
+    cy.readFile(`cypress/output/${entidade.nomeArquivo}`).then((itens) => {
+      const itensValidos = itens.filter((item) => item.idHml !== null);
 
       itensValidos.forEach((item) => {
-        const { idHml, ...camposDoItem } = item;
+        const camposDoItem = Object.fromEntries(
+          Object.entries(item).filter(([chave]) => !chavesIgnoradas.includes(chave))
+        );
 
         const body = {
           ...camposDoItem,
-          id: String(idHml),
-        }
+          id: String(item.idHml),
+        };
 
-        cy.executarRequest('hml', entidade.url, body, method)
-      })
-    })
+        cy.executarRequest('hml', entidade.url, body, method);
+      });
+    });
   }
 });
 
