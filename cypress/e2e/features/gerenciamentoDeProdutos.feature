@@ -9,7 +9,7 @@ Funcionalidade: Sincronização de Dados de Produtos
   Contexto: Sincronização de Produtos
     Dado que possuo acesso aos ambientes necessarios
 
-  @produto @atual
+  @produto
   Cenário: Copiar e Sincronizar um Produto e suas Dependências
     Dado uma consulta aos produtos de produção é realizada para obter os dados atuais
     E a pesquisa retornou dados de produtos para serem copiados de produção para homologação

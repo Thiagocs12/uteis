@@ -5,7 +5,16 @@ const MAPEAMENTOS_APIS = {
     urlBuscaId: 'mc-cadastro-ms/api/v1/produto/',
     urlListAll: 'mc-cadastro-ms/api/v1/produto/listAll',
     nomeArquivo: '1 - Produtos.json',
-    nivelDependencia: 3
+    nivelDependencia: 3,
+    colunasDependencia: [
+        { colunaSubstituida: 'grupoProduto.id', arquivoBusca: '3 - GrupoProdutos.json'},
+        { colunaSubstituida: 'classificacaoProduto.id', arquivoBusca: '2 - Classificacoes.json'},
+        { colunaSubstituida: 'tipoProduto.id', arquivoBusca: '5 - TiposProduto.json'},
+        { colunaSubstituida: 'subProduto.id', arquivoBusca: '33 - SubProdutos.json'},
+        { colunaSubstituida: 'produtoIndexador.id', arquivoBusca: '6 - ProdutosIndexadores.json'},
+        { colunaSubstituida: 'produtoTPRecebimento.id', arquivoBusca: '7 - TiposRecebimento.json'},
+        { colunaSubstituida: 'focoNegocio.id', arquivoBusca: '4 - FocosNegocio.json'}
+    ]
   },
   CLASSIFICACAO_PRODUTO: {
     url: 'mc-cadastro-ms/api/v1/classificacaoProduto',
@@ -216,7 +225,7 @@ const MAPEAMENTOS_APIS = {
     nomeArquivoReferencia: '10 - ProdutosKit.json',
     campoBusca: 'kitDocumento',
     content: 'lista'
-  },
+  },/*
   DOCUMENTO_KIT: {
     urlBuscaId: 'mc-cadastro-ms/api/v1/documentoKit/findAllDocumentoKitByKitDocumentoId/',
     nomeArquivo: '24 - DocumentosKit.json',
@@ -289,13 +298,14 @@ const MAPEAMENTOS_APIS = {
   },
   ENTIDADE: {
     url: 'mc-cadastro-ms/api/v1/entidade',
+    urlBusca: 'mc-cadastro-ms/api/v1/entidade/search/0?descricao=',
     urlBuscaId: 'mc-cadastro-ms/api/v1/entidade/',
     nomeArquivo: '32 - Entidades.json',
     nivelDependencia: 1,
     nomeArquivoReferencia: '27 - DocumentoParte.json',
     campoBusca: 'idEntidade',
     content: 'listaId' 
-  },
+  },*/
   GRUPOS_KEYCLOAK: {
     url: 'auth/admin/realms/multiplicacapital/groups?',
     urlBusca: 'auth/admin/realms/multiplicacapital/groups?search=',
