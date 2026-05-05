@@ -1,5 +1,8 @@
 import MAPEAMENTOS_APIS from '../utils/mapeamentoApis';
+import MAPEAMENTOS_ETAPAS from '../utils/mapeamentoEtapas';
 import tokens from '../temp/tokens.json';
+
+const etapas = MAPEAMENTOS_ETAPAS
 
 /**
  * @description Define e retorna os dados base para um ambiente específico.
@@ -337,4 +340,50 @@ Cypress.Commands.add('setIdHmlPorDescricao', (id, descricao, nomeArquivo, campoD
     cy.log(`[LOG] Setando idHml: ${id} para "${campoDescricao}: ${descricao}"`);
     cy.writeFile(filePath, conteudo, { log: false });
   });
+});
+
+Cypress.Commands.add('avancarEtapa', (tipoEsteira, id, etapa, env, idEtapa, idEsteira) => {
+  if (etapa === 'Distribuição') {
+    cy.avancarDistribuicao
+  }
+})
+
+Cypress.Commands.add('avancarDistribuicao', (id, env, idEsteira, etapa, idComite, idAnalista, ) => {
+  const distribuicao = etapas.DISTRIBUICAO
+  const body = {
+    idComite: idComite, // pode deixar fixo ou parametrizar depois
+    propostas: [
+      {
+        id: id,
+        idAnalista: idAnalista // ideal também parametrizar
+      }
+    ]
+  }
+  return cy.verificarEtapaEsteira(env, idEsteira, etapa).then(() => {
+    return cy.wrap(distribuicao.etapasParaAvanco).each((requisicao) => {
+      const url = `${distribuicao.baseUrl}/${distribuicao[requisicao]}`        
+      return cy.executarRequest(env, url, body).then((response) => {
+        expect(response.status).to.eq(200)
+      })
+    })
+  })
+});
+
+Cypress.Commands.add('verificarEtapaEsteira', (env, idEsteira, etapa) => {
+  cy.executarRequest(env, `mc-multiflow-ms/api/v1/esteira/pesquisarporid/${idEsteira}`).then((response) => {
+    i = response.body['etapas'].length - 1
+    console.log(response.body['etapas'][i]['origem']['modeloEtapa']['nome'])
+    expect(response.body['etapas'][i]['origem']['modeloEtapa']['nome']).to.eq(etapa) 
+  });
+});
+
+Cypress.Commands.add('pegarIdEsteira', (tipoEsteira, id, env) => {
+  if (tipoEsteira === 'poc') {
+    cy.executarRequest(env, `mc-poc-ms/api/v1/proposta/findProposta/${id}`).then((response) => {
+      return {
+        idEtapa: response.body.idEtapa,
+        idEsteira: response.body.idEsteira
+      }
+    })
+  } 
 });
