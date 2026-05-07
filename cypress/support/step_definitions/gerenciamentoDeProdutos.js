@@ -3,7 +3,7 @@ import APIS from '../../utils/mapeamentoApis';
 
 Given('que possuo acesso aos ambientes necessarios', () => {
   //cy.verificarTokens('prod')
-  //cy.verificarTokens('hml')
+  cy.verificarTokens('hml')
 });
 
 Given('uma consulta aos produtos de produção é realizada para obter os dados atuais', () => {

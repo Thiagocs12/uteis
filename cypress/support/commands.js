@@ -346,7 +346,9 @@ Cypress.Commands.add('setIdHmlPorDescricao', (id, descricao, nomeArquivo, campoD
 Cypress.Commands.add('avancarEtapa', (tipoEsteira, id, etapa, env, idComite, idAnalista, parecer) => {
   cy.pegarIdEsteira(tipoEsteira, id, env).then(({idEtapa, idEsteira}) => {
     if (etapa === 'Distribuição' && tipoEsteira === "poc") {
-      cy.avancarDistribuicao(id, env, idEsteira, etapa, idComite, idAnalista)
+      cy.avancarDistribuicao(id, env, idEsteira, idEtapa, etapa, idComite, idAnalista) 
+    } else if (etapa === 'Comitê de Crédito' && tipoEsteira === "poc") {
+      cy.avancarComiteCredito(env, idEsteira, idEtapa, id)
     } else {
       cy.avancarEtapaPadrao(multiflow, idEsteira, idEtapa, parecer)
     }
@@ -379,7 +381,7 @@ Cypress.Commands.add('avancarEtapaPadrao', (multiflow, idEsteira, idEtapa, parec
 
 Cypress.Commands.add('avancarComiteCredito', (env, codigoEsteira, idEtapa, idProposta) => {
   const comite = etapas.COMITE
-  cy.iniciarEtapaEsteira(env, idEsteira, idEtapa)
+  cy.iniciarEtapaEsteira(env, codigoEsteira, idEtapa)
   cy.executarRequest(
     env,
     `${comite.criar}`,
@@ -390,18 +392,71 @@ Cypress.Commands.add('avancarComiteCredito', (env, codigoEsteira, idEtapa, idPro
     },
     comite.method
   )
+  cy.wait(1000)
+  cy.executarRequest(
+      env,
+      `${comite.criarVotacao}idEsteira=${codigoEsteira}&idProposta=${idProposta}&codigoModeloEtapa=${comite.modeloEtapa}`,
+      '',
+      comite.method
+    )
+    cy.wait(1000)
+    cy.executarRequest(
+      env,
+      `${comite.encontrarComite}${idProposta}`,
+    ).then((resposta) => {
+cy.executarRequest(
+  env,
+  `${comite.consultaVotos}${resposta.body.pocComite.id}&indVota=true`
+).then((resposta2) => {
+  const votantes = env === 'hml'
+    ? comite.votantesHml
+    : comite.votantesProd
+
+  const telefones = env === 'hml'
+    ? comite.telefonesHml
+    : comite.telefonesProd
+
+  const participantesSelecionados = resposta2.body
+    .filter(({ nomeParticipante }) =>
+      votantes.some(
+        ({ nome }) => nome === nomeParticipante
+      )
+    )
+    .map(({ idVotacao, nomeParticipante }) => {
+      const votante = votantes.find(
+        ({ nome }) => nome === nomeParticipante
+      )
+
+    return {
+      nome: votante.nome,
+      telefone: votante.telefone,
+      vota: true,
+      id: idVotacao
+    }
+  })
+
+  console.log('PARTICIPANTES:', participantesSelecionados)
+
   cy.executarRequest(
     env,
-    `${comite.criarVotacao}idEsteira=${idEsteira}&idProposta=${idProposta}&codigoModeloEtapa=${comite.modeloEtapa}`,
-    comite.method
+    comite.votacao,
+    {
+      idComiteProposta: resposta.body.pocComite.id,
+      idProposta,
+      participantes: participantesSelecionados
+    },
+    'POST'
   )
+})
+    });
 });
 
 Cypress.Commands.add('iniciarEtapaEsteira', (env, idEsteira, idEtapa) => {
-  cy.executarRequest(env, `${multiflow.iniciarEsteira}idEsteira=${idEsteira}&idEtapa=${idEtapa}`, '', multiflow.method)
+  cy.executarRequest(env, `${multiflow.iniciarEsteira}idEsteira=${idEsteira}&idEtapa=${idEtapa}`, '', multiflow.method, false)
 });
 
-Cypress.Commands.add('avancarDistribuicao', (id, env, idEsteira, etapa, idComite, idAnalista, ) => {
+Cypress.Commands.add('avancarDistribuicao', (id, env, idEsteira, idEtapa, etapa, idComite, idAnalista, ) => {
+  cy.iniciarEtapaEsteira(env, idEsteira, idEtapa)
   const distribuicao = etapas.DISTRIBUICAO
   const body = {
     idComite: idComite,
@@ -418,7 +473,7 @@ Cypress.Commands.add('avancarDistribuicao', (id, env, idEsteira, etapa, idComite
       const url = `${distribuicao.baseUrl}/${requisicao}`
       return cy.executarRequest(env, url, body,distribuicao.method).then((response) => {
         expect(response.status).to.eq(200)
-        cy.wait(5000)
+        cy.wait(2000)
       })
     })
   })

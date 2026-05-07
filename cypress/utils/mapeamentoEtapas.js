@@ -10,6 +10,24 @@ const MAPEAMENTOS_ETAPAS = {
         criar: 'mc-poc-ms/api/v1/pocVotacao/criarPocComite',
         modeloEtapa: '621024e72eb7d56d6ac917f5',
         criarVotacao: 'mc-poc-ms/api/v1/pocVotacao/criarVotacaoModeloEtapa?',
+        encontrarComite: 'mc-poc-ms/api/v1/pocVotacao/findComiteByProposta?idProposta=',
+        consultaVotos: 'mc-poc-ms/api/v1/pocVotacao/consultaVotos?idComiteProposta=',
+        votantesHml: [
+          {
+            nome: 'Lucas Carnovalli',
+            telefone: '5511965969554'
+          },
+          {
+            nome: 'Eduardo Ribeiro',
+            telefone: '5511990084884'
+          },
+          {
+            nome: 'Leonardo Adelino',
+            telefone: '5511989518880'
+          }
+        ],
+        votantesProd: ['Lucas Carnovalli', 'Eduardo Ribeiro', 'Leonardo Adelino'],
+        votacao: 'mc-whatsapp-ms/v1/mensagens/votacao',        
         method: 'POST',
     }
 };
