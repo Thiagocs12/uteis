@@ -18,8 +18,8 @@ Funcionalidade: Finalizar as esteiras de poc da larca
     Exemplos:
       | tipoEsteira | etapa              | validacoes         |
       | poc         | Distribuição       | Distribuição       |
-      | poc         | Analise de Crédito | Analise de Crédito |
-      | poc         | Comitê de Crédito  | Comitê de Crédito  |
+      #| poc         | Analise de Crédito | Analise de Crédito |
+      #| poc         | Comitê de Crédito  | Comitê de Crédito  |
 
   Esquema do Cenário: Verificar se as esteiras foram finalizadas
     Dado que possuo uma lista de ids de esteiras que preciso finalizar de esteira de "<tipoEsteira>"

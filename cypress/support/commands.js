@@ -2,6 +2,7 @@ import MAPEAMENTOS_APIS from '../utils/mapeamentoApis';
 import MAPEAMENTOS_ETAPAS from '../utils/mapeamentoEtapas';
 import tokens from '../temp/tokens.json';
 
+const multiflow = MAPEAMENTOS_APIS.MULTIFLOW
 const etapas = MAPEAMENTOS_ETAPAS
 
 /**
@@ -342,28 +343,82 @@ Cypress.Commands.add('setIdHmlPorDescricao', (id, descricao, nomeArquivo, campoD
   });
 });
 
-Cypress.Commands.add('avancarEtapa', (tipoEsteira, id, etapa, env, idEtapa, idEsteira) => {
-  if (etapa === 'Distribuição') {
-    cy.avancarDistribuicao
-  }
+Cypress.Commands.add('avancarEtapa', (tipoEsteira, id, etapa, env, idComite, idAnalista, parecer) => {
+  cy.pegarIdEsteira(tipoEsteira, id, env).then(({idEtapa, idEsteira}) => {
+    if (etapa === 'Distribuição' && tipoEsteira === "poc") {
+      cy.avancarDistribuicao(id, env, idEsteira, etapa, idComite, idAnalista)
+    } else {
+      cy.avancarEtapaPadrao(multiflow, idEsteira, idEtapa, parecer)
+    }
+  });
 })
+
+Cypress.Commands.add('avancarEtapaPadrao', (multiflow, idEsteira, idEtapa, parecerEsteira) => {
+  cy.iniciarEtapaEsteira(env, idEsteira, idEtapa)
+  cy.executarRequest(
+    env,
+    `${multiflow.parecer}idEsteira=${idEsteira}&idEtapa=${idEtapa}`,
+    `{"descricao":"${parecerEsteira}"}`,
+    multiflow.method
+  ).then((resposta) => {
+    idParecer = resposta.body.id
+    cy.executarRequest(
+      env,
+      multiflow.avancar,
+      {
+        idEsteira,
+        idEtapa,
+        idParecer,
+        situacao: 'APROVADO',
+        encaminharEtapaPendencia: false
+      },
+      multiflow.method
+    )
+  });
+});
+
+Cypress.Commands.add('avancarComiteCredito', (env, codigoEsteira, idEtapa, idProposta) => {
+  const comite = etapas.COMITE
+  cy.iniciarEtapaEsteira(env, idEsteira, idEtapa)
+  cy.executarRequest(
+    env,
+    `${comite.criar}`,
+    {
+      codigoEsteira,
+      idProposta,
+      codigoEtapaModelo: null
+    },
+    comite.method
+  )
+  cy.executarRequest(
+    env,
+    `${comite.criarVotacao}idEsteira=${idEsteira}&idProposta=${idProposta}&codigoModeloEtapa=${comite.modeloEtapa}`,
+    comite.method
+  )
+});
+
+Cypress.Commands.add('iniciarEtapaEsteira', (env, idEsteira, idEtapa) => {
+  cy.executarRequest(env, `${multiflow.iniciarEsteira}idEsteira=${idEsteira}&idEtapa=${idEtapa}`, '', multiflow.method)
+});
 
 Cypress.Commands.add('avancarDistribuicao', (id, env, idEsteira, etapa, idComite, idAnalista, ) => {
   const distribuicao = etapas.DISTRIBUICAO
   const body = {
-    idComite: idComite, // pode deixar fixo ou parametrizar depois
+    idComite: idComite,
     propostas: [
       {
         id: id,
-        idAnalista: idAnalista // ideal também parametrizar
+        idAnalista: idAnalista
       }
     ]
   }
+  
   return cy.verificarEtapaEsteira(env, idEsteira, etapa).then(() => {
     return cy.wrap(distribuicao.etapasParaAvanco).each((requisicao) => {
-      const url = `${distribuicao.baseUrl}/${distribuicao[requisicao]}`        
-      return cy.executarRequest(env, url, body).then((response) => {
+      const url = `${distribuicao.baseUrl}/${requisicao}`
+      return cy.executarRequest(env, url, body,distribuicao.method).then((response) => {
         expect(response.status).to.eq(200)
+        cy.wait(5000)
       })
     })
   })
@@ -372,7 +427,6 @@ Cypress.Commands.add('avancarDistribuicao', (id, env, idEsteira, etapa, idComite
 Cypress.Commands.add('verificarEtapaEsteira', (env, idEsteira, etapa) => {
   cy.executarRequest(env, `mc-multiflow-ms/api/v1/esteira/pesquisarporid/${idEsteira}`).then((response) => {
     i = response.body['etapas'].length - 1
-    console.log(response.body['etapas'][i]['origem']['modeloEtapa']['nome'])
     expect(response.body['etapas'][i]['origem']['modeloEtapa']['nome']).to.eq(etapa) 
   });
 });

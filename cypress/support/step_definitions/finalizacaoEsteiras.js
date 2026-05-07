@@ -1,19 +1,19 @@
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
 
 Given("que possuo uma lista de ids de esteiras que preciso finalizar de esteira de {string}", (tipoEsteira) => {
-    ids = [3551, 3552];
+    ids = [3557, 3558, 3559];
     env = 'hml'
     tipoEsteiraAtual = tipoEsteira
-
+    idComite = 394
+    idAnalista = 27
+    parecer = 'TESTE AUTOMAÇÂO'
     cy.log(`Tipo de esteira: ${tipoEsteira}`);
 });
 
 When("realizo o avanco da etapa {string}", (etapa) => {
   ids.forEach((id) => {
     cy.log(`Avançando esteira ${id} da etapa: ${etapa}`);
-    cy.pegarIdEsteira(tipoEsteiraAtual, id, env).then(({idEtapa, idEsteira}) => {
-        cy.avancarEtapa(tipoEsteiraAtual, id, etapa, env, idEtapa, idEsteira);
-    })
+    cy.avancarEtapa(tipoEsteiraAtual, id, etapa, env, idComite, idAnalista, parecer);
   });
 });
 
