@@ -350,12 +350,27 @@ Cypress.Commands.add('avancarEtapa', (tipoEsteira, id, etapa, env, idComite, idA
     } else if (etapa === 'Comitê de Crédito' && tipoEsteira === "poc") {
       cy.avancarComiteCredito(env, idEsteira, idEtapa, id)
     } else {
-      cy.avancarEtapaPadrao(multiflow, idEsteira, idEtapa, parecer)
+      cy.avancarEtapaPadrao(multiflow, idEsteira, idEtapa, parecer, etapa, id)
     }
   });
 })
 
-Cypress.Commands.add('avancarEtapaPadrao', (multiflow, idEsteira, idEtapa, parecerEsteira) => {
+Cypress.Commands.add('avancarEtapaPadrao', (multiflow, idEsteira, idEtapa, parecerEsteira, etapa, id) => {
+  const comite = etapas.COMITE
+  if (etapa === 'Analise de Crédito'){
+    cy.executarRequest(
+      env,
+      `${comite.copiaPleito}${id}`,
+     ).then((resposta) => {
+      expect(resposta.status).to.eq(200)
+    })
+    cy.executarRequest(
+      env,
+      `${comite.copiaPleitoProduto}${id}`,
+     ).then((resposta) => {
+      expect(resposta.status).to.eq(200)
+    })
+  }
   cy.iniciarEtapaEsteira(env, idEsteira, idEtapa)
   cy.executarRequest(
     env,
@@ -384,6 +399,12 @@ Cypress.Commands.add('avancarComiteCredito', (env, codigoEsteira, idEtapa, idPro
   cy.iniciarEtapaEsteira(env, codigoEsteira, idEtapa)
   cy.executarRequest(
     env,
+    `${comite.copiaPoc}${idProposta}`,
+   ).then((resposta) => {
+    expect(resposta.status).to.eq(200)
+  })
+  cy.executarRequest(
+    env,
     `${comite.criar}`,
     {
       codigoEsteira,
@@ -404,50 +425,80 @@ Cypress.Commands.add('avancarComiteCredito', (env, codigoEsteira, idEtapa, idPro
       env,
       `${comite.encontrarComite}${idProposta}`,
     ).then((resposta) => {
-cy.executarRequest(
-  env,
-  `${comite.consultaVotos}${resposta.body.pocComite.id}&indVota=true`
-).then((resposta2) => {
-  const votantes = env === 'hml'
-    ? comite.votantesHml
-    : comite.votantesProd
-
-  const telefones = env === 'hml'
-    ? comite.telefonesHml
-    : comite.telefonesProd
-
-  const participantesSelecionados = resposta2.body
-    .filter(({ nomeParticipante }) =>
-      votantes.some(
-        ({ nome }) => nome === nomeParticipante
+      cy.executarRequest(
+        env,
+        `${comite.copiaLimeiteGlobal}${resposta.body.pocComite.id}`
       )
-    )
-    .map(({ idVotacao, nomeParticipante }) => {
-      const votante = votantes.find(
-        ({ nome }) => nome === nomeParticipante
-      )
-
-    return {
-      nome: votante.nome,
-      telefone: votante.telefone,
-      vota: true,
-      id: idVotacao
-    }
-  })
-
-  console.log('PARTICIPANTES:', participantesSelecionados)
-
-  cy.executarRequest(
-    env,
-    comite.votacao,
-    {
-      idComiteProposta: resposta.body.pocComite.id,
-      idProposta,
-      participantes: participantesSelecionados
-    },
-    'POST'
-  )
-})
+      cy.executarRequest(
+        env,
+        `${comite.consultaVotos}${resposta.body.pocComite.id}&indVota=true`
+      ).then((resposta2) => {
+        const votantes = env === 'hml'
+          ? comite.votantesHml
+          : comite.votantesProd
+      
+        const telefones = env === 'hml'
+          ? comite.telefonesHml
+          : comite.telefonesProd
+      
+        const participantesSelecionados = resposta2.body
+          .filter(({ nomeParticipante }) =>
+            votantes.some(
+              ({ nome }) => nome === nomeParticipante
+            )
+          )
+          .map(({ idVotacao, nomeParticipante }) => {
+            const votante = votantes.find(
+              ({ nome }) => nome === nomeParticipante
+            )
+          
+          return {
+            nome: votante.nome,
+            telefone: votante.telefone,
+            vota: true,
+            id: idVotacao
+          }
+        })
+      
+        cy.executarRequest(
+          env,
+          comite.votacao,
+          {
+            idComiteProposta: resposta.body.pocComite.id,
+            idProposta,
+            participantes: participantesSelecionados
+          },
+          comite.method
+        )
+        cy.executarRequest(
+          env,
+          `${comite.iniciarVotacao}${resposta.body.pocComite.id}`,
+          '',
+          comite.method
+        ).then((resposta3) => {
+          expect(resposta3.status).to.eq(200)
+        })
+        participantesSelecionados.forEach(participante => {
+          cy.executarRequest(
+            env,
+            comite.copiaLinkVotacao,
+            {
+              idComiteProposta: resposta.body.pocComite.id,
+              idProposta,
+              participantes: [participante]
+            },
+            comite.method
+          ).then((body) => {
+            const c = body.body.split('c=')[1]
+            cy.executarRequest(
+              env,
+              `${comite.aprovarVoto}${resposta.body.pocComite.id}&idVotacao=${participante.id}&status=APROVADO&c=${c}`,
+              '',
+              'PUT'
+            )
+          })
+        })
+      })
     });
 });
 
@@ -473,7 +524,7 @@ Cypress.Commands.add('avancarDistribuicao', (id, env, idEsteira, idEtapa, etapa,
       const url = `${distribuicao.baseUrl}/${requisicao}`
       return cy.executarRequest(env, url, body,distribuicao.method).then((response) => {
         expect(response.status).to.eq(200)
-        cy.wait(2000)
+        cy.wait(1000)
       })
     })
   })

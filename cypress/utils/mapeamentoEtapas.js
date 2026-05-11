@@ -12,6 +12,13 @@ const MAPEAMENTOS_ETAPAS = {
         criarVotacao: 'mc-poc-ms/api/v1/pocVotacao/criarVotacaoModeloEtapa?',
         encontrarComite: 'mc-poc-ms/api/v1/pocVotacao/findComiteByProposta?idProposta=',
         consultaVotos: 'mc-poc-ms/api/v1/pocVotacao/consultaVotos?idComiteProposta=',
+        copiaPleito: 'mc-poc-ms/api/v1/pocPleito/findByPropostaAndCopy/',
+        copiaPleitoProduto: 'mc-poc-ms/api/v1/pocPleitoProduto/listAllAndCopy/',
+        copiaPoc: 'mc-poc-ms/api/v1/pocVotacao/copiaPleitoComite/',
+        copiaLimeiteGlobal: 'mc-poc-ms/api/v1/pocComiteLimiteGlobal/findDadosComite?idComiteProposta=',
+        iniciarVotacao: 'mc-poc-ms/api/v1/pocVotacao/iniciarVotacao?idComiteVotacao=',
+        copiaLinkVotacao: 'mc-whatsapp-ms/v1/mensagens/votacaoUnica?apenasLink=true',
+        aprovarVoto: 'mc-whatsapp-ms/v1/votacao/aprovaVoto?idComiteProposta=',
         votantesHml: [
           {
             nome: 'Lucas Carnovalli',

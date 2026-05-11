@@ -17,8 +17,8 @@ Funcionalidade: Finalizar as esteiras de poc da larca
 
     Exemplos:
       | tipoEsteira | etapa              | validacoes         |
-      #| poc         | Distribuição       | Distribuição       |
-      #| poc         | Analise de Crédito | Analise de Crédito |
+      | poc         | Distribuição       | Distribuição       |
+      | poc         | Analise de Crédito | Analise de Crédito |
       | poc         | Comitê de Crédito  | Comitê de Crédito  |
 
   Esquema do Cenário: Verificar se as esteiras foram finalizadas
