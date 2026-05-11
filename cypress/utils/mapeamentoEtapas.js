@@ -15,7 +15,8 @@ const MAPEAMENTOS_ETAPAS = {
         copiaPleito: 'mc-poc-ms/api/v1/pocPleito/findByPropostaAndCopy/',
         copiaPleitoProduto: 'mc-poc-ms/api/v1/pocPleitoProduto/listAllAndCopy/',
         copiaPoc: 'mc-poc-ms/api/v1/pocVotacao/copiaPleitoComite/',
-        copiaLimeiteGlobal: 'mc-poc-ms/api/v1/pocComiteLimiteGlobal/findDadosComite?idComiteProposta=',
+        copiaPocProduto: 'mc-poc-ms/api/v1/pocComiteLimiteProduto/listAllDadosProdutoLimiteAndCopy/',
+        copiaLimiteGlobal: 'mc-poc-ms/api/v1/pocComiteLimiteGlobal/findDadosComite?idComiteProposta=',
         iniciarVotacao: 'mc-poc-ms/api/v1/pocVotacao/iniciarVotacao?idComiteVotacao=',
         copiaLinkVotacao: 'mc-whatsapp-ms/v1/mensagens/votacaoUnica?apenasLink=true',
         aprovarVoto: 'mc-whatsapp-ms/v1/votacao/aprovaVoto?idComiteProposta=',
@@ -33,7 +34,20 @@ const MAPEAMENTOS_ETAPAS = {
             telefone: '5511989518880'
           }
         ],
-        votantesProd: ['Lucas Carnovalli', 'Eduardo Ribeiro', 'Leonardo Adelino'],
+        votantesProd: [
+          {
+            nome: "Thiago Novaes",
+            telefone: '5511966650011'
+          },
+          {
+            nome: "Eduardo Barbosa",
+            telefone: '5511941236400'
+          },
+          {
+            nome: "Mickael Paolucci",
+            telefone: '5511970747587'
+          }
+        ],
         votacao: 'mc-whatsapp-ms/v1/mensagens/votacao',        
         method: 'POST',
     }

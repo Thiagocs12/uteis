@@ -413,22 +413,26 @@ Cypress.Commands.add('avancarComiteCredito', (env, codigoEsteira, idEtapa, idPro
     },
     comite.method
   )
-  cy.wait(1000)
   cy.executarRequest(
       env,
       `${comite.criarVotacao}idEsteira=${codigoEsteira}&idProposta=${idProposta}&codigoModeloEtapa=${comite.modeloEtapa}`,
       '',
       comite.method
     )
-    cy.wait(1000)
     cy.executarRequest(
       env,
       `${comite.encontrarComite}${idProposta}`,
     ).then((resposta) => {
       cy.executarRequest(
         env,
-        `${comite.copiaLimeiteGlobal}${resposta.body.pocComite.id}`
+        `${comite.copiaLimiteGlobal}${resposta.body.pocComite.id}`
       )
+      cy.executarRequest(
+        env,
+        `${comite.copiaPocProduto}${resposta.body.pocComite.id}`
+      )
+      console.log(`${comite.consultaVotos}${resposta.body.pocComite.id}&indVota=true`)
+      cy.pause()
       cy.executarRequest(
         env,
         `${comite.consultaVotos}${resposta.body.pocComite.id}&indVota=true`
@@ -524,7 +528,6 @@ Cypress.Commands.add('avancarDistribuicao', (id, env, idEsteira, idEtapa, etapa,
       const url = `${distribuicao.baseUrl}/${requisicao}`
       return cy.executarRequest(env, url, body,distribuicao.method).then((response) => {
         expect(response.status).to.eq(200)
-        cy.wait(1000)
       })
     })
   })

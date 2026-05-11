@@ -1,7 +1,7 @@
 import MAPEAMENTOS_APIS from '../utils/mapeamentoApis';
 const multiflow = MAPEAMENTOS_APIS.MULTIFLOW
 
-Cypress.Commands.add('executarRequest', (ambiente, api, body = '', method = 'GET', fail = true) => { 
+Cypress.Commands.add('executarRequest2', (ambiente, api, body = '', method = 'GET', fail = true) => { 
   return cy.definirAmbiente(ambiente).then(({ baseUrl, token }) => {
     const tokenAutorizacao = `Bearer ${token}`;
     const urlCompleta = `${baseUrl}/${api}`;
@@ -23,7 +23,7 @@ Cypress.Commands.add('executarRequest', (ambiente, api, body = '', method = 'GET
 });
 
 Cypress.Commands.add('criarPocEAvancar', (cnpj) => {
-  cy.executarRequest2(
+  cy.executarRequest (
     'hml',
     'mc-poc-ms/api/v1/proposta',
     {
@@ -51,13 +51,8 @@ Cypress.Commands.add('criarPocEAvancar', (cnpj) => {
       return
     }
 
-    cy.wait(1000)
-
     cy.pegarIdEsteira('poc', resposta.body.id, 'hml').then(({idEtapa, idEsteira}) => {
       cy.avancarEtapaPadrao(multiflow, idEsteira, idEtapa, 'TESTE AUTOMACAO')
-
-      cy.wait(2000)
-
       cy.pegarIdEsteira('poc', resposta.body.id, 'hml').then(({idEtapa, idEsteira}) => {
         cy.avancarEtapaPadrao(multiflow, idEsteira, idEtapa, 'TESTE AUTOMACAO')
       })
@@ -65,7 +60,7 @@ Cypress.Commands.add('criarPocEAvancar', (cnpj) => {
   })
 })
 
-Cypress.Commands.add('executarRequest2', (ambiente, api, body = '', method = 'GET', fail = true) => { 
+Cypress.Commands.add('executarRequest', (ambiente, api, body = '', method = 'GET', fail = true) => { 
   return cy.definirAmbiente(ambiente).then(({ baseUrl, token }) => {
     const tokenAutorizacao = `Bearer ${token}`;
     const urlCompleta = `${baseUrl}/${api}`;
