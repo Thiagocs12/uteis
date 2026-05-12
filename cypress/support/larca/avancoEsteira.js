@@ -147,31 +147,48 @@ Cypress.Commands.add('avancarComiteCredito', (env, codigoEsteira, idEtapa, idPro
     comite.method
   )
   cy.executarRequest(
-      env,
-      `${comite.criarVotacao}idEsteira=${codigoEsteira}&idProposta=${idProposta}&codigoModeloEtapa=${comite.modeloEtapa}`,
-      '',
-      comite.method
-    )
+    env,
+    `${comite.encontrarComite}${idProposta}`,
+  ).then((resposta) => {
+    const dataEmissaoAta = new Date().toISOString()
+
+    const prazo = new Date()
+    prazo.setDate(prazo.getDate() + 80)
+
+    const prazoVigencia = prazo.toISOString()
+
     cy.executarRequest(
       env,
-      `${comite.encontrarComite}${idProposta}`,
-    ).then((resposta) => {
-      cy.executarRequest(
-        env,
-        `${comite.copiaLimiteGlobal}${resposta.body.pocComite.id}`
-      )      
-      cy.executarRequest(
-        env,
-        `${comite.copiaPleitoBoleto}${resposta.body.pocComite.id}`
-      )
-      cy.executarRequest(
-        env,
-        `${comite.copiaPocProduto}${resposta.body.pocComite.id}`
-      )
-      cy.executarRequest(
-        env,
-        `${comite.consultaVotos}${resposta.body.pocComite.id}&indVota=true`
-      ).then((resposta2) => {
+      `${comite.copiaLimiteGlobal}${resposta.body.pocComite.id}`
+    )
+
+    cy.executarRequest(
+      env,
+      `${comite.copiaPleitoBoleto}${resposta.body.pocComite.id}`
+    )
+
+    cy.executarRequest(
+      env,
+      `${comite.copiaPocProduto}${resposta.body.pocComite.id}`
+    )
+
+    cy.executarRequest(
+      env,
+      `${comite.salvarComite}`,
+      {
+        idComiteProposta: resposta.body.pocComite.id,
+        dataEmissaoAta,
+        prazoVigencia,
+        diasVigencia: 80,
+        diasPrazoLimite: 90
+      },
+      'PUT'
+    )
+
+    cy.executarRequest(
+      env,
+      `${comite.consultaVotos}${resposta.body.pocComite.id}&indVota=true`
+    ).then((resposta2) => {
         const votantes = env === 'hml'
           ? comite.votantesHml
           : comite.votantesProd
@@ -202,8 +219,8 @@ Cypress.Commands.add('avancarComiteCredito', (env, codigoEsteira, idEtapa, idPro
         cy.executarRequest(
           env,
           comite.votacao,
-          {
-            idComiteProposta: resposta.body.pocComite.id,
+        {
+          idComiteProposta: resposta.body.pocComite.id,
             idProposta,
             participantes: participantesSelecionados
           },
@@ -233,8 +250,8 @@ Cypress.Commands.add('avancarComiteCredito', (env, codigoEsteira, idEtapa, idPro
               env,
               `${comite.aprovarVoto}${resposta.body.pocComite.id}&idVotacao=${participante.id}&status=APROVADO&c=${c}`,
               '',
-              'PUT'
-            )
+        'PUT'
+      )
           })
         })
       })

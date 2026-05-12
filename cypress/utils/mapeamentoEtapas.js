@@ -21,6 +21,7 @@ const MAPEAMENTOS_ETAPAS = {
         iniciarVotacao: 'mc-poc-ms/api/v1/pocVotacao/iniciarVotacao?idComiteVotacao=',
         copiaLinkVotacao: 'mc-whatsapp-ms/v1/mensagens/votacaoUnica?apenasLink=true',
         aprovarVoto: 'mc-whatsapp-ms/v1/votacao/aprovaVoto?idComiteProposta=',
+        salvarComite: 'mc-poc-ms/api/v1/pocVotacao/updateDataVigencia',
         votantesHml: [
           {
             nome: 'Lucas Carnovalli',
@@ -43,10 +44,6 @@ const MAPEAMENTOS_ETAPAS = {
           {
             nome: "Eduardo Barbosa",
             telefone: '5511941236400'
-          },
-          {
-            nome: "Mickael Paolucci",
-            telefone: '5511970747587'
           }
         ],
         votacao: 'mc-whatsapp-ms/v1/mensagens/votacao',        

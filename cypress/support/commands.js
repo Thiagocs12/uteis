@@ -166,12 +166,6 @@ Cypress.Commands.add('pesquisarDependenciasLigacao', () => {
   }
 });
 
-Cypress.Commands.add('processarEntidadesPorNivel', (nivel) => {
-  cy.pesquisarItensPorNivel(nivel)
-  cy.atualizarItensExistentesPorNivel(nivel)
-  cy.criarItensInexistentesPorNivel(nivel)
-});
-
 Cypress.Commands.add('criarItensInexistentesPorNivel', (nivel) => {
   for (const chaveEntidade in MAPEAMENTOS_APIS) {
     if (!Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade)) continue;
@@ -274,57 +268,6 @@ Cypress.Commands.add('pesquisarItensPorNivel', (nivel) => {
   }
 });
 
-
-Cypress.Commands.add('pesquisarEntidadesEmHml', () => {
-  const resolverCampo = (obj, caminho) =>
-    caminho.split('.').reduce((acc, chave) => acc?.[chave], obj);
-
-  for (const chaveEntidade in MAPEAMENTOS_APIS) {
-    if (!Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade)) continue;
-
-    const entidade       = MAPEAMENTOS_APIS[chaveEntidade];
-    const nomeArquivo    = entidade.nomeArquivo;
-    const campoDescricao = entidade.campoDescricao || 'descricao';
-    const contentBusca   = entidade.contentBusca || 'falseId';
-
-    if (chaveEntidade === 'GRUPOS_KEYCLOAK' || entidade.nivelDependencia >= 5) continue;
-
-    const isBuscaComposta = Array.isArray(contentBusca);
-
-    if (isBuscaComposta) {
-      const [colunaBusca, colunaVerificacao] = contentBusca;
-      const filePath = `cypress/output/${nomeArquivo}`;
-
-      cy.readFile(filePath, { log: false }).then((conteudo) => {
-        for (const item of conteudo) {
-          const valorBusca       = resolverCampo(item, colunaBusca);
-          const valorVerificacao = resolverCampo(item, colunaVerificacao);
-
-          if (!valorBusca) continue;
-
-          const dadoEncoded = encodeURIComponent(valorBusca);
-
-          cy.executarRequest('hml', `${entidade.urlBusca}${dadoEncoded}`).then((resposta) => {
-            const primeiroItem        = resposta.body?.content?.[0];
-            const valorVerificacaoApi = resolverCampo(primeiroItem, colunaVerificacao) ?? null;
-            const verificacaoBate     = valorVerificacaoApi === valorVerificacao;
-
-            const id = verificacaoBate ? (primeiroItem?.id ?? null) : null;
-
-            if (!verificacaoBate) {
-              cy.log(`[LOG] - Verificação falhou para "${valorBusca}": esperado "${valorVerificacao}", recebido "${valorVerificacaoApi}". Setando idHml = null`);
-            }
-
-            cy.setIdHmlPorDescricao(id, resolverCampo(item, campoDescricao), nomeArquivo, campoDescricao);
-          });
-        }
-      });
-
-    } else {
-    }
-  }
-});
-
 Cypress.Commands.add('setIdHmlPorDescricao', (id, descricao, nomeArquivo, campoDescricao) => {
   const filePath = `cypress/output/${nomeArquivo}`;
 
@@ -343,3 +286,20 @@ Cypress.Commands.add('setIdHmlPorDescricao', (id, descricao, nomeArquivo, campoD
   });
 });
 
+Cypress.Commands.add('atualizarIdsDeDependencias', (nivel) => {
+  for (const chaveEntidade in MAPEAMENTOS_APIS) {
+    if (!Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade)) continue;
+
+    const entidade = MAPEAMENTOS_APIS[chaveEntidade];
+
+    if (chaveEntidade === 'GRUPOS_KEYCLOAK' || entidade.nivelDependencia !== nivel) continue;
+    if (!entidade.dependencias || entidade.dependencias.length === 0) continue;
+  }
+});
+
+Cypress.Commands.add('processarEntidadesPorNivel', (nivel) => {
+  cy.atualizarIdsDeDependencias(nivel)
+  cy.pesquisarItensPorNivel(nivel)
+  cy.atualizarItensExistentesPorNivel(nivel)
+  cy.criarItensInexistentesPorNivel(nivel)
+});

@@ -6,14 +6,14 @@ const MAPEAMENTOS_APIS = {
     urlListAll: 'mc-cadastro-ms/api/v1/produto/listAll',
     nomeArquivo: '1 - Produtos.json',
     nivelDependencia: 3,
-    colunasDependencia: [
-        { colunaSubstituida: 'grupoProduto.id', arquivoBusca: '3 - GrupoProdutos.json'},
-        { colunaSubstituida: 'classificacaoProduto.id', arquivoBusca: '2 - Classificacoes.json'},
-        { colunaSubstituida: 'tipoProduto.id', arquivoBusca: '5 - TiposProduto.json'},
-        { colunaSubstituida: 'subProduto.id', arquivoBusca: '33 - SubProdutos.json'},
-        { colunaSubstituida: 'produtoIndexador.id', arquivoBusca: '6 - ProdutosIndexadores.json'},
-        { colunaSubstituida: 'produtoTPRecebimento.id', arquivoBusca: '7 - TiposRecebimento.json'},
-        { colunaSubstituida: 'focoNegocio.id', arquivoBusca: '4 - FocosNegocio.json'}
+    dependencia: [
+      { idSubstituido: 'subProduto.id', arquivoDependencia: '33 - SubProdutos.json', idDependecia: 'id'},
+      { idSubstituido: 'classificacaoProduto.id', arquivoDependencia: '2 - Classificacoes.json', idDependecia: 'id'},
+      { idSubstituido: 'grupoProduto.id', arquivoDependencia: '3 - GrupoProdutos.json', idDependecia: 'id'},
+      { idSubstituido: 'focoNegocio.id', arquivoDependencia: '4 - FocosNegocio.json', idDependecia: 'id'},
+      { idSubstituido: 'tipoProduto.id', arquivoDependencia: '5 - TiposProduto.json', idDependecia: 'id'},
+      { idSubstituido: 'produtoIndexador.id', arquivoDependencia: '6 - ProdutosIndexadores.json', idDependecia: 'id'},
+      { idSubstituido: 'produtoTPRecebimento.id', arquivoDependencia: '7 - TiposRecebimento.json', idDependecia: 'id'},
     ]
   },
   CLASSIFICACAO_PRODUTO: {
@@ -225,7 +225,22 @@ const MAPEAMENTOS_APIS = {
     nomeArquivoReferencia: '10 - ProdutosKit.json',
     campoBusca: 'kitDocumento',
     content: 'lista'
-  },/*
+  },
+  MULTIFLOW: {
+    parecer: 'mc-multiflow-ms/api/v1/ocorrencia/parecer?',
+    avancar: 'mc-multiflow-ms/api/v1/esteira/finalizarEtapa',
+    iniciarEsteira: 'mc-multiflow-ms/api/v1/esteira/iniciarEtapa?',
+    method: 'POST'
+  },
+  GRUPOS_KEYCLOAK: {
+    url: 'auth/admin/realms/multiplicacapital/groups?',
+    urlBusca: 'auth/admin/realms/multiplicacapital/groups?search=',
+  }
+};
+
+export default MAPEAMENTOS_APIS;
+
+/*
   DOCUMENTO_KIT: {
     urlBuscaId: 'mc-cadastro-ms/api/v1/documentoKit/findAllDocumentoKitByKitDocumentoId/',
     nomeArquivo: '24 - DocumentosKit.json',
@@ -306,16 +321,3 @@ const MAPEAMENTOS_APIS = {
     campoBusca: 'idEntidade',
     content: 'listaId' 
   },*/
-MULTIFLOW: {
-  parecer: 'mc-multiflow-ms/api/v1/ocorrencia/parecer?',
-  avancar: 'mc-multiflow-ms/api/v1/esteira/finalizarEtapa',
-  iniciarEsteira: 'mc-multiflow-ms/api/v1/esteira/iniciarEtapa?',
-  method: 'POST'
-},
-  GRUPOS_KEYCLOAK: {
-    url: 'auth/admin/realms/multiplicacapital/groups?',
-    urlBusca: 'auth/admin/realms/multiplicacapital/groups?search=',
-  }
-};
-
-export default MAPEAMENTOS_APIS;
