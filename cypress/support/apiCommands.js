@@ -1,7 +1,7 @@
 import MAPEAMENTOS_APIS from '../utils/mapeamentoApis';
 const multiflow = MAPEAMENTOS_APIS.MULTIFLOW
 
-Cypress.Commands.add('executarRequest2', (ambiente, api, body = '', method = 'GET', fail = true) => { 
+Cypress.Commands.add('executarRequest', (ambiente, api, body = '', method = 'GET', fail = true) => { 
   return cy.definirAmbiente(ambiente).then(({ baseUrl, token }) => {
     const tokenAutorizacao = `Bearer ${token}`;
     const urlCompleta = `${baseUrl}/${api}`;
@@ -60,7 +60,7 @@ Cypress.Commands.add('criarPocEAvancar', (cnpj) => {
   })
 })
 
-Cypress.Commands.add('executarRequest', (ambiente, api, body = '', method = 'GET', fail = true) => { 
+Cypress.Commands.add('executarRequest2', (ambiente, api, body = '', method = 'GET', fail = true) => { 
   return cy.definirAmbiente(ambiente).then(({ baseUrl, token }) => {
     const tokenAutorizacao = `Bearer ${token}`;
     const urlCompleta = `${baseUrl}/${api}`;

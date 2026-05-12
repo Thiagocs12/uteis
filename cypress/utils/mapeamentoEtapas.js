@@ -14,6 +14,7 @@ const MAPEAMENTOS_ETAPAS = {
         consultaVotos: 'mc-poc-ms/api/v1/pocVotacao/consultaVotos?idComiteProposta=',
         copiaPleito: 'mc-poc-ms/api/v1/pocPleito/findByPropostaAndCopy/',
         copiaPleitoProduto: 'mc-poc-ms/api/v1/pocPleitoProduto/listAllAndCopy/',
+        copiaPleitoBoleto: 'mc-poc-ms/api/v1/pocComiteLimiteBoleto/listAllDadosBoletoLimiteAndCopy/',
         copiaPoc: 'mc-poc-ms/api/v1/pocVotacao/copiaPleitoComite/',
         copiaPocProduto: 'mc-poc-ms/api/v1/pocComiteLimiteProduto/listAllDadosProdutoLimiteAndCopy/',
         copiaLimiteGlobal: 'mc-poc-ms/api/v1/pocComiteLimiteGlobal/findDadosComite?idComiteProposta=',

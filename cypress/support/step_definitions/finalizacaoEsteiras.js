@@ -1,7 +1,7 @@
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
 
 Given("que possuo uma lista de ids de esteiras que preciso finalizar de esteira de {string}", (tipoEsteira) => {
-    ids = [12379];
+    ids = [12376];
     env = 'prod'
     tipoEsteiraAtual = tipoEsteira
     idComite = 622

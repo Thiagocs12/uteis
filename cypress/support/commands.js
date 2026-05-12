@@ -426,13 +426,15 @@ Cypress.Commands.add('avancarComiteCredito', (env, codigoEsteira, idEtapa, idPro
       cy.executarRequest(
         env,
         `${comite.copiaLimiteGlobal}${resposta.body.pocComite.id}`
+      )      
+      cy.executarRequest(
+        env,
+        `${comite.copiaPleitoBoleto}${resposta.body.pocComite.id}`
       )
       cy.executarRequest(
         env,
         `${comite.copiaPocProduto}${resposta.body.pocComite.id}`
       )
-      console.log(`${comite.consultaVotos}${resposta.body.pocComite.id}&indVota=true`)
-      cy.pause()
       cy.executarRequest(
         env,
         `${comite.consultaVotos}${resposta.body.pocComite.id}&indVota=true`
