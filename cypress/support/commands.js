@@ -288,18 +288,46 @@ Cypress.Commands.add('setIdHmlPorDescricao', (id, descricao, nomeArquivo, campoD
 
 Cypress.Commands.add('atualizarIdsDeDependencias', (nivel) => {
   for (const chaveEntidade in MAPEAMENTOS_APIS) {
-    if (!Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade)) continue;
-
     const entidade = MAPEAMENTOS_APIS[chaveEntidade];
+    if (
+      !Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade) 
+      || chaveEntidade === 'GRUPOS_KEYCLOAK'
+      || entidade.nivelDependencia !== nivel
+      || !entidade.dependencia
+      || entidade.dependencia.length === 0
+    ) continue;
+    
+    cy.log(`Atualizando IDs de dependências para a entidade: ${chaveEntidade} (Nível ${nivel})`);
 
-    if (chaveEntidade === 'GRUPOS_KEYCLOAK' || entidade.nivelDependencia !== nivel) continue;
-    if (!entidade.dependencias || entidade.dependencias.length === 0) continue;
+    entidade.dependencia.forEach((dependencia) => {
+      cy.readFile(`cypress/output/${entidade.nomeArquivo}`).then((itens) => {
+        const item = itens.find((entry) => entry.entidade.idSubstituido !== null);
+        console.log(item)
+      })
+    });
   }
 });
 
+//cy.readFile(`cypress/output/${entidade.nomeArquivo}`).then((itens) => {
+//      const itensValidos = itens.filter((item) => item.idHml !== null);
+//
+//      itensValidos.forEach((item) => {
+//        const camposDoItem = Object.fromEntries(
+//          Object.entries(item).filter(([chave]) => !chavesIgnoradas.includes(chave))
+//        );
+//
+//        const body = {
+//          ...camposDoItem,
+//          id: String(item.idHml),
+//        };
+//
+//        cy.executarRequest('hml', entidade.url, body, method);
+//      });
+//    });
+
 Cypress.Commands.add('processarEntidadesPorNivel', (nivel) => {
   cy.atualizarIdsDeDependencias(nivel)
-  cy.pesquisarItensPorNivel(nivel)
-  cy.atualizarItensExistentesPorNivel(nivel)
-  cy.criarItensInexistentesPorNivel(nivel)
+  //cy.pesquisarItensPorNivel(nivel)
+  //cy.atualizarItensExistentesPorNivel(nivel)
+  //cy.criarItensInexistentesPorNivel(nivel)
 });

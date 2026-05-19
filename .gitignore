@@ -1,4 +1,5 @@
 node_modules/
 cypress/output/
+cypress/temp/
 .env
 package-lock.json
