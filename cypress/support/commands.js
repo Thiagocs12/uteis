@@ -158,9 +158,11 @@ Cypress.Commands.add('pesquisarDependenciasLigacao', () => {
     if (Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade)) {
       const entidade = MAPEAMENTOS_APIS[chaveEntidade];
 
-      if (chaveEntidade === 'PRODUTO' || chaveEntidade === 'GRUPOS_KEYCLOAK') {
-        continue;
-      }
+    if (
+      ['PRODUTO', 'GRUPOS_KEYCLOAK', 'MULTIFLOW'].includes(chaveEntidade)
+    ) {
+      continue
+    }
       cy.pesquisarDependencias(entidade);
     }
   }
@@ -296,34 +298,47 @@ Cypress.Commands.add('atualizarIdsDeDependencias', (nivel) => {
       || !entidade.dependencia
       || entidade.dependencia.length === 0
     ) continue;
-    
-    cy.log(`Atualizando IDs de dependências para a entidade: ${chaveEntidade} (Nível ${nivel})`);
 
-    entidade.dependencia.forEach((dependencia) => {
-      cy.readFile(`cypress/output/${entidade.nomeArquivo}`).then((itens) => {
-        const item = itens.find((entry) => entry.entidade.idSubstituido !== null);
-        console.log(item)
+    cy.log(`Atualizando IDs de dependências para a entidade: ${chaveEntidade} (Nível ${nivel})`);
+    
+    cy.readFile(`cypress/output/${entidade.nomeArquivo}`).then((itens) => {
+      entidade.dependencia.forEach((dependencia) => {
+        cy.readFile(`cypress/output/${dependencia.arquivoDependencia}`).then((dependencias) => {
+          
+          const listaDependencias = Array.isArray(dependencias[0])
+            ? dependencias.flat()
+            : dependencias
+          
+          itens.forEach((item) => {
+            const idOriginal = Cypress._.get(
+              item,
+              dependencia.idSubstituido
+            )
+            if (!idOriginal) return;
+
+            const equivalente = dependencias.find(
+              (dependenciaItem) =>
+                dependenciaItem[dependencia.idDependecia] === idOriginal
+            )
+            if (!equivalente) {
+              cy.log(`Equivalente não encontrado para ID ${idOriginal}`)
+              return
+            }
+            Cypress._.set(
+              item,
+              dependencia.idSubstituido,
+              equivalente.idHml
+            )
+          })
+        })
       })
+      cy.writeFile(
+        `cypress/output/${entidade.nomeArquivo}`,
+        itens
+      );
     });
   }
 });
-
-//cy.readFile(`cypress/output/${entidade.nomeArquivo}`).then((itens) => {
-//      const itensValidos = itens.filter((item) => item.idHml !== null);
-//
-//      itensValidos.forEach((item) => {
-//        const camposDoItem = Object.fromEntries(
-//          Object.entries(item).filter(([chave]) => !chavesIgnoradas.includes(chave))
-//        );
-//
-//        const body = {
-//          ...camposDoItem,
-//          id: String(item.idHml),
-//        };
-//
-//        cy.executarRequest('hml', entidade.url, body, method);
-//      });
-//    });
 
 Cypress.Commands.add('processarEntidadesPorNivel', (nivel) => {
   cy.atualizarIdsDeDependencias(nivel)

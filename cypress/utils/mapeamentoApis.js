@@ -33,6 +33,9 @@ const MAPEAMENTOS_APIS = {
     nivelDependencia: 2,
     nomeArquivoReferencia: '1 - Produtos.json',
     campoBusca: 'grupoProduto',
+    dependencia: [
+      { idSubstituido: 'grupoProdutoRisco.id', arquivoDependencia: '9 - GruposProdutoRisco.json', idDependecia: 'id' },
+    ],
   },
   SUB_PRODUTO: {
     url: 'mc-cadastro-ms/api/v1/subProduto',
@@ -51,6 +54,9 @@ const MAPEAMENTOS_APIS = {
     nivelDependencia: 2,
     nomeArquivoReferencia: '1 - Produtos.json',
     campoBusca: 'focoNegocio',
+    dependencia: [
+      { idSubstituido: 'segmentoTarifador.id', arquivoDependencia: '8 - SegmentosTarifadores.json', idDependecia: 'id' },
+    ],
   },
   TIPO_PRODUTO: {
     url: 'mc-cadastro-ms/api/v1/tipoProduto',
@@ -104,6 +110,10 @@ const MAPEAMENTOS_APIS = {
     nomeArquivoReferencia: '1 - Produtos.json',
     campoBusca: 'id',
     content: 'falseId',
+    dependencia: [
+      {idSubstituido: 'produto.id', arquivoDependencia: '1 - Produtos.json', idDependecia: 'id' },
+      {idSubstituido: 'kitDocumento.id', arquivoDependencia: '23 - KitsDocumentos.json', idDependecia: 'id' },
+    ],
   },
   PRODUTO_GARANTIA: {
     urlBuscaId: 'mc-cadastro-ms/api/v1/produtoGarantia/findAllProdutoGarantiaByProdutoId/',
@@ -111,7 +121,11 @@ const MAPEAMENTOS_APIS = {
     nivelDependencia: 5,
     nomeArquivoReferencia: '1 - Produtos.json',
     campoBusca: 'id',
-    content: 'falseId'
+    content: 'falseId',
+    dependencia: [
+      {idSubstituido: 'produto.id', arquivoDependencia: '1 - Produtos.json', idDependecia: 'id' },
+      {idSubstituido: 'garantiaCategoria.id', arquivoDependencia: '13 - GarantiasCategorias.json', idDependecia: 'id' },
+    ],
   },
   PRODUTO_TARIFA: {
     urlBuscaId: 'mc-cadastro-ms/api/v1/produtoTarifa/findAllProdutoTarifaByProdutoId/',
@@ -119,7 +133,11 @@ const MAPEAMENTOS_APIS = {
     nivelDependencia: 5,
     nomeArquivoReferencia: '1 - Produtos.json',
     campoBusca: 'id',
-    content: 'falseId'
+    content: 'falseId',
+    dependencia: [
+      {idSubstituido: 'produto.id', arquivoDependencia: '1 - Produtos.json', idDependecia: 'id' },
+      {idSubstituido: 'tarifa.id', arquivoDependencia: '18 - Tarifas.json', idDependecia: 'id' },
+    ],
   },
   GARANTIA_CATEGORIA: {
     urlBuscaId: 'mc-cadastro-ms/api/v1/garantiaCategoria/',
@@ -128,7 +146,13 @@ const MAPEAMENTOS_APIS = {
     nivelDependencia: 2,
     nomeArquivoReferencia: '11 - ProdutosGarantia.json',
     campoBusca: 'garantiaCategoria',
-    content: 'lista'
+    content: 'lista',
+    dependencia: [
+      { idSubstituido: 'garantiaNivel.id', arquivoDependencia: '15 - NiveisGarantia.json', idDependecia: 'id' },
+      { idSubstituido: 'garantiaClassificacao.id', arquivoDependencia: '16 - ClassificacoesGarantia.json', idDependecia: 'id' },
+      { idSubstituido: 'tipoGarantia.id', arquivoDependencia: '14 - TiposGarantia.json', idDependecia: 'id' },
+      { idSubstituido: 'grupoGarantia.id', arquivoDependencia: '17 - GruposGarantia.json', idDependecia: 'id' },
+    ],
   },
   TIPO_GARANTIA: {
     url: 'mc-cadastro-ms/api/v1/garantiaTipo',
@@ -177,7 +201,10 @@ const MAPEAMENTOS_APIS = {
     campoBusca: 'tarifa',
     content: 'lista',
     campoDescricao: 'nomeTarifa',
-    contentBusca: ['nomeTarifa', 'codigoSubCategoria']
+    contentBusca: ['nomeTarifa', 'codigoSubCategoria,id'],
+    dependencia: [
+      { idSubstituido: 'eventoTarifador.id', arquivoDependencia: '19 - Eventos.json', idDependecia: 'id' },
+    ]
   },
   EVENTO :{
     url: 'mc-cadastro-ms/api/v1/evento',
@@ -187,6 +214,10 @@ const MAPEAMENTOS_APIS = {
     nivelDependencia: 3,
     nomeArquivoReferencia: '18 - Tarifas.json',
     campoBusca: 'entidadeTarifador',
+    dependencia: [
+      { idSubstituido: 'tipoEvento.id', arquivoDependencia: '20 - TiposEvento.json', idDependecia: 'id' },
+      { idSubstituido: 'situacao.id', arquivoDependencia: '21 - Situacoes.json', idDependecia: 'id' }
+    ]
   },
   TIPO_EVENTO :{
     url: 'mc-cadastro-ms/api/v1/tipoEvento',
@@ -205,7 +236,10 @@ const MAPEAMENTOS_APIS = {
     nivelDependencia: 2,
     nomeArquivoReferencia: '19 - Eventos.json',
     campoBusca: 'situacao',
-    contentBusca: ['descricao', 'tipoSituacao.descricao']
+    contentBusca: ['descricao', 'tipoSituacao.descricao'],
+    dependencia: [
+      { idSubstituido: 'tipoSituacao.id', arquivoDependencia: '22 - TipoSituacao.json', idDependecia: 'id' }
+    ],
   },
   TIPO_SITUACAO: {
     url: 'mc-cadastro-ms/api/v1/tipoSituacao',
@@ -247,7 +281,11 @@ export default MAPEAMENTOS_APIS;
     nivelDependencia: 5,
     nomeArquivoReferencia: '23 - KitsDocumentos.json',
     campoBusca: 'id',
-    content: 'falseId'
+    content: 'falseId',
+    dependencia: [
+      {idSubstituido: 'idDocumento', arquivoDependencia: '24 - MC_CAD_DOCUMENTO'},
+      {idSubstituido: 'idKitDocumento', arquivoDependencia: '22 - MC_CAD_KIT_DOCUMENTO'},
+    ],
   },
   DOCUMENTO :{
     url: 'mc-cadastro-ms/api/v1/documento',
@@ -266,7 +304,8 @@ export default MAPEAMENTOS_APIS;
     nivelDependencia: 2,
     nomeArquivoReferencia: '25 - Documentos.json',
     campoBusca: 'id',
-    content: 'falseId'
+    content: 'falseId',
+    dependencia: [{ idSubstituido: 'idDocumento', arquivoDependencia: '24 - MC_CAD_DOCUMENTO' }],
   },
   DOCUMENTO_PARTE :{
     urlBuscaId: 'mc-cadastro-ms/api/v1/documentoParte/findAllByDocumentoId/',
@@ -274,7 +313,11 @@ export default MAPEAMENTOS_APIS;
     nivelDependencia: 2,
     nomeArquivoReferencia: '25 - Documentos.json',
     campoBusca: 'id',
-    content: 'falseId'
+    content: 'falseId',
+    dependencia: [
+      {idSubstituido: 'idDocumento', arquivoDependencia: '24 - MC_CAD_DOCUMENTO'},
+      {idSubstituido: 'idEntidade', arquivoDependencia: '31 - MC_CAD_ENTIDADE'},
+    ],
   },
   DOCUMENTO_SECAO :{
     urlBuscaId: 'mc-cadastro-ms/api/v1/documentoSecao/findAllByDocumentoId/',
@@ -282,7 +325,10 @@ export default MAPEAMENTOS_APIS;
     nivelDependencia: 2,
     nomeArquivoReferencia: '25 - Documentos.json',
     campoBusca: 'id',
-    content: 'falseId'
+    content: 'falseId',
+    dependencia: [
+      { idSubstituido: 'idDocumento', arquivoDependencia: '24 - MC_CAD_DOCUMENTO' }
+    ],
   },
   DOCUMENTO_CARTAO_ASSINATURA :{
     urlBuscaId: 'mc-cadastro-ms/api/v1/documentoCartaoAssinatura/findAllDocumentoCartaoAssinaturaByDocumentoId/',
@@ -290,7 +336,10 @@ export default MAPEAMENTOS_APIS;
     nivelDependencia: 5,
     nomeArquivoReferencia: '25 - Documentos.json',
     campoBusca: 'id',
-    content: 'falseId'
+    content: 'falseId',
+    {idSubstituido: 'idDocumento', arquivoDependencia: '24 - MC_CAD_DOCUMENTO'},
+      {idSubstituido: 'idCartaoAssinatura', arquivoDependencia: '28 - MC_CAD_CARTAO_ASSINATURA'},
+    ],
   },
   CARTAO_ASSINATURA :{
     url: 'mc-cadastro-ms/api/v1/cartaoAssinatura',
@@ -300,7 +349,10 @@ export default MAPEAMENTOS_APIS;
     nivelDependencia: 2,
     nomeArquivoReferencia: '29 - DocumentoCartaoAssinatura.json',
     campoBusca: 'idCartaoAssinatura',
-    content: 'listaId'
+    content: 'listaId',
+    dependencia: [
+      { idSubstituido: 'idTituloAssinatura', arquivoDependencia: '29 - MC_CAD_TITULO_ASSINATURA' }
+    ],
   },
   TITULO_ASSINATURA :{
     url: 'mc-cadastro-ms/api/v1/tituloAssinatura',
