@@ -8,7 +8,6 @@ Given("que possuo uma lista de ids de esteiras que preciso finalizar de esteira 
     idComite = 622
     idAnalista = 19
     parecer = `AVANÇO AUTOMÁTICO - POC's LARCA`
-    cy.log(`Tipo de esteira: ${tipoEsteira}`);
 
     cnpjs = [
     ]

@@ -25,6 +25,7 @@ Cypress.Commands.add('definirAmbiente', (ambiente) => {
     loginUsername: Cypress.env('HML_API_USERNAME'),
     loginPassword: Cypress.env('HML_API_PASSWORD'),
     urlTokenApiIntercept: `${Cypress.env('HML_API_LOGIN_URL')}/auth/realms/multiplicacapital/protocol/openid-connect/token`,
+    
     token: tokens?.hml?.token ?? ''
   };
   const keycloak = {
@@ -35,6 +36,14 @@ Cypress.Commands.add('definirAmbiente', (ambiente) => {
     urlTokenApiIntercept: `${Cypress.env('HML_KEYCLOAK_LOGIN_URL')}/auth/realms/master/protocol/openid-connect/token`,
     token: tokens?.keycloak?.token ?? ''
   };
+  const bhml = {
+    baseUrl: Cypress.env('BHML_API_BASE_URL'),
+    loginUrl: Cypress.env('BHML_API_LOGIN_URL'),
+    loginUsername: Cypress.env('BHML_API_USERNAME'),
+    loginPassword: Cypress.env('BHML_API_PASSWORD'),
+    urlTokenApiIntercept: `${Cypress.env('BHML_API_LOGIN_URL')}/auth/realms/beyondbanking-hml/protocol/openid-connect/token`,
+    token: tokens?.bhml?.token ?? ''
+  };
 
   if (ambiente === 'prod') {
     return cy.wrap(prod);
@@ -42,6 +51,8 @@ Cypress.Commands.add('definirAmbiente', (ambiente) => {
     return cy.wrap(hml);
   } else if (ambiente === 'keycloak') {
     return cy.wrap(keycloak);
+  } else if (ambiente === 'bhml') {
+    return cy.wrap(bhml);
   } else {
     throw new Error(`Ambiente desconhecido: ${ambiente}`);
   }
@@ -345,4 +356,10 @@ Cypress.Commands.add('processarEntidadesPorNivel', (nivel) => {
   //cy.pesquisarItensPorNivel(nivel)
   //cy.atualizarItensExistentesPorNivel(nivel)
   //cy.criarItensInexistentesPorNivel(nivel)
+});
+
+Cypress.Commands.add('verificarDiretorioNaoVazio', (caminho) => {
+  cy.task('listarArquivos', caminho).then((arquivos) => {
+    expect(arquivos.length, `Diretório "${caminho}" está vazio`).to.be.greaterThan(0);
+  });
 });

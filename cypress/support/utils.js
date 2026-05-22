@@ -1,15 +1,20 @@
 import MAPEAMENTOS_APIS from '../utils/mapeamentoApis';
 const CLASSIFICACAO_PRODUTO = MAPEAMENTOS_APIS.CLASSIFICACAO_PRODUTO;
 const GRUPOS_KEYCLOAK = MAPEAMENTOS_APIS.GRUPOS_KEYCLOAK;
+const SELECIONAR_CEDENTE = MAPEAMENTOS_APIS.SELECIONAR_CEDENTE;
 
 Cypress.Commands.add('verificarTokens', (ambiente) => {
-  if (ambiente !== 'keycloak') {
+  if (ambiente.includes('prod', 'hml')) {
     return cy.executarRequest(ambiente, `${CLASSIFICACAO_PRODUTO.urlBusca}PRODUTO`, '', 'GET', false).then((response) => {
       if (response.status === 200) return;
       cy.loginUi(ambiente);
     });
-  }
-  else if (ambiente === 'keycloak') {
+  } else if (ambiente === 'bhml') {
+    return cy.executarRequest(ambiente, `${SELECIONAR_CEDENTE.url}Agrofoods`, '', 'GET', false).then((response) => {
+      if (response.status === 200) return;
+      cy.loginUi(ambiente);
+    });
+  } else if (ambiente === 'keycloak') {
     return cy.executarRequest(ambiente, `${GRUPOS_KEYCLOAK.urlBusca}APC`, '', 'GET', false).then((response) => {
       if (response.status === 200) return;
       cy.loginUi(ambiente);
@@ -19,7 +24,7 @@ Cypress.Commands.add('verificarTokens', (ambiente) => {
 
 Cypress.Commands.add('loginUi', (ambiente) => {
   cy.definirAmbiente(ambiente).then(({ loginUrl, baseUrl, loginUsername, loginPassword, urlTokenApiIntercept }) => {
-
+    cy.log(urlTokenApiIntercept)
     cy.intercept('POST', urlTokenApiIntercept).as('obterToken');
 
     const baseOrigin     = new URL(baseUrl).origin;

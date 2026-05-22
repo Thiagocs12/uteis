@@ -44,6 +44,16 @@ export default defineConfig({
           if (!conteudoBruto || !conteudoBruto.trim()) return [];
           return JSON.parse(conteudoBruto);
         },
+        listarArquivos(caminho) {
+          const diretorioCompleto = path.resolve(caminho);
+
+          if (!fs.existsSync(diretorioCompleto)) {
+            throw new Error(`Diretório não encontrado: ${diretorioCompleto}`);
+          }
+
+          const arquivos = fs.readdirSync(diretorioCompleto);
+          return arquivos;
+        },
       });
 
       config.env = {
