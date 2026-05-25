@@ -1,4 +1,4 @@
-const MAPEAMENTOS_APIS = {
+const MAPEAMENTOS_APIS = {/*
   PRODUTO: {
     url: 'mc-cadastro-ms/api/v1/produto',
     urlBusca: 'mc-cadastro-ms/api/v1/produto/search/0?descricao=',
@@ -201,7 +201,7 @@ const MAPEAMENTOS_APIS = {
     campoBusca: 'tarifa',
     content: 'lista',
     campoDescricao: 'nomeTarifa',
-    contentBusca: ['nomeTarifa', 'codigoSubCategoria,id'],
+    contentBusca: ['nomeTarifa', 'codigoSubCategori.id'],
     dependencia: [
       { idSubstituido: 'eventoTarifador.id', arquivoDependencia: '19 - Eventos.json', idDependecia: 'id' },
     ]
@@ -227,7 +227,7 @@ const MAPEAMENTOS_APIS = {
     nivelDependencia: 1,
     nomeArquivoReferencia: '19 - Eventos.json',
     campoBusca: 'tipoEvento',
-  },
+  },*/
   SITUACAO :{
     url: 'mc-cadastro-ms/api/v1/situacao',
     urlBusca: 'mc-cadastro-ms/api/v1/situacao/search/0?descricao=',
@@ -240,7 +240,7 @@ const MAPEAMENTOS_APIS = {
     dependencia: [
       { idSubstituido: 'tipoSituacao.id', arquivoDependencia: '22 - TipoSituacao.json', idDependecia: 'id' }
     ],
-  },
+  },/*
   TIPO_SITUACAO: {
     url: 'mc-cadastro-ms/api/v1/tipoSituacao',
     urlBusca: 'mc-cadastro-ms/api/v1/tipoSituacao/search/0?descricao=',
@@ -273,7 +273,7 @@ const MAPEAMENTOS_APIS = {
   SELECIONAR_CEDENTE: {
     url: 'mc-api-gateway-ms/v1/cedentes/search/0?numeroRegistros=100&nome=',
   }
-
+*/
 };
 
 export default MAPEAMENTOS_APIS;
@@ -309,6 +309,7 @@ export default MAPEAMENTOS_APIS;
     nomeArquivoReferencia: '25 - Documentos.json',
     campoBusca: 'id',
     content: 'falseId',
+    composicao: ['idDocumento', 'descricao'],
     dependencia: [{ idSubstituido: 'idDocumento', arquivoDependencia: '24 - MC_CAD_DOCUMENTO' }],
   },
   DOCUMENTO_PARTE :{
@@ -330,6 +331,7 @@ export default MAPEAMENTOS_APIS;
     nomeArquivoReferencia: '25 - Documentos.json',
     campoBusca: 'id',
     content: 'falseId',
+    composicao: ['idDocumento', 'descricao'],
     dependencia: [
       { idSubstituido: 'idDocumento', arquivoDependencia: '24 - MC_CAD_DOCUMENTO' }
     ],
@@ -354,6 +356,7 @@ export default MAPEAMENTOS_APIS;
     nomeArquivoReferencia: '29 - DocumentoCartaoAssinatura.json',
     campoBusca: 'idCartaoAssinatura',
     content: 'listaId',
+    composicao: ['nome', 'cpf'],
     dependencia: [
       { idSubstituido: 'idTituloAssinatura', arquivoDependencia: '29 - MC_CAD_TITULO_ASSINATURA' }
     ],

@@ -4,7 +4,7 @@ const GRUPOS_KEYCLOAK = MAPEAMENTOS_APIS.GRUPOS_KEYCLOAK;
 const SELECIONAR_CEDENTE = MAPEAMENTOS_APIS.SELECIONAR_CEDENTE;
 
 Cypress.Commands.add('verificarTokens', (ambiente) => {
-  if (ambiente.includes('prod', 'hml')) {
+  if (('prod', 'hml').includes(ambiente)) {
     return cy.executarRequest(ambiente, `${CLASSIFICACAO_PRODUTO.urlBusca}PRODUTO`, '', 'GET', false).then((response) => {
       if (response.status === 200) return;
       cy.loginUi(ambiente);

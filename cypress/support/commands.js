@@ -170,7 +170,7 @@ Cypress.Commands.add('pesquisarDependenciasLigacao', () => {
       const entidade = MAPEAMENTOS_APIS[chaveEntidade];
 
     if (
-      ['PRODUTO', 'GRUPOS_KEYCLOAK', 'MULTIFLOW'].includes(chaveEntidade)
+      ['PRODUTO', 'GRUPOS_KEYCLOAK', 'MULTIFLOW', 'SELECIONAR_CEDENTE'].includes(chaveEntidade)
     ) {
       continue
     }
@@ -265,20 +265,47 @@ Cypress.Commands.add('pesquisarItensPorNivel', (nivel) => {
 
     if (chaveEntidade === 'GRUPOS_KEYCLOAK' || entidade.nivelDependencia !== nivel) continue;
 
-    cy.lerColunaDeArquivo(nomeArquivo, campoDescricao, contentBusca).then((dadosDoArquivo) => {
-      for (const dado of dadosDoArquivo) {
-        const dadoEncoded = encodeURIComponent(dado);
-        cy.executarRequest('hml', `${entidade.urlBusca}${dadoEncoded}`).then((resposta) => {
-          const primeiroItem = resposta.body?.content?.[0];
-          const id           = primeiroItem?.id ?? null;
-          if (id === null) {
-            cy.log(`[LOG] - Registro "${dado}" não encontrado no ambiente, setando null`);
-          }
-          cy.setIdHmlPorDescricao(id, dado, nomeArquivo, campoDescricao);
-        });
-      } 
-    });
-  }
+    if(Array.isArray(contentBusca)) {
+      cy.lerColunaDeArquivo(nomeArquivo, contentBusca[0], 'falseId').then((dadosDoArquivo) => {
+        for (const dado of dadosDoArquivo) {
+          const dadoEncoded = encodeURIComponent(dado);
+          cy.executarRequest('hml', `${entidade.urlBusca}${dadoEncoded}`).then((resposta) => {
+            const itens = resposta.body?.content || [];
+            console.log(itens)
+            
+            const itemEncontrado = itens.find((item) =>
+              console.log(contentBusca[1])
+              //console.log(item?.[contentBusca[1]]?.trim()?.toLowerCase())// === dado.trim().toLowerCase()
+              
+            );
+            cy.pause()
+          });
+        }
+      });
+    } else {
+      cy.lerColunaDeArquivo(nomeArquivo, campoDescricao, contentBusca).then((dadosDoArquivo) => {
+        for (const dado of dadosDoArquivo) {
+          const dadoEncoded = encodeURIComponent(dado);
+
+          cy.executarRequest('hml', `${entidade.urlBusca}${dadoEncoded}`).then((resposta) => {
+            const itens = resposta.body?.content || [];
+
+            const itemEncontrado = itens.find((item) =>
+              item?.[campoDescricao]?.trim()?.toLowerCase() === dado.trim().toLowerCase()
+            );
+
+            const id = itemEncontrado?.id ?? null;
+
+            if (id === null) {
+              cy.log(`[LOG] - Registro "${dado}" não encontrado exatamente no ambiente, setando null`);
+            }
+
+            cy.setIdHmlPorDescricao(id, dado, nomeArquivo, campoDescricao);
+          });
+        }
+      });
+    }
+  } 
 });
 
 Cypress.Commands.add('setIdHmlPorDescricao', (id, descricao, nomeArquivo, campoDescricao) => {
@@ -352,9 +379,13 @@ Cypress.Commands.add('atualizarIdsDeDependencias', (nivel) => {
 });
 
 Cypress.Commands.add('processarEntidadesPorNivel', (nivel) => {
+  cy.log(`iniciando o command atualizarIdsDeDependencias para o nível ${nivel}`)
   cy.atualizarIdsDeDependencias(nivel)
-  //cy.pesquisarItensPorNivel(nivel)
+  cy.log(`iniciando o command pesquisarItensPorNivel para o nível ${nivel}`)
+  cy.pesquisarItensPorNivel(nivel)
+  //cy.log(`iniciando o command atualizarItensExistentesPorNivel para o nível ${nivel}`)
   //cy.atualizarItensExistentesPorNivel(nivel)
+  //cy.log(`iniciando o command criarItensInexistentesPorNivel para o nível ${nivel}`)
   //cy.criarItensInexistentesPorNivel(nivel)
 });
 
