@@ -58,7 +58,6 @@ Cypress.Commands.add('executarRequest2', (ambiente, api, body = '', method = 'GE
     `;
 
     console.log('CURL REQUEST:\n', curl);
-    cy.pause()
     return cy.request({
       method,
       url: urlCompleta,

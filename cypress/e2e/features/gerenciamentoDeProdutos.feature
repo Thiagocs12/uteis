@@ -11,12 +11,12 @@ Funcionalidade: Sincronização de Dados de Produtos
 
   @produto
   Cenário: Copiar e Sincronizar um Produto e suas Dependências
-    Dado uma consulta aos produtos de produção é realizada para obter os dados atuais
-    E a pesquisa retornou dados de produtos para serem copiados de produção para homologação
-    Quando pesquiso as dependências desses produtos
+    #Dado uma consulta aos produtos de produção é realizada para obter os dados atuais
+    #E a pesquisa retornou dados de produtos para serem copiados de produção para homologação
+    #Quando pesquiso as dependências desses produtos
     #E processo as dependências do nivel 1
-    E processo as dependências do nivel 2
+    #E processo as dependências do nivel 2
     #E processo as dependências do nivel 3
     #E processo as dependências do nivel 4
-    #E processo as dependências do nivel 5
+    E processo as dependências do nivel 5
     Então os dados dos produtos e suas dependências estão copiados de produção para homologação

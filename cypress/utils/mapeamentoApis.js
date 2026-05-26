@@ -1,4 +1,4 @@
-const MAPEAMENTOS_APIS = {/*
+const MAPEAMENTOS_APIS = {
   PRODUTO: {
     url: 'mc-cadastro-ms/api/v1/produto',
     urlBusca: 'mc-cadastro-ms/api/v1/produto/search/0?descricao=',
@@ -6,14 +6,15 @@ const MAPEAMENTOS_APIS = {/*
     urlListAll: 'mc-cadastro-ms/api/v1/produto/listAll',
     nomeArquivo: '1 - Produtos.json',
     nivelDependencia: 3,
+    contentBusca: ['descricao', 'classificacaoProduto.id'],
     dependencia: [
-      { idSubstituido: 'subProduto.id', arquivoDependencia: '33 - SubProdutos.json', idDependecia: 'id'},
-      { idSubstituido: 'classificacaoProduto.id', arquivoDependencia: '2 - Classificacoes.json', idDependecia: 'id'},
-      { idSubstituido: 'grupoProduto.id', arquivoDependencia: '3 - GrupoProdutos.json', idDependecia: 'id'},
-      { idSubstituido: 'focoNegocio.id', arquivoDependencia: '4 - FocosNegocio.json', idDependecia: 'id'},
-      { idSubstituido: 'tipoProduto.id', arquivoDependencia: '5 - TiposProduto.json', idDependecia: 'id'},
-      { idSubstituido: 'produtoIndexador.id', arquivoDependencia: '6 - ProdutosIndexadores.json', idDependecia: 'id'},
-      { idSubstituido: 'produtoTPRecebimento.id', arquivoDependencia: '7 - TiposRecebimento.json', idDependecia: 'id'},
+      { idSubstituido: 'subProduto.id', arquivoDependencia: '33 - SubProdutos.json'},
+      { idSubstituido: 'classificacaoProduto.id', arquivoDependencia: '2 - Classificacoes.json'},
+      { idSubstituido: 'grupoProduto.id', arquivoDependencia: '3 - GrupoProdutos.json'},
+      { idSubstituido: 'focoNegocio.id', arquivoDependencia: '4 - FocosNegocio.json'},
+      { idSubstituido: 'tipoProduto.id', arquivoDependencia: '5 - TiposProduto.json'},
+      { idSubstituido: 'produtoIndexador.id', arquivoDependencia: '6 - ProdutosIndexadores.json'},
+      { idSubstituido: 'produtoTPRecebimento.id', arquivoDependencia: '7 - TiposRecebimento.json'},
     ]
   },
   CLASSIFICACAO_PRODUTO: {
@@ -34,7 +35,7 @@ const MAPEAMENTOS_APIS = {/*
     nomeArquivoReferencia: '1 - Produtos.json',
     campoBusca: 'grupoProduto',
     dependencia: [
-      { idSubstituido: 'grupoProdutoRisco.id', arquivoDependencia: '9 - GruposProdutoRisco.json', idDependecia: 'id' },
+      { idSubstituido: 'grupoProdutoRisco.id', arquivoDependencia: '9 - GruposProdutoRisco.json' },
     ],
   },
   SUB_PRODUTO: {
@@ -55,7 +56,7 @@ const MAPEAMENTOS_APIS = {/*
     nomeArquivoReferencia: '1 - Produtos.json',
     campoBusca: 'focoNegocio',
     dependencia: [
-      { idSubstituido: 'segmentoTarifador.id', arquivoDependencia: '8 - SegmentosTarifadores.json', idDependecia: 'id' },
+      { idSubstituido: 'segmentoTarifador.id', arquivoDependencia: '8 - SegmentosTarifadores.json' },
     ],
   },
   TIPO_PRODUTO: {
@@ -105,40 +106,46 @@ const MAPEAMENTOS_APIS = {/*
   },
   PRODUTO_KIT: {
     urlBuscaId: 'mc-cadastro-ms/api/v1/produtoKit/findAllProdutoKitByProdutoId/',
+    urlBusca: 'mc-cadastro-ms/api/v1/produtoKit/findAllProdutoKitByProdutoId/',
     nomeArquivo: '10 - ProdutosKit.json',
     nivelDependencia: 5,
     nomeArquivoReferencia: '1 - Produtos.json',
     campoBusca: 'id',
     content: 'falseId',
+    contentBusca: ['produto.id', 'kitDocumento.id'],
     dependencia: [
-      {idSubstituido: 'produto.id', arquivoDependencia: '1 - Produtos.json', idDependecia: 'id' },
-      {idSubstituido: 'kitDocumento.id', arquivoDependencia: '23 - KitsDocumentos.json', idDependecia: 'id' },
+      {idSubstituido: 'produto.id', arquivoDependencia: '1 - Produtos.json' },
+      {idSubstituido: 'kitDocumento.id', arquivoDependencia: '23 - KitsDocumentos.json' },
     ],
   },
   PRODUTO_GARANTIA: {
     urlBuscaId: 'mc-cadastro-ms/api/v1/produtoGarantia/findAllProdutoGarantiaByProdutoId/',
+    urlBusca: 'mc-cadastro-ms/api/v1/produtoGarantia/findAllProdutoGarantiaByProdutoId/',
     nomeArquivo: '11 - ProdutosGarantia.json',
     nivelDependencia: 5,
     nomeArquivoReferencia: '1 - Produtos.json',
     campoBusca: 'id',
     content: 'falseId',
+    contentBusca: ['produto.id', 'garantiaCategoria.id'],
     dependencia: [
-      {idSubstituido: 'produto.id', arquivoDependencia: '1 - Produtos.json', idDependecia: 'id' },
-      {idSubstituido: 'garantiaCategoria.id', arquivoDependencia: '13 - GarantiasCategorias.json', idDependecia: 'id' },
+      {idSubstituido: 'produto.id', arquivoDependencia: '1 - Produtos.json' },
+      {idSubstituido: 'garantiaCategoria.id', arquivoDependencia: '13 - GarantiasCategorias.json' },
     ],
   },
   PRODUTO_TARIFA: {
     urlBuscaId: 'mc-cadastro-ms/api/v1/produtoTarifa/findAllProdutoTarifaByProdutoId/',
+    urlBusca: 'mc-cadastro-ms/api/v1/produtoTarifa/findAllProdutoTarifaByProdutoId/',
     nomeArquivo: '12 - ProdutosTarifa.json',
     nivelDependencia: 5,
     nomeArquivoReferencia: '1 - Produtos.json',
     campoBusca: 'id',
     content: 'falseId',
+    contentBusca: ['produto.id', 'tarifa.id'],
     dependencia: [
-      {idSubstituido: 'produto.id', arquivoDependencia: '1 - Produtos.json', idDependecia: 'id' },
-      {idSubstituido: 'tarifa.id', arquivoDependencia: '18 - Tarifas.json', idDependecia: 'id' },
+      {idSubstituido: 'produto.id', arquivoDependencia: '1 - Produtos.json' },
+      {idSubstituido: 'tarifa.id', arquivoDependencia: '18 - Tarifas.json' },
     ],
-  },*/
+  },
   GARANTIA_CATEGORIA: {
     url: 'mc-cadastro-ms/api/v1/garantiaCategoria',
     urlBuscaId: 'mc-cadastro-ms/api/v1/garantiaCategoria/',
@@ -148,14 +155,14 @@ const MAPEAMENTOS_APIS = {/*
     nomeArquivoReferencia: '11 - ProdutosGarantia.json',
     campoBusca: 'garantiaCategoria',
     content: 'lista',
-    contentBusca: ['descricao', 'idGarantiaClassificacao'],
+    contentBusca: ['descricao', 'ativo'],
     dependencia: [
-      { idSubstituido: 'garantiaNivel.id', arquivoDependencia: '15 - NiveisGarantia.json', idDependecia: 'id' },
-      { idSubstituido: 'idGarantiaClassificacao', arquivoDependencia: '16 - ClassificacoesGarantia.json', idDependecia: 'id' },
-      { idSubstituido: 'tipoGarantia.id', arquivoDependencia: '14 - TiposGarantia.json', idDependecia: 'id' },
-      { idSubstituido: 'grupoGarantia.id', arquivoDependencia: '17 - GruposGarantia.json', idDependecia: 'id' },
+      { idSubstituido: 'garantiaNivel.id', arquivoDependencia: '15 - NiveisGarantia.json' },
+      { idSubstituido: 'idGarantiaClassificacao', arquivoDependencia: '16 - ClassificacoesGarantia.json' },
+      { idSubstituido: 'tipoGarantia.id', arquivoDependencia: '14 - TiposGarantia.json' },
+      { idSubstituido: 'grupoGarantia.id', arquivoDependencia: '17 - GruposGarantia.json' },
     ],
-  },/*
+  },
   TIPO_GARANTIA: {
     url: 'mc-cadastro-ms/api/v1/garantiaTipo',
     urlBusca: 'mc-cadastro-ms/api/v1/garantiaTipo/search/0?descricao=',
@@ -205,7 +212,7 @@ const MAPEAMENTOS_APIS = {/*
     campoDescricao: 'nomeTarifa',
     contentBusca: ['nomeTarifa', 'codigoSubCategori.id'],
     dependencia: [
-      { idSubstituido: 'eventoTarifador.id', arquivoDependencia: '19 - Eventos.json', idDependecia: 'id' },
+      { idSubstituido: 'eventoTarifador.id', arquivoDependencia: '19 - Eventos.json' },
     ]
   },
   EVENTO :{
@@ -217,8 +224,8 @@ const MAPEAMENTOS_APIS = {/*
     nomeArquivoReferencia: '18 - Tarifas.json',
     campoBusca: 'entidadeTarifador',
     dependencia: [
-      { idSubstituido: 'tipoEvento.id', arquivoDependencia: '20 - TiposEvento.json', idDependecia: 'id' },
-      { idSubstituido: 'situacao.id', arquivoDependencia: '21 - Situacoes.json', idDependecia: 'id' }
+      { idSubstituido: 'tipoEvento.id', arquivoDependencia: '20 - TiposEvento.json' },
+      { idSubstituido: 'situacao.id', arquivoDependencia: '21 - Situacoes.json' }
     ]
   },
   TIPO_EVENTO :{
@@ -240,7 +247,7 @@ const MAPEAMENTOS_APIS = {/*
     campoBusca: 'situacao',
     contentBusca: ['descricao', 'tipoSituacao.descricao'],
     dependencia: [
-      { idSubstituido: 'tipoSituacao.id', arquivoDependencia: '22 - TipoSituacao.json', idDependecia: 'id' }
+      { idSubstituido: 'tipoSituacao.id', arquivoDependencia: '22 - TipoSituacao.json' }
     ],
   },
   TIPO_SITUACAO: {
@@ -274,7 +281,7 @@ const MAPEAMENTOS_APIS = {/*
   },
   SELECIONAR_CEDENTE: {
     url: 'mc-api-gateway-ms/v1/cedentes/search/0?numeroRegistros=100&nome=',
-  }*/
+  }
 };
 
 export default MAPEAMENTOS_APIS;

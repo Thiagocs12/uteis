@@ -12,7 +12,7 @@ const SELECIONAR_CEDENTE = MAPEAMENTOS_APIS.SELECIONAR_CEDENTE;
  * @returns {Cypress.Chainable<void>}
  */
 Cypress.Commands.add('verificarTokens', (ambiente) => {
-  if (('prod', 'hml').includes(ambiente)) {
+  if(['prod', 'hml'].includes(ambiente)) {
     return cy.executarRequest(ambiente, `${CLASSIFICACAO_PRODUTO.urlBusca}PRODUTO`, '', 'GET', false).then((response) => {
       if (response.status === 200) return;
       cy.loginUi(ambiente);

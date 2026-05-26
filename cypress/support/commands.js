@@ -318,14 +318,13 @@ Cypress.Commands.add('pesquisarItensPorNivel', (nivel) => {
     };
 
     if (Array.isArray(contentBusca)) {
-
       cy.lerJsonDeOutput(nomeArquivo).then((dadosDoArquivo) => {
-
+        
         for (const dado of dadosDoArquivo) {
 
           const valorBusca = obterValor(dado, contentBusca[0]);
 
-          cy.executarRequest(
+          cy.executarRequest2(
             'hml',
             `${entidade.urlBusca}${encodeURIComponent(valorBusca)}`
           ).then((resposta) => {
@@ -499,45 +498,71 @@ Cypress.Commands.add('setIdHmlPorDescricao', (id, descricao, nomeArquivo, campoD
  */
 Cypress.Commands.add('atualizarIdsDeDependencias', (nivel) => {
   for (const chaveEntidade in MAPEAMENTOS_APIS) {
+    if (!Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade)) continue;
+
     const entidade = MAPEAMENTOS_APIS[chaveEntidade];
 
     if (
-      !Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade) ||
       chaveEntidade === 'GRUPOS_KEYCLOAK' ||
       entidade.nivelDependencia !== nivel ||
       !entidade.dependencia ||
       entidade.dependencia.length === 0
-    ) continue;
-
-    cy.log(`Atualizando IDs de dependências para a entidade: ${chaveEntidade} (Nível ${nivel})`);
+    ) {
+      continue;
+    }
 
     cy.readFile(`cypress/output/${entidade.nomeArquivo}`).then((itens) => {
-      entidade.dependencia.forEach((dependencia) => {
-        cy.readFile(`cypress/output/${dependencia.arquivoDependencia}`).then((dependencias) => {
-          const listaDependencias = Array.isArray(dependencias[0])
-            ? dependencias.flat()
-            : dependencias;
 
-          itens.forEach((item) => {
-            const idOriginal = Cypress._.get(item, dependencia.idSubstituido);
+      // garante que as dependências processam de forma encadeada
+      cy.wrap(entidade.dependencia).each((dependencia) => {
+        const {
+          arquivoDependencia,
+          idSubstituido,  // ex: 'grupoProduto.id'
+        } = dependencia;
 
-            if (!idOriginal) return;
+        const idDependecia = dependencia.idDependecia || 'id';
 
-            const equivalente = dependencias.find(
-              (dependenciaItem) => dependenciaItem[dependencia.idDependecia] === idOriginal
-            );
+        return cy
+          .readFile(`cypress/output/${arquivoDependencia}`)
+          .then((dependencias) => {
+            const listaDependencias = Array.isArray(dependencias[0])
+              ? dependencias.flat()
+              : dependencias;
 
-            if (!equivalente) {
-              cy.log(`Equivalente não encontrado para ID ${idOriginal}`);
-              return;
-            }
+            itens.forEach((item, index) => {
+              const idOriginal = Cypress._.get(item, idSubstituido);
 
-            Cypress._.set(item, dependencia.idSubstituido, equivalente.idHml);
+              // sem ID pra traduzir, pula
+              if (!idOriginal) {
+                return;
+              }
+
+              // 🔒 NOVA REGRA:
+              // se o item já tem idHml preenchido, não faz pesquisa nem substitui nada
+              if (item.idHml != null) {
+                // opcional: log pra debug
+                // cy.log(`Item[${index}] já possui idHml=${item.idHml}, pulando tradução para ${idSubstituido}`);
+                return;
+              }
+
+              const equivalente = listaDependencias.find(
+                (depItem) => depItem[idDependecia] === idOriginal
+              );
+
+              if (!equivalente) {
+                // opcional: logar para investigar falhas de correspondência
+                // cy.log(`Equivalente não encontrado para ${idSubstituido} (${idOriginal}) em ${arquivoDependencia}`);
+                return;
+              }
+
+              // substituição de fato
+              Cypress._.set(item, idSubstituido, equivalente.idHml);
+            });
           });
-        });
+      }).then(() => {
+        // aqui você grava o arquivo se for o comportamento desejado:
+        // cy.writeFile(`cypress/output/${entidade.nomeArquivo}`, itens);
       });
-
-      cy.writeFile(`cypress/output/${entidade.nomeArquivo}`, itens);
     });
   }
 });
@@ -550,6 +575,7 @@ Cypress.Commands.add('atualizarIdsDeDependencias', (nivel) => {
  * @returns {Cypress.Chainable<void>}
  */
 Cypress.Commands.add('processarEntidadesPorNivel', (nivel) => {
+  cy.normalizarArquivosNivel5()
   cy.log(`iniciando o command atualizarIdsDeDependencias para o nível ${nivel}`);
   cy.atualizarIdsDeDependencias(nivel);
   cy.log(`iniciando o command pesquisarItensPorNivel para o nível ${nivel}`);
@@ -570,4 +596,86 @@ Cypress.Commands.add('verificarDiretorioNaoVazio', (caminho) => {
   cy.task('listarArquivos', caminho).then((arquivos) => {
     expect(arquivos.length, `Diretório "${caminho}" está vazio`).to.be.greaterThan(0);
   });
+});
+
+// cypress/support/commands.js
+
+/**
+ * @description
+ * Lê um arquivo JSON. Se for um array simples de objetos (ex: [ {...}, {...} ]),
+ * não faz nada. Se for um array contendo sub‑arrays (ex: [ [], [ {...} ], [] ]),
+ * normaliza para um array simples:
+ *   - achata (flat)
+ *   - remove duplicados (objetos exatamente iguais)
+ *   - sobrescreve o próprio arquivo.
+ *
+ * @param {string} arquivo - Caminho do arquivo a ser normalizado.
+ * @returns {Cypress.Chainable<void>}
+ */
+Cypress.Commands.add('normalizarArquivo', (arquivo) => {
+  cy.readFile(arquivo).then((dadosBrutos) => {
+    // Se não é array, nem tenta normalizar
+    if (!Array.isArray(dadosBrutos)) {
+      cy.log(`📄 ${arquivo} não é um array, não será alterado.`);
+      return;
+    }
+
+    const temSubArray = dadosBrutos.some(Array.isArray);
+
+    // Caso 1: já é um array "reto", sem sub‑arrays -> não mexe
+    if (!temSubArray) {
+      cy.log(`✅ ${arquivo} já está normalizado (array simples). Nada a fazer.`);
+      return;
+    }
+
+    cy.log(`🔄 ${arquivo} contém sub‑arrays. Normalizando...`);
+
+    // 1) pega só os sub‑arrays e achata tudo
+    const todosItens = dadosBrutos
+      .filter(Array.isArray)  // remove [], null, etc.
+      .flat();                // junta todos os itens num único array
+
+    // 2) remove duplicações comparando o objeto inteiro
+    const vistos = new Set();
+    const itensUnicos = [];
+
+    todosItens.forEach((item) => {
+      const assinatura = JSON.stringify(item);
+      if (vistos.has(assinatura)) return;
+
+      vistos.add(assinatura);
+      itensUnicos.push(item);
+    });
+
+    cy.log(`Total bruto: ${todosItens.length} | Sem duplicações: ${itensUnicos.length}`);
+
+    // 3) sobrescreve o mesmo arquivo com os itens únicos
+    return cy.writeFile(arquivo, itensUnicos);
+  });
+});
+
+/**
+ * @description
+ * Para todas as entidades definidas em MAPEAMENTOS_APIS com nivelDependencia === 5,
+ * normaliza o arquivo correspondente (nomeArquivo) em cypress/output,
+ * removendo duplicados e sobrescrevendo o próprio arquivo.
+ *
+ * @returns {Cypress.Chainable<void>}
+ */
+Cypress.Commands.add('normalizarArquivosNivel5', () => {
+  // percorre o mapa normalmente com for...in,
+  // mas SEM usar forEach pra não bagunçar o encadeamento do Cypress
+  for (const chaveEntidade in MAPEAMENTOS_APIS) {
+    if (!Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade)) continue;
+
+    const entidade = MAPEAMENTOS_APIS[chaveEntidade];
+
+    if (entidade.nivelDependencia !== 5) {
+      continue;
+    }
+
+    const caminhoArquivo = `cypress/output/${entidade.nomeArquivo}`;
+
+    cy.normalizarArquivo(caminhoArquivo);
+  }
 });
