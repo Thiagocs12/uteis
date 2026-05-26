@@ -138,8 +138,9 @@ const MAPEAMENTOS_APIS = {/*
       {idSubstituido: 'produto.id', arquivoDependencia: '1 - Produtos.json', idDependecia: 'id' },
       {idSubstituido: 'tarifa.id', arquivoDependencia: '18 - Tarifas.json', idDependecia: 'id' },
     ],
-  },
+  },*/
   GARANTIA_CATEGORIA: {
+    url: 'mc-cadastro-ms/api/v1/garantiaCategoria',
     urlBuscaId: 'mc-cadastro-ms/api/v1/garantiaCategoria/',
     urlBusca: 'mc-cadastro-ms/api/v1/garantiaCategoria/search/0?descricao=',
     nomeArquivo: '13 - GarantiasCategorias.json',
@@ -147,13 +148,14 @@ const MAPEAMENTOS_APIS = {/*
     nomeArquivoReferencia: '11 - ProdutosGarantia.json',
     campoBusca: 'garantiaCategoria',
     content: 'lista',
+    contentBusca: ['descricao', 'idGarantiaClassificacao'],
     dependencia: [
       { idSubstituido: 'garantiaNivel.id', arquivoDependencia: '15 - NiveisGarantia.json', idDependecia: 'id' },
-      { idSubstituido: 'garantiaClassificacao.id', arquivoDependencia: '16 - ClassificacoesGarantia.json', idDependecia: 'id' },
+      { idSubstituido: 'idGarantiaClassificacao', arquivoDependencia: '16 - ClassificacoesGarantia.json', idDependecia: 'id' },
       { idSubstituido: 'tipoGarantia.id', arquivoDependencia: '14 - TiposGarantia.json', idDependecia: 'id' },
       { idSubstituido: 'grupoGarantia.id', arquivoDependencia: '17 - GruposGarantia.json', idDependecia: 'id' },
     ],
-  },
+  },/*
   TIPO_GARANTIA: {
     url: 'mc-cadastro-ms/api/v1/garantiaTipo',
     urlBusca: 'mc-cadastro-ms/api/v1/garantiaTipo/search/0?descricao=',
@@ -227,7 +229,7 @@ const MAPEAMENTOS_APIS = {/*
     nivelDependencia: 1,
     nomeArquivoReferencia: '19 - Eventos.json',
     campoBusca: 'tipoEvento',
-  },*/
+  },
   SITUACAO :{
     url: 'mc-cadastro-ms/api/v1/situacao',
     urlBusca: 'mc-cadastro-ms/api/v1/situacao/search/0?descricao=',
@@ -240,7 +242,7 @@ const MAPEAMENTOS_APIS = {/*
     dependencia: [
       { idSubstituido: 'tipoSituacao.id', arquivoDependencia: '22 - TipoSituacao.json', idDependecia: 'id' }
     ],
-  },/*
+  },
   TIPO_SITUACAO: {
     url: 'mc-cadastro-ms/api/v1/tipoSituacao',
     urlBusca: 'mc-cadastro-ms/api/v1/tipoSituacao/search/0?descricao=',
@@ -272,8 +274,7 @@ const MAPEAMENTOS_APIS = {/*
   },
   SELECIONAR_CEDENTE: {
     url: 'mc-api-gateway-ms/v1/cedentes/search/0?numeroRegistros=100&nome=',
-  }
-*/
+  }*/
 };
 
 export default MAPEAMENTOS_APIS;

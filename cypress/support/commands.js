@@ -1,13 +1,14 @@
 import MAPEAMENTOS_APIS from '../utils/mapeamentoApis';
 import MAPEAMENTOS_ETAPAS from '../utils/mapeamentoEtapas';
+import { obterValor } from './utils';
 import tokens from '../temp/tokens.json';
 
-const multiflow = MAPEAMENTOS_APIS.MULTIFLOW
-const etapas = MAPEAMENTOS_ETAPAS
+const multiflow = MAPEAMENTOS_APIS.MULTIFLOW;
+const etapas = MAPEAMENTOS_ETAPAS;
 
 /**
  * @description Define e retorna os dados base para um ambiente específico.
- * @param {string} ambiente - O nome do ambiente ('prod', 'hml', 'keycloak').
+ * @param {string} ambiente - O nome do ambiente ('prod', 'hml', 'keycloak', 'bhml').
  * @returns {Cypress.Chainable<object>} Um objeto contendo baseUrl, loginUrl, loginUsername e loginPassword.
  */
 Cypress.Commands.add('definirAmbiente', (ambiente) => {
@@ -25,7 +26,6 @@ Cypress.Commands.add('definirAmbiente', (ambiente) => {
     loginUsername: Cypress.env('HML_API_USERNAME'),
     loginPassword: Cypress.env('HML_API_PASSWORD'),
     urlTokenApiIntercept: `${Cypress.env('HML_API_LOGIN_URL')}/auth/realms/multiplicacapital/protocol/openid-connect/token`,
-    
     token: tokens?.hml?.token ?? ''
   };
   const keycloak = {
@@ -59,7 +59,7 @@ Cypress.Commands.add('definirAmbiente', (ambiente) => {
 });
 
 /**
- * Lê um arquivo JSON do diretório 'cypress/output'.
+ * @description Lê um arquivo JSON do diretório 'cypress/output'.
  * Retorna null se o arquivo não existir ou estiver vazio.
  * @param {string} nomeArquivo - Nome do arquivo JSON (ex: 'meuArquivo.json').
  * @returns {Cypress.Chainable<Array<object>|null>} Conteúdo do JSON ou null.
@@ -70,14 +70,17 @@ Cypress.Commands.add('lerJsonDeOutput', (nomeArquivo) => {
 });
 
 /**
- * Lê uma coluna específica de um arquivo JSON de output.
- * @param {string} nomeArquivo - Nome do arquivo JSON.
- * @param {string} nomeColuna - Nome da coluna a ser lida.
- * @returns {Cypress.Chainable<Array<any>>} Array com os valores da coluna.
+ * @description Lê uma coluna específica de um arquivo JSON de output,
+ * extraindo valores únicos de acordo com o modo de leitura informado.
+ * @param {string} nomeArquivo - Nome do arquivo JSON localizado em 'cypress/output/'.
+ * @param {string} nomeColuna - Nome da propriedade a ser extraída dos itens.
+ * @param {'content'|'ligacao'|'lista'|'listaId'|'falseId'|'contentId'|true} [content=true] - Modo de leitura do arquivo.
+ * @returns {Cypress.Chainable<Array<any>>} Array com os valores únicos da coluna.
  */
 Cypress.Commands.add('lerColunaDeArquivo', (nomeArquivo, nomeColuna, content = true) => {
   return cy.lerJsonDeOutput(nomeArquivo).then((conteudoArquivo) => {
     const valoresUnicos = new Set();
+
     if (content === 'content') {
       if (conteudoArquivo && conteudoArquivo['content']) {
         for (let i = 0; i < conteudoArquivo['content'].length; i++) {
@@ -114,9 +117,9 @@ Cypress.Commands.add('lerColunaDeArquivo', (nomeArquivo, nomeColuna, content = t
       }
     } else if (content === 'falseId') {
       for (let i = 0; i < conteudoArquivo.length; i++) {
-          const item = conteudoArquivo[i];
-          if (item && item[nomeColuna] && item[nomeColuna] !== undefined) {
-            valoresUnicos.add(item[nomeColuna]);
+        const item = conteudoArquivo[i];
+        if (item && item[nomeColuna] && item[nomeColuna] !== undefined) {
+          valoresUnicos.add(item[nomeColuna]);
         }
       }
     } else if (content === 'contentId') {
@@ -136,20 +139,32 @@ Cypress.Commands.add('lerColunaDeArquivo', (nomeArquivo, nomeColuna, content = t
         }
       }
     }
+
     return cy.wrap(Array.from(valoresUnicos));
   });
 });
 
+/**
+ * @description Busca os dados de uma entidade dependente na API de produção
+ * com base nos IDs extraídos de um arquivo de referência, salvando o resultado em um novo arquivo de output.
+ * @param {object} entidade - Configuração da entidade a ser pesquisada.
+ * @param {string} entidade.nomeArquivoReferencia - Nome do arquivo JSON de referência para leitura dos IDs.
+ * @param {string} entidade.campoBusca - Nome da coluna/propriedade usada para extração dos IDs.
+ * @param {string} entidade.nomeArquivo - Nome do arquivo de saída onde os dados serão salvos.
+ * @param {string} entidade.urlBuscaId - URL base da API para busca por ID (o ID será concatenado ao final).
+ * @param {string} [entidade.content] - Modo de leitura do arquivo de referência (repassado para lerColunaDeArquivo).
+ * @returns {Cypress.Chainable<void>}
+ */
 Cypress.Commands.add('pesquisarDependencias', (entidade) => {
   if (!entidade || !entidade.nomeArquivoReferencia || !entidade.campoBusca || !entidade.nomeArquivo || !entidade.urlBuscaId) {
     throw new Error(`Configuração de entidade inválida para pesquisarDependencias. Verifique as propriedades: {nomeArquivoReferencia}, {campoBusca}, {nomeArquivo}, {urlBuscaId}.`);
   }
 
-  const nomeArquivoReferencia = entidade.nomeArquivoReferencia
-  const campoBusca = entidade.campoBusca
-  const nomeArquivo = entidade.nomeArquivo
-  const urlBuscaId = entidade.urlBuscaId
-  const content = entidade.content
+  const nomeArquivoReferencia = entidade.nomeArquivoReferencia;
+  const campoBusca = entidade.campoBusca;
+  const nomeArquivo = entidade.nomeArquivo;
+  const urlBuscaId = entidade.urlBuscaId;
+  const content = entidade.content;
   const valores = [];
 
   return cy.lerColunaDeArquivo(nomeArquivoReferencia, campoBusca, content).then((dadosDoArquivo) => {
@@ -157,28 +172,39 @@ Cypress.Commands.add('pesquisarDependencias', (entidade) => {
 
     for (const id of idsUnicos) {
       cy.executarRequest('prod', `${urlBuscaId}${id}`).then((resposta) => {
-        valores.push(resposta.body)
+        valores.push(resposta.body);
       });
     }
+
     cy.writeFile(`cypress/output/${nomeArquivo}`, valores);
   });
 });
 
+/**
+ * @description Itera sobre todos os mapeamentos de APIs e executa a pesquisa de dependências
+ * para cada entidade, ignorando as entidades 'PRODUTO', 'GRUPOS_KEYCLOAK', 'MULTIFLOW' e 'SELECIONAR_CEDENTE'.
+ * @returns {Cypress.Chainable<void>}
+ */
 Cypress.Commands.add('pesquisarDependenciasLigacao', () => {
   for (const chaveEntidade in MAPEAMENTOS_APIS) {
     if (Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade)) {
       const entidade = MAPEAMENTOS_APIS[chaveEntidade];
 
-    if (
-      ['PRODUTO', 'GRUPOS_KEYCLOAK', 'MULTIFLOW', 'SELECIONAR_CEDENTE'].includes(chaveEntidade)
-    ) {
-      continue
-    }
+      if (['PRODUTO', 'GRUPOS_KEYCLOAK', 'MULTIFLOW', 'SELECIONAR_CEDENTE'].includes(chaveEntidade)) {
+        continue;
+      }
+
       cy.pesquisarDependencias(entidade);
     }
   }
 });
 
+/**
+ * @description Cria no ambiente HML os itens de um determinado nível de dependência
+ * que ainda não possuem 'idHml' (ou seja, idHml === null), ignorando a entidade 'GRUPOS_KEYCLOAK'.
+ * @param {number} nivel - Nível de dependência das entidades a serem processadas.
+ * @returns {Cypress.Chainable<void>}
+ */
 Cypress.Commands.add('criarItensInexistentesPorNivel', (nivel) => {
   for (const chaveEntidade in MAPEAMENTOS_APIS) {
     if (!Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade)) continue;
@@ -187,7 +213,7 @@ Cypress.Commands.add('criarItensInexistentesPorNivel', (nivel) => {
 
     if (chaveEntidade === 'GRUPOS_KEYCLOAK' || entidade.nivelDependencia !== nivel) continue;
 
-    const method         = entidade.method        || 'POST';
+    const method = entidade.method || 'POST';
     const caminhoArquivo = `cypress/output/${entidade.nomeArquivo}`;
     const campoDescricao = entidade.campoDescricao || 'descricao';
     const chavesIgnoradas = [
@@ -216,6 +242,12 @@ Cypress.Commands.add('criarItensInexistentesPorNivel', (nivel) => {
   }
 });
 
+/**
+ * @description Atualiza no ambiente HML os itens de um determinado nível de dependência
+ * que já possuem 'idHml' (ou seja, idHml !== null), ignorando a entidade 'GRUPOS_KEYCLOAK'.
+ * @param {number} nivel - Nível de dependência das entidades a serem processadas.
+ * @returns {Cypress.Chainable<void>}
+ */
 Cypress.Commands.add('atualizarItensExistentesPorNivel', (nivel) => {
   for (const chaveEntidade in MAPEAMENTOS_APIS) {
     if (!Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade)) continue;
@@ -224,7 +256,7 @@ Cypress.Commands.add('atualizarItensExistentesPorNivel', (nivel) => {
 
     if (chaveEntidade === 'GRUPOS_KEYCLOAK' || entidade.nivelDependencia !== nivel) continue;
 
-    const method          = entidade.method          || 'POST';
+    const method = entidade.method || 'POST';
     const chavesIgnoradas = [
       'idHml',
       'id',
@@ -258,137 +290,282 @@ Cypress.Commands.add('pesquisarItensPorNivel', (nivel) => {
   for (const chaveEntidade in MAPEAMENTOS_APIS) {
     if (!Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade)) continue;
 
-    const entidade       = MAPEAMENTOS_APIS[chaveEntidade];
-    const nomeArquivo    = entidade.nomeArquivo;
+    const entidade = MAPEAMENTOS_APIS[chaveEntidade];
+    const nomeArquivo = entidade.nomeArquivo;
     const campoDescricao = entidade.campoDescricao || 'descricao';
-    const contentBusca   = entidade.contentBusca || 'falseId';
+    const contentBusca = entidade.contentBusca || 'falseId';
 
-    if (chaveEntidade === 'GRUPOS_KEYCLOAK' || entidade.nivelDependencia !== nivel) continue;
+    if (
+      chaveEntidade === 'GRUPOS_KEYCLOAK' ||
+      entidade.nivelDependencia !== nivel
+    ) continue;
 
-    if(Array.isArray(contentBusca)) {
-      cy.lerColunaDeArquivo(nomeArquivo, contentBusca[0], 'falseId').then((dadosDoArquivo) => {
+    const salvarId = (id, dado) => {
+      if (id === null) {
+        cy.log(
+          `[LOG] - Registro "${JSON.stringify(dado)}" não encontrado exatamente no ambiente, setando null`
+        );
+      }
+
+      cy.setIdHmlPorDescricao(
+        id,
+        dado,
+        nomeArquivo,
+        Array.isArray(contentBusca)
+          ? contentBusca
+          : campoDescricao
+      );
+    };
+
+    if (Array.isArray(contentBusca)) {
+
+      cy.lerJsonDeOutput(nomeArquivo).then((dadosDoArquivo) => {
+
         for (const dado of dadosDoArquivo) {
-          const dadoEncoded = encodeURIComponent(dado);
-          cy.executarRequest('hml', `${entidade.urlBusca}${dadoEncoded}`).then((resposta) => {
-            const itens = resposta.body?.content || [];
-            console.log(itens)
-            
-            const itemEncontrado = itens.find((item) =>
-              console.log(contentBusca[1])
-              //console.log(item?.[contentBusca[1]]?.trim()?.toLowerCase())// === dado.trim().toLowerCase()
-              
-            );
-            cy.pause()
-          });
-        }
-      });
-    } else {
-      cy.lerColunaDeArquivo(nomeArquivo, campoDescricao, contentBusca).then((dadosDoArquivo) => {
-        for (const dado of dadosDoArquivo) {
-          const dadoEncoded = encodeURIComponent(dado);
 
-          cy.executarRequest('hml', `${entidade.urlBusca}${dadoEncoded}`).then((resposta) => {
-            const itens = resposta.body?.content || [];
+          const valorBusca = obterValor(dado, contentBusca[0]);
 
-            const itemEncontrado = itens.find((item) =>
-              item?.[campoDescricao]?.trim()?.toLowerCase() === dado.trim().toLowerCase()
-            );
+          cy.executarRequest(
+            'hml',
+            `${entidade.urlBusca}${encodeURIComponent(valorBusca)}`
+          ).then((resposta) => {
 
-            const id = itemEncontrado?.id ?? null;
+            const content = resposta.body?.content || [];
 
-            if (id === null) {
-              cy.log(`[LOG] - Registro "${dado}" não encontrado exatamente no ambiente, setando null`);
+            if (!content.length) {
+              salvarId(null, {
+                [contentBusca[0]]: obterValor(dado, contentBusca[0]),
+                [contentBusca[1]]: obterValor(dado, contentBusca[1])
+              });
+
+              return;
             }
 
-            cy.setIdHmlPorDescricao(id, dado, nomeArquivo, campoDescricao);
+            let encontrou = false;
+
+            cy.wrap(content).each((item) => {
+
+              if (encontrou) return;
+
+              cy.executarRequest(
+                'hml',
+                `${entidade.urlBuscaId}${item.id}`
+              ).then((resposta2) => {
+
+                if (encontrou) return;
+
+                const itens = Array.isArray(resposta2.body)
+                  ? resposta2.body
+                  : [resposta2.body];
+
+                const id = itens.find((item2) => {
+
+                  const valorItem1 = obterValor(item2, contentBusca[0]);
+                  const valorDado1 = obterValor(dado, contentBusca[0]);
+
+                  const valorItem2 = obterValor(item2, contentBusca[1]);
+                  const valorDado2 = obterValor(dado, contentBusca[1]);
+
+                  return (
+                    String(valorItem1)?.trim()?.toLowerCase() ===
+                    String(valorDado1)?.trim()?.toLowerCase() &&
+                    String(valorItem2)?.trim()?.toLowerCase() ===
+                    String(valorDado2)?.trim()?.toLowerCase()
+                  );
+
+                })?.id ?? null;
+
+                if (id !== null) {
+                  encontrou = true;
+
+                  salvarId(id, {
+                    [contentBusca[0]]: obterValor(dado, contentBusca[0]),
+                    [contentBusca[1]]: obterValor(dado, contentBusca[1])
+                  });
+                }
+
+              });
+
+            }).then(() => {
+
+              if (!encontrou) {
+
+                salvarId(null, {
+                  [contentBusca[0]]: obterValor(dado, contentBusca[0]),
+                  [contentBusca[1]]: obterValor(dado, contentBusca[1])
+                });
+
+              }
+
+            });
+
           });
+
         }
+
       });
+
+    } else {
+
+      cy.lerColunaDeArquivo(
+        nomeArquivo,
+        campoDescricao,
+        contentBusca
+      ).then((dadosDoArquivo) => {
+
+        for (const dado of dadosDoArquivo) {
+
+          cy.executarRequest(
+            'hml',
+            `${entidade.urlBusca}${encodeURIComponent(dado)}`
+          ).then((resposta) => {
+
+            const itens = resposta.body?.content || [];
+
+            const id = itens.find((item) =>
+              String(item?.[campoDescricao])
+                ?.trim()
+                ?.toLowerCase() ===
+              String(dado)
+                ?.trim()
+                ?.toLowerCase()
+            )?.id ?? null;
+
+            salvarId(id, dado);
+
+          });
+
+        }
+
+      });
+
     }
-  } 
+
+  }
 });
 
+/**
+ * @description Localiza um item no arquivo JSON pelo valor do campo descrição
+ * e atualiza sua propriedade 'idHml' com o ID fornecido.
+ * Suporta busca simples (string) e busca composta (objeto).
+ * 
+ * @param {string|number|null} id - ID do ambiente HML a ser salvo no item.
+ * @param {string|object} descricao - Valor usado para localizar o item.
+ * @param {string} nomeArquivo - Nome do arquivo JSON localizado em 'cypress/output/'.
+ * @param {string|string[]} campoDescricao - Campo(s) usados para localizar o item.
+ * @returns {Cypress.Chainable<void>}
+ */
 Cypress.Commands.add('setIdHmlPorDescricao', (id, descricao, nomeArquivo, campoDescricao) => {
   const filePath = `cypress/output/${nomeArquivo}`;
 
   cy.readFile(filePath, { log: false }).then((conteudo) => {
-    const item = conteudo.find((entry) => entry[campoDescricao] === descricao);
+
+    const item = conteudo.find((entry) => {
+
+      // Busca composta
+      if (Array.isArray(campoDescricao)) {
+        return campoDescricao.every((campo) => {
+          return obterValor(entry, campo) === descricao[campo];
+        });
+      }
+
+      // Busca simples
+      return entry[campoDescricao] === descricao;
+    });
 
     if (!item) {
       throw new Error(
-        `[setIdHmlPorDescricao] Nenhum item encontrado onde "${campoDescricao}" é "${descricao}" em "${nomeArquivo}".`
+        `[setIdHmlPorDescricao] Nenhum item encontrado em "${nomeArquivo}".`
       );
     }
 
     item.idHml = id;
-    cy.log(`[LOG] Setando idHml: ${id} para "${campoDescricao}: ${descricao}"`);
+
+    cy.log(
+      `[LOG] Setando idHml: ${id} em "${nomeArquivo}"`
+    );
+
     cy.writeFile(filePath, conteudo, { log: false });
   });
 });
 
+/**
+ * @description Itera sobre todas as entidades de um determinado nível de dependência
+ * e substitui os IDs de produção pelos IDs equivalentes no ambiente HML,
+ * com base nas configurações de dependência de cada entidade.
+ * Ignora a entidade 'GRUPOS_KEYCLOAK' e entidades sem dependências definidas.
+ * @param {number} nivel - Nível de dependência das entidades a serem processadas.
+ * @returns {Cypress.Chainable<void>}
+ */
 Cypress.Commands.add('atualizarIdsDeDependencias', (nivel) => {
   for (const chaveEntidade in MAPEAMENTOS_APIS) {
     const entidade = MAPEAMENTOS_APIS[chaveEntidade];
+
     if (
-      !Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade) 
-      || chaveEntidade === 'GRUPOS_KEYCLOAK'
-      || entidade.nivelDependencia !== nivel
-      || !entidade.dependencia
-      || entidade.dependencia.length === 0
+      !Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade) ||
+      chaveEntidade === 'GRUPOS_KEYCLOAK' ||
+      entidade.nivelDependencia !== nivel ||
+      !entidade.dependencia ||
+      entidade.dependencia.length === 0
     ) continue;
 
     cy.log(`Atualizando IDs de dependências para a entidade: ${chaveEntidade} (Nível ${nivel})`);
-    
+
     cy.readFile(`cypress/output/${entidade.nomeArquivo}`).then((itens) => {
       entidade.dependencia.forEach((dependencia) => {
         cy.readFile(`cypress/output/${dependencia.arquivoDependencia}`).then((dependencias) => {
-          
           const listaDependencias = Array.isArray(dependencias[0])
             ? dependencias.flat()
-            : dependencias
-          
+            : dependencias;
+
           itens.forEach((item) => {
-            const idOriginal = Cypress._.get(
-              item,
-              dependencia.idSubstituido
-            )
+            const idOriginal = Cypress._.get(item, dependencia.idSubstituido);
+
             if (!idOriginal) return;
 
             const equivalente = dependencias.find(
-              (dependenciaItem) =>
-                dependenciaItem[dependencia.idDependecia] === idOriginal
-            )
+              (dependenciaItem) => dependenciaItem[dependencia.idDependecia] === idOriginal
+            );
+
             if (!equivalente) {
-              cy.log(`Equivalente não encontrado para ID ${idOriginal}`)
-              return
+              cy.log(`Equivalente não encontrado para ID ${idOriginal}`);
+              return;
             }
-            Cypress._.set(
-              item,
-              dependencia.idSubstituido,
-              equivalente.idHml
-            )
-          })
-        })
-      })
-      cy.writeFile(
-        `cypress/output/${entidade.nomeArquivo}`,
-        itens
-      );
+
+            Cypress._.set(item, dependencia.idSubstituido, equivalente.idHml);
+          });
+        });
+      });
+
+      cy.writeFile(`cypress/output/${entidade.nomeArquivo}`, itens);
     });
   }
 });
 
+/**
+ * @description Orquestra o processamento completo de entidades para um determinado nível de dependência,
+ * executando em sequência: atualização de IDs de dependências e pesquisa de itens no ambiente HML.
+ * Os steps de atualização e criação estão comentados e podem ser habilitados conforme necessidade.
+ * @param {number} nivel - Nível de dependência das entidades a serem processadas.
+ * @returns {Cypress.Chainable<void>}
+ */
 Cypress.Commands.add('processarEntidadesPorNivel', (nivel) => {
-  cy.log(`iniciando o command atualizarIdsDeDependencias para o nível ${nivel}`)
-  cy.atualizarIdsDeDependencias(nivel)
-  cy.log(`iniciando o command pesquisarItensPorNivel para o nível ${nivel}`)
-  cy.pesquisarItensPorNivel(nivel)
-  //cy.log(`iniciando o command atualizarItensExistentesPorNivel para o nível ${nivel}`)
-  //cy.atualizarItensExistentesPorNivel(nivel)
-  //cy.log(`iniciando o command criarItensInexistentesPorNivel para o nível ${nivel}`)
-  //cy.criarItensInexistentesPorNivel(nivel)
+  cy.log(`iniciando o command atualizarIdsDeDependencias para o nível ${nivel}`);
+  cy.atualizarIdsDeDependencias(nivel);
+  cy.log(`iniciando o command pesquisarItensPorNivel para o nível ${nivel}`);
+  cy.pesquisarItensPorNivel(nivel);
+  cy.log(`iniciando o command atualizarItensExistentesPorNivel para o nível ${nivel}`)
+  cy.atualizarItensExistentesPorNivel(nivel)
+  cy.log(`iniciando o command criarItensInexistentesPorNivel para o nível ${nivel}`)
+  cy.criarItensInexistentesPorNivel(nivel)
 });
 
+/**
+ * @description Verifica se um diretório possui ao menos um arquivo,
+ * falhando o teste caso o diretório esteja vazio.
+ * @param {string} caminho - Caminho do diretório a ser verificado.
+ * @returns {Cypress.Chainable<void>}
+ */
 Cypress.Commands.add('verificarDiretorioNaoVazio', (caminho) => {
   cy.task('listarArquivos', caminho).then((arquivos) => {
     expect(arquivos.length, `Diretório "${caminho}" está vazio`).to.be.greaterThan(0);

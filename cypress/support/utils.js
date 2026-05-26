@@ -1,8 +1,16 @@
 import MAPEAMENTOS_APIS from '../utils/mapeamentoApis';
+
 const CLASSIFICACAO_PRODUTO = MAPEAMENTOS_APIS.CLASSIFICACAO_PRODUTO;
 const GRUPOS_KEYCLOAK = MAPEAMENTOS_APIS.GRUPOS_KEYCLOAK;
 const SELECIONAR_CEDENTE = MAPEAMENTOS_APIS.SELECIONAR_CEDENTE;
 
+/**
+ * @description Verifica se o token do ambiente informado ainda é válido
+ * executando uma requisição de teste. Caso o token esteja expirado (status diferente de 200),
+ * aciona o fluxo de login via UI para renovação do token.
+ * @param {'prod'|'hml'|'bhml'|'keycloak'} ambiente - Ambiente cujo token será verificado.
+ * @returns {Cypress.Chainable<void>}
+ */
 Cypress.Commands.add('verificarTokens', (ambiente) => {
   if (('prod', 'hml').includes(ambiente)) {
     return cy.executarRequest(ambiente, `${CLASSIFICACAO_PRODUTO.urlBusca}PRODUTO`, '', 'GET', false).then((response) => {
@@ -22,12 +30,19 @@ Cypress.Commands.add('verificarTokens', (ambiente) => {
   }
 });
 
+/**
+ * @description Realiza o login via interface gráfica (UI) para o ambiente informado,
+ * intercepta o token de acesso retornado pelo Keycloak e o salva em 'cypress/temp/tokens.json'.
+ * Suporta fluxos com e sem redirecionamento cross-origin entre a baseUrl da aplicação e a URL do Keycloak.
+ * @param {'prod'|'hml'|'bhml'|'keycloak'} ambiente - Ambiente onde o login será realizado.
+ * @returns {Cypress.Chainable<void>}
+ */
 Cypress.Commands.add('loginUi', (ambiente) => {
   cy.definirAmbiente(ambiente).then(({ loginUrl, baseUrl, loginUsername, loginPassword, urlTokenApiIntercept }) => {
-    cy.log(urlTokenApiIntercept)
+    cy.log(urlTokenApiIntercept);
     cy.intercept('POST', urlTokenApiIntercept).as('obterToken');
 
-    const baseOrigin     = new URL(baseUrl).origin;
+    const baseOrigin = new URL(baseUrl).origin;
     const keycloakOrigin = new URL(loginUrl).origin;
 
     // Comparação feita ANTES do visit — sem depender de runtime redirect
@@ -83,3 +98,17 @@ Cypress.Commands.add('loginUi', (ambiente) => {
     cy.url({ timeout: 15000 }).should('include', baseUrl);
   });
 });
+
+/**
+ * @description Utilitário para acessar o valor de uma propriedade aninhada de um objeto
+ * a partir de um caminho em notação de ponto (ex: 'endereco.cidade.nome').
+ * Retorna undefined caso qualquer nível do caminho não exista.
+ * @param {object} obj - Objeto de origem da busca.
+ * @param {string} caminho - Caminho da propriedade em notação de ponto (ex: 'a.b.c').
+ * @returns {any} Valor encontrado no caminho informado ou undefined.
+ */
+export const obterValor = (obj, caminho) => {
+  return caminho
+    .split('.')
+    .reduce((acc, chave) => acc?.[chave], obj);
+};
