@@ -156,27 +156,49 @@ Cypress.Commands.add('lerColunaDeArquivo', (nomeArquivo, nomeColuna, content = t
  * @returns {Cypress.Chainable<void>}
  */
 Cypress.Commands.add('pesquisarDependencias', (entidade) => {
-  if (!entidade || !entidade.nomeArquivoReferencia || !entidade.campoBusca || !entidade.nomeArquivo || !entidade.urlBuscaId) {
-    throw new Error(`Configuração de entidade inválida para pesquisarDependencias. Verifique as propriedades: {nomeArquivoReferencia}, {campoBusca}, {nomeArquivo}, {urlBuscaId}.`);
+  if (!entidade?.nomeArquivoReferencia || !entidade?.campoBusca || !entidade?.nomeArquivo || !entidade?.urlBuscaId) {
+    throw new Error(
+      'Configuração de entidade inválida para pesquisarDependencias. Verifique: {nomeArquivoReferencia}, {campoBusca}, {nomeArquivo}, {urlBuscaId}.'
+    );
   }
 
-  const nomeArquivoReferencia = entidade.nomeArquivoReferencia;
-  const campoBusca = entidade.campoBusca;
-  const nomeArquivo = entidade.nomeArquivo;
-  const urlBuscaId = entidade.urlBuscaId;
-  const content = entidade.content;
-  const valores = [];
+  const { nomeArquivoReferencia, campoBusca, nomeArquivo, urlBuscaId, content } = entidade;
+  const caminhoArquivo = `cypress/output/${nomeArquivo}`;
+  const campoValidacao = entidade.campoValidacao || 'produto.id';
+  const ehNivel5 = entidade.nivelDependencia === 5;
 
-  return cy.lerColunaDeArquivo(nomeArquivoReferencia, campoBusca, content).then((dadosDoArquivo) => {
-    const idsUnicos = [...new Set(dadosDoArquivo)];
+  cy.lerColunaDeArquivo(nomeArquivoReferencia, campoBusca, content).then((dadosDoArquivo) => {
+    cy.task('lerJsonSeExistir', { caminhoArquivo }).then((dadosExistentes) => {
+      const listaAtual = dadosExistentes ?? [];
 
-    for (const id of idsUnicos) {
-      cy.executarRequest('prod', `${urlBuscaId}${id}`).then((resposta) => {
-        valores.push(resposta.body);
-      });
-    }
+      const idsJaExistentes = new Set(
+        listaAtual.map((item) => {
+          const valor = ehNivel5
+            ? Cypress._.get(item, campoValidacao) // compara com produto.id
+            : item.id;                            // compara com id raiz
+          return valor != null ? String(valor) : null;
+        })
+      );
 
-    cy.writeFile(`cypress/output/${nomeArquivo}`, valores);
+      const idsFiltrados = [...new Set(dadosDoArquivo)].filter(
+        (id) => !idsJaExistentes.has(String(id))
+      );
+
+      if (idsFiltrados.length === 0) {
+        cy.log('Nenhuma dependência nova encontrada');
+        return;
+      }
+
+      const novosRegistros = [];
+
+      for (const id of idsFiltrados) {
+        cy.executarRequest('prod', `${urlBuscaId}${id}`).then((resposta) => {
+          novosRegistros.push(resposta.body);
+        });
+      }
+
+      cy.then(() => cy.salvarNovosRegistros(novosRegistros, caminhoArquivo));
+    });
   });
 });
 
@@ -223,16 +245,18 @@ Cypress.Commands.add('criarItensInexistentesPorNivel', (nivel) => {
       'dataUltimaAlteracao',
       'usuarioCadastro',
       'usuarioUltimaAlteracao',
-      ...(entidade.chavesIgnoradas || [])
+      ...(entidade.chavesIgnoradas || []),
     ];
 
     cy.readFile(caminhoArquivo).then((itens) => {
       const itensValidos = itens.filter((item) => item.idHml === null);
 
       itensValidos.forEach((item) => {
-        const body = Object.fromEntries(
+        const camposDoItem = Object.fromEntries(
           Object.entries(item).filter(([chave]) => !chavesIgnoradas.includes(chave))
         );
+
+        const body = removerCamposOld(camposDoItem); // ← remove .old recursivamente
 
         cy.executarRequest('hml', entidade.url, body, method).then((resultado) => {
           cy.setIdHmlPorDescricao(resultado.body['id'], item[campoDescricao], entidade.nomeArquivo, campoDescricao);
@@ -264,7 +288,7 @@ Cypress.Commands.add('atualizarItensExistentesPorNivel', (nivel) => {
       'dataUltimaAlteracao',
       'usuarioCadastro',
       'usuarioUltimaAlteracao',
-      ...(entidade.chavesIgnoradas || [])
+      ...(entidade.chavesIgnoradas || []),
     ];
 
     cy.readFile(`cypress/output/${entidade.nomeArquivo}`).then((itens) => {
@@ -276,7 +300,7 @@ Cypress.Commands.add('atualizarItensExistentesPorNivel', (nivel) => {
         );
 
         const body = {
-          ...camposDoItem,
+          ...removerCamposOld(camposDoItem), // ← remove .old recursivamente
           id: String(item.idHml),
         };
 
@@ -302,144 +326,96 @@ Cypress.Commands.add('pesquisarItensPorNivel', (nivel) => {
 
     const salvarId = (id, dado) => {
       if (id === null) {
-        cy.log(
-          `[LOG] - Registro "${JSON.stringify(dado)}" não encontrado exatamente no ambiente, setando null`
-        );
+        cy.log(`[LOG] - Registro "${JSON.stringify(dado)}" não encontrado exatamente no ambiente, setando null`);
       }
 
       cy.setIdHmlPorDescricao(
         id,
         dado,
         nomeArquivo,
-        Array.isArray(contentBusca)
-          ? contentBusca
-          : campoDescricao
+        Array.isArray(contentBusca) ? contentBusca : campoDescricao
       );
     };
 
     if (Array.isArray(contentBusca)) {
       cy.lerJsonDeOutput(nomeArquivo).then((dadosDoArquivo) => {
-        
         for (const dado of dadosDoArquivo) {
+          if (dado.idHml !== null && dado.idHml !== undefined) continue; // ← já possui idHml, ignora
 
           const valorBusca = obterValor(dado, contentBusca[0]);
 
-          cy.executarRequest2(
-            'hml',
-            `${entidade.urlBusca}${encodeURIComponent(valorBusca)}`
-          ).then((resposta) => {
-
+          cy.executarRequest2('hml', `${entidade.urlBusca}${encodeURIComponent(valorBusca)}`).then((resposta) => {
             const content = resposta.body?.content || [];
 
             if (!content.length) {
               salvarId(null, {
                 [contentBusca[0]]: obterValor(dado, contentBusca[0]),
-                [contentBusca[1]]: obterValor(dado, contentBusca[1])
+                [contentBusca[1]]: obterValor(dado, contentBusca[1]),
               });
-
               return;
             }
 
             let encontrou = false;
 
             cy.wrap(content).each((item) => {
-
               if (encontrou) return;
 
-              cy.executarRequest(
-                'hml',
-                `${entidade.urlBuscaId}${item.id}`
-              ).then((resposta2) => {
-
+              cy.executarRequest('hml', `${entidade.urlBuscaId}${item.id}`).then((resposta2) => {
                 if (encontrou) return;
 
-                const itens = Array.isArray(resposta2.body)
-                  ? resposta2.body
-                  : [resposta2.body];
+                const itens = Array.isArray(resposta2.body) ? resposta2.body : [resposta2.body];
 
                 const id = itens.find((item2) => {
-
                   const valorItem1 = obterValor(item2, contentBusca[0]);
                   const valorDado1 = obterValor(dado, contentBusca[0]);
-
                   const valorItem2 = obterValor(item2, contentBusca[1]);
                   const valorDado2 = obterValor(dado, contentBusca[1]);
 
                   return (
-                    String(valorItem1)?.trim()?.toLowerCase() ===
-                    String(valorDado1)?.trim()?.toLowerCase() &&
-                    String(valorItem2)?.trim()?.toLowerCase() ===
-                    String(valorDado2)?.trim()?.toLowerCase()
+                    String(valorItem1)?.trim()?.toLowerCase() === String(valorDado1)?.trim()?.toLowerCase() &&
+                    String(valorItem2)?.trim()?.toLowerCase() === String(valorDado2)?.trim()?.toLowerCase()
                   );
-
                 })?.id ?? null;
 
                 if (id !== null) {
                   encontrou = true;
-
                   salvarId(id, {
                     [contentBusca[0]]: obterValor(dado, contentBusca[0]),
-                    [contentBusca[1]]: obterValor(dado, contentBusca[1])
+                    [contentBusca[1]]: obterValor(dado, contentBusca[1]),
                   });
                 }
-
               });
-
             }).then(() => {
-
               if (!encontrou) {
-
                 salvarId(null, {
                   [contentBusca[0]]: obterValor(dado, contentBusca[0]),
-                  [contentBusca[1]]: obterValor(dado, contentBusca[1])
+                  [contentBusca[1]]: obterValor(dado, contentBusca[1]),
                 });
-
               }
-
             });
-
           });
-
         }
-
       });
-
     } else {
-
-      cy.lerColunaDeArquivo(
-        nomeArquivo,
-        campoDescricao,
-        contentBusca
-      ).then((dadosDoArquivo) => {
-
+      cy.lerJsonDeOutput(nomeArquivo).then((dadosDoArquivo) => { // ← trocado lerColunaDeArquivo → lerJsonDeOutput
         for (const dado of dadosDoArquivo) {
+          if (dado.idHml !== null && dado.idHml !== undefined) continue; // ← já possui idHml, ignora
 
-          cy.executarRequest(
-            'hml',
-            `${entidade.urlBusca}${encodeURIComponent(dado)}`
-          ).then((resposta) => {
+          const valorBusca = dado[campoDescricao];
 
+          cy.executarRequest('hml', `${entidade.urlBusca}${encodeURIComponent(valorBusca)}`).then((resposta) => {
             const itens = resposta.body?.content || [];
 
             const id = itens.find((item) =>
-              String(item?.[campoDescricao])
-                ?.trim()
-                ?.toLowerCase() ===
-              String(dado)
-                ?.trim()
-                ?.toLowerCase()
+              String(item?.[campoDescricao])?.trim()?.toLowerCase() ===
+              String(valorBusca)?.trim()?.toLowerCase()
             )?.id ?? null;
 
-            salvarId(id, dado);
-
+            salvarId(id, valorBusca);
           });
-
         }
-
       });
-
     }
-
   }
 });
 
@@ -507,61 +483,47 @@ Cypress.Commands.add('atualizarIdsDeDependencias', (nivel) => {
       entidade.nivelDependencia !== nivel ||
       !entidade.dependencia ||
       entidade.dependencia.length === 0
-    ) {
-      continue;
-    }
+    ) continue;
 
     cy.readFile(`cypress/output/${entidade.nomeArquivo}`).then((itens) => {
-
-      // garante que as dependências processam de forma encadeada
       cy.wrap(entidade.dependencia).each((dependencia) => {
-        const {
-          arquivoDependencia,
-          idSubstituido,  // ex: 'grupoProduto.id'
-        } = dependencia;
-
+        const { arquivoDependencia, idSubstituido } = dependencia;
         const idDependecia = dependencia.idDependecia || 'id';
 
-        return cy
-          .readFile(`cypress/output/${arquivoDependencia}`)
-          .then((dependencias) => {
-            const listaDependencias = Array.isArray(dependencias[0])
-              ? dependencias.flat()
-              : dependencias;
+        return cy.readFile(`cypress/output/${arquivoDependencia}`).then((dependencias) => {
+          const listaDependencias = Array.isArray(dependencias[0])
+            ? dependencias.flat()
+            : dependencias;
 
-            itens.forEach((item, index) => {
-              const idOriginal = Cypress._.get(item, idSubstituido);
+          // Separa o caminho pai do nome da chave final
+          // ex: 'produto.id' → pai: 'produto', chave: 'id'
+          // ex: 'id'         → pai: null,      chave: 'id'
+          const partes = idSubstituido.split('.');
+          const chaveId = partes[partes.length - 1];
+          const caminhoParent = partes.slice(0, -1).join('.');
 
-              // sem ID pra traduzir, pula
-              if (!idOriginal) {
-                return;
-              }
+          itens.forEach((item) => {
+            const idOriginal = Cypress._.get(item, idSubstituido);
 
-              // 🔒 NOVA REGRA:
-              // se o item já tem idHml preenchido, não faz pesquisa nem substitui nada
-              if (item.idHml != null) {
-                // opcional: log pra debug
-                // cy.log(`Item[${index}] já possui idHml=${item.idHml}, pulando tradução para ${idSubstituido}`);
-                return;
-              }
+            if (!idOriginal) return;
 
-              const equivalente = listaDependencias.find(
-                (depItem) => depItem[idDependecia] === idOriginal
-              );
+            const equivalente = listaDependencias.find(
+              (depItem) => depItem[idDependecia] === idOriginal
+            );
 
-              if (!equivalente) {
-                // opcional: logar para investigar falhas de correspondência
-                // cy.log(`Equivalente não encontrado para ${idSubstituido} (${idOriginal}) em ${arquivoDependencia}`);
-                return;
-              }
+            if (!equivalente) return;
 
-              // substituição de fato
-              Cypress._.set(item, idSubstituido, equivalente.idHml);
-            });
+            // Obtém o objeto pai onde a chave será salva
+            const objetoPai = caminhoParent
+              ? Cypress._.get(item, caminhoParent)
+              : item;
+
+            objetoPai[`${chaveId}.old`] = idOriginal;          // salva original como "id.old"
+            Cypress._.set(item, idSubstituido, equivalente.idHml); // substitui pelo HML
           });
+        });
       }).then(() => {
-        // aqui você grava o arquivo se for o comportamento desejado:
-        // cy.writeFile(`cypress/output/${entidade.nomeArquivo}`, itens);
+        cy.writeFile(`cypress/output/${entidade.nomeArquivo}`, itens);
       });
     });
   }
@@ -576,14 +538,11 @@ Cypress.Commands.add('atualizarIdsDeDependencias', (nivel) => {
  */
 Cypress.Commands.add('processarEntidadesPorNivel', (nivel) => {
   cy.normalizarArquivosNivel5()
-  cy.log(`iniciando o command atualizarIdsDeDependencias para o nível ${nivel}`);
   cy.atualizarIdsDeDependencias(nivel);
-  cy.log(`iniciando o command pesquisarItensPorNivel para o nível ${nivel}`);
   cy.pesquisarItensPorNivel(nivel);
-  cy.log(`iniciando o command atualizarItensExistentesPorNivel para o nível ${nivel}`)
-  cy.atualizarItensExistentesPorNivel(nivel)
-  cy.log(`iniciando o command criarItensInexistentesPorNivel para o nível ${nivel}`)
-  cy.criarItensInexistentesPorNivel(nivel)
+  //cy.pause();
+  //cy.atualizarItensExistentesPorNivel(nivel)
+  //cy.criarItensInexistentesPorNivel(nivel)
 });
 
 /**
@@ -597,8 +556,6 @@ Cypress.Commands.add('verificarDiretorioNaoVazio', (caminho) => {
     expect(arquivos.length, `Diretório "${caminho}" está vazio`).to.be.greaterThan(0);
   });
 });
-
-// cypress/support/commands.js
 
 /**
  * @description
@@ -614,9 +571,7 @@ Cypress.Commands.add('verificarDiretorioNaoVazio', (caminho) => {
  */
 Cypress.Commands.add('normalizarArquivo', (arquivo) => {
   cy.readFile(arquivo).then((dadosBrutos) => {
-    // Se não é array, nem tenta normalizar
     if (!Array.isArray(dadosBrutos)) {
-      cy.log(`📄 ${arquivo} não é um array, não será alterado.`);
       return;
     }
 
@@ -624,11 +579,8 @@ Cypress.Commands.add('normalizarArquivo', (arquivo) => {
 
     // Caso 1: já é um array "reto", sem sub‑arrays -> não mexe
     if (!temSubArray) {
-      cy.log(`✅ ${arquivo} já está normalizado (array simples). Nada a fazer.`);
       return;
     }
-
-    cy.log(`🔄 ${arquivo} contém sub‑arrays. Normalizando...`);
 
     // 1) pega só os sub‑arrays e achata tudo
     const todosItens = dadosBrutos
@@ -647,8 +599,6 @@ Cypress.Commands.add('normalizarArquivo', (arquivo) => {
       itensUnicos.push(item);
     });
 
-    cy.log(`Total bruto: ${todosItens.length} | Sem duplicações: ${itensUnicos.length}`);
-
     // 3) sobrescreve o mesmo arquivo com os itens únicos
     return cy.writeFile(arquivo, itensUnicos);
   });
@@ -663,8 +613,6 @@ Cypress.Commands.add('normalizarArquivo', (arquivo) => {
  * @returns {Cypress.Chainable<void>}
  */
 Cypress.Commands.add('normalizarArquivosNivel5', () => {
-  // percorre o mapa normalmente com for...in,
-  // mas SEM usar forEach pra não bagunçar o encadeamento do Cypress
   for (const chaveEntidade in MAPEAMENTOS_APIS) {
     if (!Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade)) continue;
 
@@ -679,3 +627,97 @@ Cypress.Commands.add('normalizarArquivosNivel5', () => {
     cy.normalizarArquivo(caminhoArquivo);
   }
 });
+
+Cypress.Commands.add('salvarNovosRegistros', (novosDados, caminhoArquivo) => {
+  cy.task('lerJsonSeExistir', { caminhoArquivo }).then((dadosExistentes) => {
+    const listaAtual = dadosExistentes ?? [];
+
+    const idsExistentes = new Set(listaAtual.map((item) => item.id));
+
+    const registrosNovos = novosDados.filter((item) => !idsExistentes.has(item.id));
+
+    if (registrosNovos.length === 0) {
+      cy.log('Nenhum produto novo encontrado');
+      return;
+    }
+
+    const dadosAtualizados = [...listaAtual, ...registrosNovos];
+    cy.writeFile(caminhoArquivo, dadosAtualizados);
+    cy.log(`${registrosNovos.length} novo(s) produto(s) adicionado(s)`);
+  });
+});
+
+/**
+ * Remove recursivamente todas as chaves que terminam com '.old' de um objeto.
+ * @param {object} obj
+ * @returns {object}
+ */
+function removerCamposOld(obj) {
+  if (typeof obj !== 'object' || obj === null) return obj;
+
+  return Object.fromEntries(
+    Object.entries(obj)
+      .filter(([chave]) => !chave.endsWith('.old'))
+      .map(([chave, valor]) => [chave, removerCamposOld(valor)])
+  );
+}
+
+/**
+ * @description Restaura os IDs originais de produção em todos os arquivos de output
+ * que possuem campos `.old`, revertendo as substituições feitas pelo `atualizarIdsDeDependencias`.
+ * Ignora entidades sem dependências definidas, a entidade 'GRUPOS_KEYCLOAK'
+ * e arquivos que não existirem no diretório de output.
+ * @returns {Cypress.Chainable<void>}
+ * @example
+ * // Reverte os IDs de HML para os IDs originais de produção
+ * cy.voltarIdsOriginais();
+ */
+Cypress.Commands.add('voltarIdsOriginais', () => {
+  for (const chaveEntidade in MAPEAMENTOS_APIS) {
+    if (!Object.prototype.hasOwnProperty.call(MAPEAMENTOS_APIS, chaveEntidade)) continue;
+
+    const entidade = MAPEAMENTOS_APIS[chaveEntidade];
+
+    if (
+      chaveEntidade === 'GRUPOS_KEYCLOAK' ||
+      !entidade.dependencia ||
+      entidade.dependencia.length === 0
+    ) continue;
+
+    const caminhoArquivo = `cypress/output/${entidade.nomeArquivo}`;
+
+    cy.task('lerJsonSeExistir', { caminhoArquivo }).then((itens) => {
+      if (!itens) {
+        cy.log(`[voltarIdsOriginais] Arquivo não encontrado, pulando: ${caminhoArquivo}`);
+        return;
+      }
+
+      const itensRestaurados = itens.map((item) => restaurarCamposOld(item));
+      cy.writeFile(caminhoArquivo, itensRestaurados);
+    });
+  }
+});
+
+/**
+ * Restaura recursivamente todos os campos `.old` para seus campos originais,
+ * removendo a chave `.old` após a restauração.
+ * @param {object} obj
+ * @returns {object}
+ */
+function restaurarCamposOld(obj) {
+  if (typeof obj !== 'object' || obj === null) return obj;
+
+  const resultado = {};
+
+  for (const [chave, valor] of Object.entries(obj)) {
+    if (chave.endsWith('.old')) continue; // será tratado pelo campo original
+
+    const chaveOld = `${chave}.old`;
+
+    resultado[chave] = Object.prototype.hasOwnProperty.call(obj, chaveOld)
+      ? obj[chaveOld]                  // restaura o valor original
+      : restaurarCamposOld(valor);     // desce recursivamente
+  }
+
+  return resultado;
+}

@@ -10,7 +10,7 @@ Given('que possuo acesso aos ambientes necessarios', () => {
 
 Given('uma consulta aos produtos de produção é realizada para obter os dados atuais', () => {
   cy.executarRequest('prod', `${APIS.PRODUTO.urlListAll}`).then((resposta) => {
-    cy.writeFile(`cypress/output/${APIS.PRODUTO.nomeArquivo}`, resposta.body);
+    cy.salvarNovosRegistros(resposta.body, `cypress/output/${APIS.PRODUTO.nomeArquivo}`);
   });
 });
 
@@ -21,7 +21,9 @@ Given('a pesquisa retornou dados de produtos para serem copiados de produção p
 });
 
 When('pesquiso as dependências desses produtos', () => {
-  cy.pesquisarDependenciasLigacao()
+  cy.voltarIdsOriginais();
+  cy.pause()
+  cy.pesquisarDependenciasLigacao();
 });
 
 When('processo as dependências do nivel {int}', (nivel) => {
