@@ -19,8 +19,7 @@
     },
     "descricao": "DUPLICATA",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 8
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 15,
@@ -42,8 +41,7 @@
     },
     "descricao": "CHEQUE",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 22
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 24,
@@ -65,8 +63,7 @@
     },
     "descricao": "NOTA PROMISSORIA",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 23
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 13,
@@ -88,8 +85,7 @@
     },
     "descricao": "CONTRATO ",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 55
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 47,
@@ -111,8 +107,7 @@
     },
     "descricao": "ICMS",
     "ativo": true,
-    "usuarioUltimaAlteracao": "tiago.roque",
-    "idHml": 40
+    "usuarioUltimaAlteracao": "tiago.roque"
   },
   {
     "id": 9,
@@ -134,8 +129,7 @@
     },
     "descricao": "DUPLICATA INTERCOMPANY",
     "ativo": true,
-    "usuarioUltimaAlteracao": "tiago.roque",
-    "idHml": 52
+    "usuarioUltimaAlteracao": "tiago.roque"
   },
   {
     "id": 43,
@@ -157,8 +151,7 @@
     },
     "descricao": "INTERCOMPANY",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 34
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 2,
@@ -180,8 +173,7 @@
     },
     "descricao": "CCB",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 2
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 3,
@@ -203,8 +195,7 @@
     },
     "descricao": "CCB CONSIGNADO",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 3
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 4,
@@ -226,8 +217,7 @@
     },
     "descricao": "CDAWA",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 4
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 38,
@@ -249,8 +239,7 @@
     },
     "descricao": "CDCA",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 38
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 34,
@@ -272,8 +261,7 @@
     },
     "descricao": "LCA",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 28
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 39,
@@ -295,8 +283,7 @@
     },
     "descricao": "CR",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 39
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 31,
@@ -318,8 +305,7 @@
     },
     "descricao": "CRI",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 26
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 35,
@@ -341,8 +327,7 @@
     },
     "descricao": "CDB",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 29
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 6,
@@ -364,8 +349,7 @@
     },
     "descricao": "CPR FINANCEIRA",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 6
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 32,
@@ -387,8 +371,7 @@
     },
     "descricao": "DEBENTURE PUBLICA",
     "ativo": true,
-    "usuarioUltimaAlteracao": "eric.martins",
-    "idHml": 56
+    "usuarioUltimaAlteracao": "eric.martins"
   },
   {
     "id": 17,
@@ -410,8 +393,7 @@
     },
     "descricao": "NOTA COMERCIAL",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regina.faria",
-    "idHml": 15
+    "usuarioUltimaAlteracao": "regina.faria"
   },
   {
     "id": 18,
@@ -433,8 +415,7 @@
     },
     "descricao": "CRA",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 16
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 49,
@@ -456,8 +437,7 @@
     },
     "descricao": "CLAIM TRABALHISTA ADVOGADO",
     "ativo": true,
-    "usuarioUltimaAlteracao": "tiago.roque",
-    "idHml": 42
+    "usuarioUltimaAlteracao": "tiago.roque"
   },
   {
     "id": 30,
@@ -479,8 +459,7 @@
     },
     "descricao": "CLAIM TRABALHISTA RECLAMANTE",
     "ativo": true,
-    "usuarioUltimaAlteracao": "tiago.roque",
-    "idHml": 41
+    "usuarioUltimaAlteracao": "tiago.roque"
   },
   {
     "id": 16,
@@ -502,8 +481,7 @@
     },
     "descricao": "NPL",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 14
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 36,
@@ -525,8 +503,7 @@
     },
     "descricao": "LCI",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 30
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 26,
@@ -548,8 +525,7 @@
     },
     "descricao": "CONTRATO CANCELADO",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 24
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 27,
@@ -571,8 +547,7 @@
     },
     "descricao": "CONTRATO LANCE",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 25
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 37,
@@ -594,8 +569,7 @@
     },
     "descricao": "BONDS",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 31
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 51,
@@ -617,8 +591,7 @@
     },
     "descricao": "DUPLICATA S/ XML",
     "ativo": true,
-    "usuarioUltimaAlteracao": "jessica.leite",
-    "idHml": 57
+    "usuarioUltimaAlteracao": "jessica.leite"
   },
   {
     "id": 10,
@@ -640,8 +613,7 @@
     },
     "descricao": "INVOICE",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 10
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 45,
@@ -663,8 +635,7 @@
     },
     "descricao": "IMPORTAÇÃO",
     "ativo": true,
-    "usuarioUltimaAlteracao": "tiago.roque",
-    "idHml": 33
+    "usuarioUltimaAlteracao": "tiago.roque"
   },
   {
     "id": 54,
@@ -686,8 +657,7 @@
     },
     "descricao": "ACORDO JUDICIAL PRECATORIO",
     "ativo": true,
-    "usuarioUltimaAlteracao": "jessica.leite",
-    "idHml": 58
+    "usuarioUltimaAlteracao": "jessica.leite"
   },
   {
     "id": 55,
@@ -709,8 +679,7 @@
     },
     "descricao": "ATIVO IMOBILIARIO ORIUNDO DE DÍVIDA",
     "ativo": true,
-    "usuarioUltimaAlteracao": "jessica.leite",
-    "idHml": 59
+    "usuarioUltimaAlteracao": "jessica.leite"
   },
   {
     "id": 56,
@@ -732,8 +701,7 @@
     },
     "descricao": "ATIVO IMOBILIÁRIO PARA INVESTIMENTO",
     "ativo": true,
-    "usuarioUltimaAlteracao": "jessica.leite",
-    "idHml": 60
+    "usuarioUltimaAlteracao": "jessica.leite"
   },
   {
     "id": 42,
@@ -755,8 +723,7 @@
     },
     "descricao": "PROCESSO JUDICIAL PRECATORIO",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 37
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 41,
@@ -778,8 +745,7 @@
     },
     "descricao": "PROCESSO JUDICIAL CIVEL",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 36
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 23,
@@ -801,8 +767,7 @@
     },
     "descricao": "GARANTIA ",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 61
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 53,
@@ -824,8 +789,7 @@
     },
     "descricao": "COMPRA COM RETROVENDA",
     "ativo": true,
-    "usuarioUltimaAlteracao": "taina.ribeiro",
-    "idHml": 62
+    "usuarioUltimaAlteracao": "taina.ribeiro"
   },
   {
     "id": 57,
@@ -847,8 +811,7 @@
     },
     "descricao": "COMPROMISSADA",
     "ativo": true,
-    "usuarioUltimaAlteracao": "jessica.leite",
-    "idHml": 63
+    "usuarioUltimaAlteracao": "jessica.leite"
   },
   {
     "id": 59,
@@ -870,8 +833,7 @@
     },
     "descricao": "CARTOES",
     "ativo": true,
-    "usuarioUltimaAlteracao": "jessica.leite",
-    "idHml": 43
+    "usuarioUltimaAlteracao": "jessica.leite"
   },
   {
     "id": 60,
@@ -893,8 +855,7 @@
     },
     "descricao": "CTE",
     "ativo": true,
-    "usuarioUltimaAlteracao": "jessica.leite",
-    "idHml": 47
+    "usuarioUltimaAlteracao": "jessica.leite"
   },
   {
     "id": 61,
@@ -916,8 +877,7 @@
     },
     "descricao": "FOMENTO",
     "ativo": true,
-    "usuarioUltimaAlteracao": "taina.ribeiro",
-    "idHml": 64
+    "usuarioUltimaAlteracao": "taina.ribeiro"
   },
   {
     "id": 62,
@@ -939,8 +899,7 @@
     },
     "descricao": "CN/CCB",
     "ativo": true,
-    "usuarioUltimaAlteracao": "taina.ribeiro",
-    "idHml": 65
+    "usuarioUltimaAlteracao": "taina.ribeiro"
   },
   {
     "id": 44,
@@ -962,8 +921,7 @@
     },
     "descricao": "NDF",
     "ativo": true,
-    "usuarioUltimaAlteracao": "regiane.felicio",
-    "idHml": 32
+    "usuarioUltimaAlteracao": "regiane.felicio"
   },
   {
     "id": 58,
@@ -985,8 +943,7 @@
     },
     "descricao": "NC FEE",
     "ativo": true,
-    "usuarioUltimaAlteracao": "jessica.leite",
-    "idHml": 66
+    "usuarioUltimaAlteracao": "jessica.leite"
   },
   {
     "id": 52,
@@ -1008,7 +965,6 @@
     },
     "descricao": "SALES LEASEBACK COM RETROVENDA",
     "ativo": true,
-    "usuarioUltimaAlteracao": "taina.ribeiro",
-    "idHml": 67
+    "usuarioUltimaAlteracao": "taina.ribeiro"
   }
 ]

@@ -60,8 +60,7 @@
       },
       "descricao": "TARIFADOR",
       "usuarioUltimaAlteracao": "tiago.roque",
-      "hibernateLazyInitializer": {},
-      "id.old": 2
+      "hibernateLazyInitializer": {}
     },
     "situacao": {
       "id": 1,
@@ -109,8 +108,7 @@
       "ativo": true,
       "usuarioUltimaAlteracao": "sistema",
       "codigoLegado": null,
-      "hibernateLazyInitializer": {},
-      "id.old": 1
+      "hibernateLazyInitializer": {}
     },
     "descricao": "AJUSTE ROLAGEM",
     "codigoEventoExterno": null,

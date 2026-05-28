@@ -22,7 +22,6 @@ Given('a pesquisa retornou dados de produtos para serem copiados de produção p
 
 When('pesquiso as dependências desses produtos', () => {
   cy.voltarIdsOriginais();
-  cy.pause()
   cy.pesquisarDependenciasLigacao();
 });
 

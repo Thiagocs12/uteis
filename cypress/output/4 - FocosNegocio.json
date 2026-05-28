@@ -61,8 +61,7 @@
       "descricao": "TARIFAS CUSTO DE REGISTRO",
       "ativo": true,
       "usuarioUltimaAlteracao": "eduardo.ribeiro",
-      "hibernateLazyInitializer": {},
-      "id.old": 12
+      "hibernateLazyInitializer": {}
     },
     "descricao": "AQUISICAO",
     "ativo": true,
@@ -76,8 +75,7 @@
     "indRegraLiquidacaoAntecipada": null,
     "indRegraLiquidacaoAmenor": null,
     "percMinimoAceitoLiquidacao": null,
-    "indIsencaoTarifa": false,
-    "idHml": 1
+    "indIsencaoTarifa": false
   },
   {
     "id": 5,
@@ -141,8 +139,7 @@
       "descricao": "AQUISICAO FINANCEIRA",
       "ativo": true,
       "usuarioUltimaAlteracao": "tiago.roque",
-      "hibernateLazyInitializer": {},
-      "id.old": 11
+      "hibernateLazyInitializer": {}
     },
     "descricao": "AQUISICAO FINANCEIRA",
     "ativo": true,
@@ -156,8 +153,7 @@
     "indRegraLiquidacaoAntecipada": null,
     "indRegraLiquidacaoAmenor": null,
     "percMinimoAceitoLiquidacao": null,
-    "indIsencaoTarifa": false,
-    "idHml": 5
+    "indIsencaoTarifa": false
   },
   {
     "id": 11,
@@ -221,8 +217,7 @@
       "descricao": "TARIFAS CUSTO DE REGISTRO",
       "ativo": true,
       "usuarioUltimaAlteracao": "eduardo.ribeiro",
-      "hibernateLazyInitializer": {},
-      "id.old": 12
+      "hibernateLazyInitializer": {}
     },
     "descricao": "AQUISICAO FORNECEDOR RISCO SACADO",
     "ativo": true,
@@ -236,8 +231,7 @@
     "indRegraLiquidacaoAntecipada": null,
     "indRegraLiquidacaoAmenor": null,
     "percMinimoAceitoLiquidacao": null,
-    "indIsencaoTarifa": false,
-    "idHml": 11
+    "indIsencaoTarifa": false
   },
   {
     "id": 7,
@@ -301,8 +295,7 @@
       "descricao": "TARIFAS CUSTO DE REGISTRO",
       "ativo": true,
       "usuarioUltimaAlteracao": "eduardo.ribeiro",
-      "hibernateLazyInitializer": {},
-      "id.old": 12
+      "hibernateLazyInitializer": {}
     },
     "descricao": "AQUISICAO FORNECEDOR ANCORA",
     "ativo": true,
@@ -316,8 +309,7 @@
     "indRegraLiquidacaoAntecipada": null,
     "indRegraLiquidacaoAmenor": null,
     "percMinimoAceitoLiquidacao": null,
-    "indIsencaoTarifa": false,
-    "idHml": 9
+    "indIsencaoTarifa": false
   },
   {
     "id": 10,
@@ -350,8 +342,7 @@
     "indRegraLiquidacaoAntecipada": null,
     "indRegraLiquidacaoAmenor": null,
     "percMinimoAceitoLiquidacao": null,
-    "indIsencaoTarifa": false,
-    "idHml": 10
+    "indIsencaoTarifa": false
   },
   {
     "id": 4,
@@ -384,8 +375,7 @@
     "indRegraLiquidacaoAntecipada": null,
     "indRegraLiquidacaoAmenor": null,
     "percMinimoAceitoLiquidacao": null,
-    "indIsencaoTarifa": false,
-    "idHml": 4
+    "indIsencaoTarifa": false
   },
   {
     "id": 2,
@@ -418,8 +408,7 @@
     "indRegraLiquidacaoAntecipada": null,
     "indRegraLiquidacaoAmenor": null,
     "percMinimoAceitoLiquidacao": null,
-    "indIsencaoTarifa": false,
-    "idHml": 2
+    "indIsencaoTarifa": false
   },
   {
     "id": 15,
@@ -452,8 +441,7 @@
     "indRegraLiquidacaoAntecipada": null,
     "indRegraLiquidacaoAmenor": null,
     "percMinimoAceitoLiquidacao": null,
-    "indIsencaoTarifa": false,
-    "idHml": 18
+    "indIsencaoTarifa": false
   },
   {
     "id": 14,
@@ -486,8 +474,7 @@
     "indRegraLiquidacaoAntecipada": null,
     "indRegraLiquidacaoAmenor": null,
     "percMinimoAceitoLiquidacao": null,
-    "indIsencaoTarifa": false,
-    "idHml": 19
+    "indIsencaoTarifa": false
   },
   {
     "id": 8,
@@ -520,8 +507,7 @@
     "indRegraLiquidacaoAntecipada": null,
     "indRegraLiquidacaoAmenor": null,
     "percMinimoAceitoLiquidacao": null,
-    "indIsencaoTarifa": true,
-    "idHml": 6
+    "indIsencaoTarifa": true
   },
   {
     "id": 3,
@@ -554,8 +540,7 @@
     "indRegraLiquidacaoAntecipada": null,
     "indRegraLiquidacaoAmenor": null,
     "percMinimoAceitoLiquidacao": null,
-    "indIsencaoTarifa": false,
-    "idHml": 3
+    "indIsencaoTarifa": false
   },
   {
     "id": 17,
@@ -588,8 +573,7 @@
     "indRegraLiquidacaoAntecipada": null,
     "indRegraLiquidacaoAmenor": null,
     "percMinimoAceitoLiquidacao": null,
-    "indIsencaoTarifa": false,
-    "idHml": 20
+    "indIsencaoTarifa": false
   },
   {
     "id": 18,
@@ -622,7 +606,6 @@
     "indRegraLiquidacaoAntecipada": null,
     "indRegraLiquidacaoAmenor": null,
     "percMinimoAceitoLiquidacao": null,
-    "indIsencaoTarifa": false,
-    "idHml": 21
+    "indIsencaoTarifa": false
   }
 ]

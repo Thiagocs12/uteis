@@ -39,8 +39,7 @@
       "ativo": true,
       "usuarioUltimaAlteracao": "sistema",
       "codigoLegado": null,
-      "hibernateLazyInitializer": {},
-      "id.old": 1
+      "hibernateLazyInitializer": {}
     },
     "descricao": "ATIVA",
     "ativo": true,

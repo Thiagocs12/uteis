@@ -10,8 +10,7 @@
     "indGarantiaSecundaria": false,
     "indGeraRemessaBancaria": true,
     "indEmiteBoleto": true,
-    "indGeraOperacaoTitulosRejeitados": null,
-    "idHml": 1
+    "indGeraOperacaoTitulosRejeitados": null
   },
   {
     "id": 4,
@@ -24,8 +23,7 @@
     "indGarantiaSecundaria": false,
     "indGeraRemessaBancaria": false,
     "indEmiteBoleto": false,
-    "indGeraOperacaoTitulosRejeitados": null,
-    "idHml": 4
+    "indGeraOperacaoTitulosRejeitados": null
   },
   {
     "id": 8,
@@ -38,8 +36,7 @@
     "indGarantiaSecundaria": false,
     "indGeraRemessaBancaria": false,
     "indEmiteBoleto": false,
-    "indGeraOperacaoTitulosRejeitados": null,
-    "idHml": 8
+    "indGeraOperacaoTitulosRejeitados": null
   },
   {
     "id": 7,
@@ -52,8 +49,7 @@
     "indGarantiaSecundaria": false,
     "indGeraRemessaBancaria": false,
     "indEmiteBoleto": false,
-    "indGeraOperacaoTitulosRejeitados": null,
-    "idHml": 7
+    "indGeraOperacaoTitulosRejeitados": null
   },
   {
     "id": 21,
@@ -66,8 +62,7 @@
     "indGarantiaSecundaria": false,
     "indGeraRemessaBancaria": false,
     "indEmiteBoleto": false,
-    "indGeraOperacaoTitulosRejeitados": null,
-    "idHml": 11
+    "indGeraOperacaoTitulosRejeitados": null
   },
   {
     "id": 9,
@@ -80,8 +75,7 @@
     "indGarantiaSecundaria": false,
     "indGeraRemessaBancaria": true,
     "indEmiteBoleto": false,
-    "indGeraOperacaoTitulosRejeitados": true,
-    "idHml": 29
+    "indGeraOperacaoTitulosRejeitados": true
   },
   {
     "id": 29,
@@ -94,8 +88,7 @@
     "indGarantiaSecundaria": false,
     "indGeraRemessaBancaria": false,
     "indEmiteBoleto": false,
-    "indGeraOperacaoTitulosRejeitados": null,
-    "idHml": 26
+    "indGeraOperacaoTitulosRejeitados": null
   },
   {
     "id": 6,
@@ -108,8 +101,7 @@
     "indGarantiaSecundaria": false,
     "indGeraRemessaBancaria": false,
     "indEmiteBoleto": false,
-    "indGeraOperacaoTitulosRejeitados": null,
-    "idHml": 6
+    "indGeraOperacaoTitulosRejeitados": null
   },
   {
     "id": 2,
@@ -122,8 +114,7 @@
     "indGarantiaSecundaria": false,
     "indGeraRemessaBancaria": true,
     "indEmiteBoleto": true,
-    "indGeraOperacaoTitulosRejeitados": null,
-    "idHml": 2
+    "indGeraOperacaoTitulosRejeitados": null
   },
   {
     "id": 22,
@@ -136,8 +127,7 @@
     "indGarantiaSecundaria": false,
     "indGeraRemessaBancaria": true,
     "indEmiteBoleto": false,
-    "indGeraOperacaoTitulosRejeitados": null,
-    "idHml": 16
+    "indGeraOperacaoTitulosRejeitados": null
   },
   {
     "id": 24,
@@ -150,8 +140,7 @@
     "indGarantiaSecundaria": false,
     "indGeraRemessaBancaria": true,
     "indEmiteBoleto": false,
-    "indGeraOperacaoTitulosRejeitados": true,
-    "idHml": 30
+    "indGeraOperacaoTitulosRejeitados": true
   },
   {
     "id": 3,
@@ -164,8 +153,7 @@
     "indGarantiaSecundaria": false,
     "indGeraRemessaBancaria": false,
     "indEmiteBoleto": false,
-    "indGeraOperacaoTitulosRejeitados": null,
-    "idHml": 3
+    "indGeraOperacaoTitulosRejeitados": null
   },
   {
     "id": 30,
@@ -178,8 +166,7 @@
     "indGarantiaSecundaria": false,
     "indGeraRemessaBancaria": false,
     "indEmiteBoleto": false,
-    "indGeraOperacaoTitulosRejeitados": false,
-    "idHml": 28
+    "indGeraOperacaoTitulosRejeitados": false
   },
   {
     "id": 11,
@@ -192,8 +179,7 @@
     "indGarantiaSecundaria": false,
     "indGeraRemessaBancaria": false,
     "indEmiteBoleto": false,
-    "indGeraOperacaoTitulosRejeitados": null,
-    "idHml": 23
+    "indGeraOperacaoTitulosRejeitados": null
   },
   {
     "id": 5,
@@ -206,7 +192,6 @@
     "indGarantiaSecundaria": false,
     "indGeraRemessaBancaria": false,
     "indEmiteBoleto": false,
-    "indGeraOperacaoTitulosRejeitados": null,
-    "idHml": 5
+    "indGeraOperacaoTitulosRejeitados": null
   }
 ]
